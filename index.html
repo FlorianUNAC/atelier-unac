@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atelier UNAC · Documents des délégués</title>
+<link rel="icon" href="commun/icons/favicon.png">
+<link rel="apple-touch-icon" href="commun/icons/apple-touch-icon.png">
+<meta name="theme-color" content="#5b1a3a">
+<style>
+  @font-face{font-family:"T1";src:url("commun/polices/x1.woff2") format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:"T1";src:url("commun/polices/x2.woff2") format("woff2");font-weight:700 800;font-display:swap}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{font-family:"T1",Inter,system-ui,-apple-system,sans-serif;color:#fff;min-height:100vh;
+    background:#4f1a30 url("commun/img/fond-hebergement.jpg") center/cover fixed no-repeat}
+  .wrap{max-width:1040px;margin:0 auto;padding:44px 28px 60px;position:relative}
+  header{position:relative;display:flex;align-items:center;gap:22px;margin-bottom:46px}
+  header .logo{height:84px;flex:none}
+  header h1{font-size:34px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;line-height:1}
+  header p{margin-top:8px;font-size:15px;opacity:.8;letter-spacing:.02em}
+  header .plane{position:absolute;right:-90px;top:-14px;width:330px;opacity:.95;pointer-events:none}
+  h2{font-size:12px;letter-spacing:.2em;text-transform:uppercase;opacity:.65;margin:0 0 14px 2px;font-weight:700}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:38px}
+  .tile{display:flex;flex-direction:column;gap:10px;text-decoration:none;color:#fff;border-radius:18px;padding:22px 22px 20px;
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    transition:transform .15s, background .15s;min-height:178px;position:relative}
+  a.tile:hover{transform:translateY(-3px);background:rgba(255,255,255,.18)}
+  .tile .ic{width:46px;height:46px;border-radius:12px;background:#fff;display:grid;place-items:center;flex:none}
+  .tile .ic svg{width:26px;height:26px}
+  .tile b{font-size:18px;letter-spacing:.01em}
+  .tile span{font-size:13.5px;opacity:.85;line-height:1.45}
+  .tile .tags{display:flex;gap:6px;margin-top:auto;flex-wrap:wrap}
+  .tile .tags i{font-style:normal;font-size:11px;font-weight:700;letter-spacing:.06em;background:rgba(255,255,255,.2);border-radius:6px;padding:3px 8px}
+  .tile.soon{border-style:dashed;background:rgba(255,255,255,.05)}
+  .tile.soon .ic{background:rgba(255,255,255,.2)}
+  .tile.soon b{opacity:.85}
+  .tile .go{position:absolute;right:20px;top:24px;opacity:.6;font-size:20px}
+  footer{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.12);border-radius:14px;padding:14px 18px;max-width:420px}
+  footer svg{width:30px;height:30px;flex:none}
+  footer b{display:block;font-size:14px}
+  footer span{font-size:12.5px;opacity:.85}
+  @media (max-width:700px){
+    .wrap{padding:28px 16px 40px}
+    header{gap:14px;margin-bottom:30px}
+    header .logo{height:60px}
+    header h1{font-size:24px}
+    header p{font-size:13px}
+    header .plane{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img class="logo" src="commun/img/logo-unac-blanc.png" alt="UNAC">
+    <div><h1>Atelier UNAC</h1><p>Les documents des délégués, mis en page automatiquement</p></div>
+    <img class="plane" src="commun/img/avion-unac.png" alt="">
+  </header>
+
+  <h2>Documents</h2>
+  <div class="grid">
+    <a class="tile" href="cr-hebergement/">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4h8a2 2 0 0 1 2 2v4"/><path d="M3 14h18"/><path d="M3 18v2M21 18v2"/><circle cx="7" cy="10" r="1.6"/></svg></div>
+      <b>Compte rendu · Commission hébergement</b>
+      <span>Saisie par escale (trigramme + texte) ou import des notes, PDF A4 aux couleurs UNAC, historique des CR publiés.</span>
+      <div class="tags"><i>LC</i><i>MC</i><i>Mensuel</i></div>
+      <span class="go">→</span>
+    </a>
+    <div class="tile soon">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+      <b>Prochain outil</b>
+      <span>Tracts, lettres d'information, daily de la perm… les prochains générateurs arriveront ici.</span>
+    </div>
+  </div>
+
+  <h2>Liens utiles</h2>
+  <div class="grid">
+    <a class="tile" href="../departs-unac/" style="min-height:0">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="#a3366a"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg></div>
+      <b>Tableau des départs CDG</b>
+      <span>Vols Air France et horaires de briefing PNC.</span>
+      <span class="go">→</span>
+    </a>
+  </div>
+
+  <footer>
+    <svg viewBox="0 0 32 32" fill="none"><rect x="8" y="2.5" width="16" height="27" rx="3.5" fill="#fff"/><rect x="10.3" y="6" width="11.4" height="18" rx="1.2" fill="#C24477"/><path d="M12.3 10.4h7.4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4.3l-2.4 2v-2h-.7a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1z" fill="#fff"/><circle cx="16" cy="26.6" r="1.1" fill="#C24477"/></svg>
+    <div><b>Un doute, une question ?</b><span>Tchat appli UNAC · 24h/24, 7j/7</span></div>
+  </footer>
+</div>
+</body>
+</html>
