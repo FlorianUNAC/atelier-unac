@@ -36,6 +36,9 @@
   .tile span{font-size:13.5px;opacity:.85;line-height:1.45}
   .tile .tags{display:flex;gap:6px;margin-top:auto;flex-wrap:wrap}
   .tile .tags i{font-style:normal;font-size:11px;font-weight:700;letter-spacing:.06em;background:rgba(255,255,255,.2);border-radius:6px;padding:3px 8px}
+  .tile.dev{opacity:.72;border-style:dashed}
+  .tile.dev:hover{opacity:1}
+  .tile .tags i.bientot{background:#F7D160;color:#4f1a30}
   .tile.soon{border-style:dashed;background:rgba(255,255,255,.05)}
   .tile.soon .ic{background:rgba(255,255,255,.2)}
   .tile.soon b{opacity:.85}
@@ -80,11 +83,11 @@
       <div class="tags"><i>Bulletin</i><i>Rubriques</i></div>
       <span class="go">→</span>
     </a>
-    <a class="tile" href="newsletter/">
+    <a class="tile dev" href="newsletter/" title="En cours de développement : code de déverrouillage demandé">
       <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h6M7 16h8"/></svg></div>
       <b>Newsletter</b>
       <span>Lettre d'information par sections (modèle Mutuelle MNPAF) : encadrés, étapes, chiffres clés, tableaux, élu.es. PDF A4 et images.</span>
-      <div class="tags"><i>Sections</i><i>Blocs</i></div>
+      <div class="tags"><i class="bientot">🔒 En cours de développement</i></div>
       <span class="go">→</span>
     </a>
     <div class="tile soon">
