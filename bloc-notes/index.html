@@ -323,7 +323,7 @@ function newPage(box, idx){
   const w = document.createElement("div"); w.className = "pwrap";
   const p = document.createElement("section"); p.className = "page " + (idx ? "cont" : "first");
   p.style.cssText = `--gap:${DENS.gap}px;--pad:${DENS.pad}px;--ft:${DENS.ft}px;--fx:${DENS.fx}px`;
-  p.innerHTML = (idx ? "" : `<div class="hd"><img class="plume" src="../commun/img/plume-main.svg" alt="">${TITRE_SVG}<div class="sous">${esc(S.sous)}</div>
+  p.innerHTML = (idx ? "" : `<div class="hd"><img class="plume" src="../commun/img/plume-main.png" alt="">${TITRE_SVG}<div class="sous">${esc(S.sous)}</div>
       <div class="ed">${esc([S.edition, cap(moisLabel(S.mois))].filter(Boolean).join(" · "))}</div><div class="ligne"></div></div>`)
     + `<div class="content"></div><div class="bottomgap"></div><div class="foot"><span></span><span></span></div>`;
   w.appendChild(p); box.appendChild(w); return p.querySelector(".content");
