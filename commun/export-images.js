@@ -36,7 +36,8 @@
       await Promise.all([...document.querySelectorAll("#pages img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
       await loadScript(VENDOR + "html-to-image.js");
       const pages = [...document.querySelectorAll("#pages .page")];
-      const opts = {pixelRatio: LARGEUR / 794, width: 794, height: 1123, style: {transform: "none", position: "static", margin: "0", left: "0", top: "0"}};
+      const W = pages[0].offsetWidth || 794, H = pages[0].offsetHeight || 1123;
+      const opts = {pixelRatio: (window.EXPORT_LARGEUR || LARGEUR) / W, width: W, height: H, style: {transform: "none", position: "static", margin: "0", left: "0", top: "0"}};
       try{ await htmlToImage.toBlob(pages[0], opts); }catch(e){} // 1er passage : charge polices et images (Safari)
       const blobs = [];
       for(let i = 0; i < pages.length; i++){
@@ -47,7 +48,7 @@
       files = blobs.map((b, i) => new File([b], `${base}${blobs.length > 1 ? "-" + (i+1) : ""}.png`, {type: "image/png"}));
       urls = blobs.map(b => URL.createObjectURL(b));
       const peutPartager = !!(navigator.canShare && navigator.canShare({files}));
-      body.innerHTML = `<p class="mintro">${files.length} image${files.length>1?"s":""} (une par page, ${LARGEUR} px de large), prête${files.length>1?"s":""} pour une publication Facebook.
+      body.innerHTML = `<p class="mintro">${files.length} image${files.length>1?"s":""} (une par page, ${window.EXPORT_LARGEUR || LARGEUR} px de large), prête${files.length>1?"s":""} pour une publication Facebook.
         ${peutPartager ? "« Partager » ouvre directement Facebook, Messages, WhatsApp… depuis le téléphone." : "Sur téléphone, un appui long sur une image permet aussi de l'enregistrer dans Photos."}</p>
         <div class="imgrid">${urls.map((u, i) => `<a href="${u}" download="${esc(files[i].name)}" title="Télécharger cette page"><img src="${u}" alt="Page ${i+1}"><span>Page ${i+1}</span></a>`).join("")}</div>`;
       foot.innerHTML = `<span></span><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
