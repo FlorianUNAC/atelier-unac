@@ -916,6 +916,10 @@ function demo(t){
 </script>
 <script src="import.js"></script>
 <script src="historique.js"></script>
-<script src="images.js"></script>
+<script>
+  window.nomExport = () => `CR-hebergement-${type}-${moisLabel(S.mois).replace(/\s+/g, "-")}`;
+  window.titreExport = () => `CR hébergement ${type} · ${moisLabel(S.mois)}`;
+</script>
+<script src="../commun/export-images.js"></script>
 </body>
 </html>

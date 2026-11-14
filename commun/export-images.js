@@ -1,6 +1,8 @@
-// Export du CR en images (une image PNG par page) pour les publications Facebook / réseaux.
+// Export d'un document de l'Atelier en images (une PNG par page) pour Facebook / réseaux.
+// La page hôte définit : renderPreview(), nomExport() (nom de fichier sans extension), titreExport(), toast(), esc().
 "use strict";
 (function(){
+  const VENDOR = new URL("vendor/", document.currentScript.src).href;
   const LARGEUR = 1440;               // px de large par image (A4 portrait : 1440 × 2037)
   const loaded = {};
   const loadScript = src => loaded[src] || (loaded[src] = new Promise((ok, ko) => {
@@ -19,7 +21,7 @@
   const close = () => { M.classList.remove("on"); urls.forEach(u => URL.revokeObjectURL(u)); urls = []; files = []; };
   M.addEventListener("click", e => { if(e.target === M || e.target.hasAttribute("data-x")) close(); });
 
-  const nomBase = () => `CR-hebergement-${type}-${moisLabel(S.mois).replace(/\s+/g, "-")}`;
+  const nomBase = () => window.nomExport();
   const telecharger = (blob, nom) => {
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nom;
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
@@ -32,7 +34,7 @@
       renderPreview();
       if(document.fonts && document.fonts.ready) await document.fonts.ready;
       await Promise.all([...document.querySelectorAll("#pages img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
-      await loadScript("../commun/vendor/html-to-image.js");
+      await loadScript(VENDOR + "html-to-image.js");
       const pages = [...document.querySelectorAll("#pages .page")];
       const opts = {pixelRatio: LARGEUR / 794, width: 794, height: 1123, style: {transform: "none", position: "static", margin: "0", left: "0", top: "0"}};
       try{ await htmlToImage.toBlob(pages[0], opts); }catch(e){} // 1er passage : charge polices et images (Safari)
@@ -53,12 +55,12 @@
         <button class="mbtn pri" id="imDl">${files.length > 1 ? "Tout télécharger (.zip)" : "Télécharger l'image"}</button></div>`;
       const sh = foot.querySelector("#imShare");
       if(sh) sh.addEventListener("click", async () => {
-        try{ await navigator.share({files, title: `CR hébergement ${type} · ${moisLabel(S.mois)}`}); }
+        try{ await navigator.share({files, title: window.titreExport()}); }
         catch(e){ if(e.name !== "AbortError") toast("Partage impossible : utilisez « Télécharger »"); }
       });
       foot.querySelector("#imDl").addEventListener("click", async () => {
         if(files.length === 1) return telecharger(files[0], files[0].name);
-        await loadScript("../commun/vendor/jszip.min.js");
+        await loadScript(VENDOR + "jszip.min.js");
         const zip = new JSZip(); files.forEach(f => zip.file(f.name, f));
         telecharger(await zip.generateAsync({type: "blob"}), base + "-images.zip");
       });
