@@ -147,6 +147,20 @@
   .fin .appli b{display:block;font-size:12px;letter-spacing:.01em}
   .fin .appli span{display:block;font-size:9.5px;opacity:.85;margin-top:2px}
   .fin.withimg{height:330px}
+  .fin.withref{height:300px}
+  .fin.withref .appli{position:absolute;left:0;bottom:0}
+  .refphotos{position:absolute;right:56px;bottom:0;display:flex;align-items:flex-end;z-index:1}
+  .refphotos img{display:block;filter:drop-shadow(0 6px 18px rgba(30,0,15,.35))}
+  .reftxt{position:absolute;left:48px;bottom:96px;max-width:300px}
+  .reftxt b{display:block;font-size:12.5px;margin-bottom:8px;letter-spacing:.01em}
+  .reftxt span{display:block;font-size:11px;line-height:1.5;opacity:.92}
+  .reftxt strong{font-weight:700}
+  .page.hasref .foot{justify-content:flex-start;gap:16px}
+  .refs-ui{display:flex;align-items:center;gap:6px}
+  .refs-ui img{height:54px;border-radius:8px;background:#6b2244;object-fit:cover;width:44px;object-position:top}
+  .refs-ui div{margin-left:6px}
+  .refs-ui b{display:block;font-size:13px}
+  .refs-ui span{display:block;font-size:12px;color:var(--ui-muted);margin-top:2px}
   .fin.withimg .appli{position:absolute;left:0;bottom:0}
   .fin .vis{position:absolute;right:96px;bottom:-44px;height:350px;max-width:420px;object-fit:contain;object-position:bottom}
 
@@ -299,11 +313,11 @@
 
 <script src="../commun/escales.js"></script>
 <script src="../commun/globes.js"></script>
+<script src="../commun/referents.js"></script>
 <script>
 "use strict";
 const MOIS = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
 const TITRE = { LC:{src:"../commun/img/titre-lc.png",w:191,cs:92}, MC:{src:"../commun/img/titre-mc.png",w:248,cs:149} }; // cs = début du « C »
-const VISUEL_DEFAUT = "../commun/img/pnc-hebergement.png"; // visuel de fin facultatif (déposer le fichier dans img/)
 const $ = s => document.querySelector(s);
 const uid = () => Math.random().toString(36).slice(2,9);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -445,19 +459,16 @@ function renderForm(){
   });
 
   h += `<button class="addzone" id="addZone">+ Ajouter une zone</button>
-  <div class="card" style="margin-top:12px">
-    <h2>Visuel de fin (facultatif)</h2>
-    <div class="visuel"><div class="thumb" id="thumb"></div>
-      <div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="mini" id="vAdd">Choisir une image</button>${S.visuel?`<button class="mini danger" id="vDel">Retirer</button>`:""}</div>
-      <div class="hint">Photo détourrée (PNG transparent) placée en bas de la dernière page.${defaultVisuelOk && !S.visuel ? " Visuel par défaut utilisé." : ""}</div></div>
-    </div>
-  </div>
+  ${refBloc() ? `<div class="card" style="margin-top:12px">
+    <h2>Délégués référents</h2>
+    <div class="refs-ui">${refBloc().personnes.map(p => `<img src="../commun/img/referents/${p.photo}" alt="">`).join("")}
+      <div><b>${refBloc().titre}</b><span>${refNoms().map(p => esc(p.prenom+" "+p.nom)).join(" · ")}</span></div></div>
+    <label class="chk"><input type="checkbox" id="fRef" ${S.referents !== false ? "checked" : ""}> Afficher leur photo en bas de la dernière page</label>
+  </div>` : ""}
   ${ro ? "" : `<div class="card pubcard"><div><b>Compte rendu terminé ?</b><span>Publiez-le : il passe dans l'historique des CR publiés et n'est plus modifiable.</span></div><button class="btn pubbtn" id="pubBtn">Publier</button></div>`}
   <p class="hint" style="margin:14px 4px 0">Saisie enregistrée automatiquement sur cet appareil (brouillons et publiés dans « Historique »). Pour travailler à plusieurs : menu « Brouillon » → lien de partage ou fichier .json, puis « fusionner ».</p>`;
   f.innerHTML = h;
   f.scrollTop = scroll;
-  const v = S.visuel || (defaultVisuelOk ? VISUEL_DEFAUT : null);
-  $("#thumb").style.backgroundImage = v ? `url("${v}")` : "none";
 }
 
 function updateCounts(){
@@ -494,6 +505,7 @@ $("#form").addEventListener("change", ev => {
   if(t.id === "fMois"){ S.mois = t.value; changed(false); }
   if(t.id === "fTri"){ S.tri = t.value; changed(false); }
   if(t.id === "fVides"){ S.masquerVides = t.checked; changed(false); }
+  if(t.id === "fRef"){ S.referents = t.checked; changed(false); }
 });
 $("#form").addEventListener("click", ev => {
   if(ev.target.id === "addZone"){
@@ -556,6 +568,8 @@ const FONDS = [   // variations du fond fourni : cadrage et miroir selon la page
   {pos:"45% 50%", flip:1},
   {pos:"80% 50%", flip:-1}
 ];
+function refBloc(){ return ((window.REFERENTS||{}).hebergement||{})[type] || null; }
+function refNoms(){ const r = refBloc(); return r ? (r.noms || r.personnes) : []; }
 function moisLabel(m){ const [y,mm] = m.split("-"); return MOIS[+mm-1]+" "+y; }
 
 function headerHTML(){
@@ -620,10 +634,17 @@ function buildPages(container){
     }
   });
 
-  // Bloc de fin : appli UNAC (+ visuel)
-  const vis = S.visuel || (defaultVisuelOk ? VISUEL_DEFAUT : null);
-  const fin = el(`<div class="fin ${vis?"withimg":""}">${vis?`<img class="vis" src="${vis}" alt="">`:""}<div class="appli">${APP_IC}<div><b>Un doute, une question ?</b><span>Tchat appli UNAC · 24h/24, 7j/7</span></div></div></div>`);
+  // Bloc de fin : délégués référents (photos) + appli UNAC
+  const R = S.referents !== false ? refBloc() : null;
+  const appli = `<div class="appli">${APP_IC}<div><b>Un doute, une question ?</b><span>Tchat appli UNAC · 24h/24, 7j/7</span></div></div>`;
+  const fin = el(R
+    ? `<div class="fin withref"><div class="reftxt"><b>${esc(R.titre)}</b>${refNoms().map(p => `<span><strong>${esc(p.prenom)}</strong> ${esc(p.nom)}</span>`).join("")}</div>${appli}</div>`
+    : `<div class="fin">${appli}</div>`);
   if(!tryPlace(fin)){ next(); c.appendChild(fin); }
+  if(R){ // photos posées sur le bas de la page, hors du flux (n'influencent pas la pagination)
+    const pg = c.closest(".page"); pg.classList.add("hasref");
+    pg.appendChild(el(`<div class="refphotos">${R.personnes.map(p => `<img src="../commun/img/referents/${p.photo}" style="height:${Math.round(p.h*1.12)}px;${p.chevauche?`margin-left:-${Math.round(p.chevauche*1.12)}px`:""}" alt="${esc(p.prenom+" "+p.nom)}">`).join("")}</div>`));
+  }
 
   // Pieds de page
   const pages = container.querySelectorAll(".page");
@@ -820,7 +841,6 @@ function demo(t){
   document.body.classList.toggle("ro", S.statut === "publie");
   if(window.loadShared) loadShared();
   // Visuel par défaut facultatif
-  await new Promise(r => { const i = new Image(); i.onload = () => { defaultVisuelOk = true; r(); }; i.onerror = r; i.src = VISUEL_DEFAUT; });
   renderForm();
   if(document.fonts && document.fonts.ready) await document.fonts.ready;
   renderPreview();
