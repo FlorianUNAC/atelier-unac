@@ -149,16 +149,16 @@
   .fin .appli span{display:block;font-size:9.5px;opacity:.85;margin-top:2px}
   .fin.withimg{height:330px}
   .fin.withref{height:300px}
-  .fin.withref .appli{position:absolute;left:0;bottom:0}
-  .refphotos{position:absolute;right:56px;bottom:0;display:flex;align-items:flex-end;z-index:1}
-  .refphotos img{display:block;filter:drop-shadow(0 6px 18px rgba(30,0,15,.35))}
-  .reftxt{position:absolute;left:48px;bottom:96px;max-width:300px}
+  .fin.withref .appli{position:absolute;left:auto;right:48px;bottom:0;margin:0 0 30px 0;max-width:none;padding:10px 14px 10px 12px;white-space:nowrap}
+  .refphotos{position:absolute;left:50%;transform:translateX(-50%);bottom:0;display:flex;align-items:flex-end;z-index:1}
+  .refphotos img{display:block;filter:grayscale(1) contrast(1.06) drop-shadow(0 6px 18px rgba(30,0,15,.35))}
+  .reftxt{position:absolute;left:48px;bottom:30px;max-width:170px}
   .reftxt b{display:block;font-size:12.5px;margin-bottom:8px;letter-spacing:.01em}
   .reftxt span{display:block;font-size:11px;line-height:1.5;opacity:.92}
   .reftxt strong{font-weight:700}
-  .page.hasref .foot{justify-content:flex-start;gap:16px}
+  .page.hasref .foot span:first-child{visibility:hidden}
   .refs-ui{display:flex;align-items:center;gap:6px}
-  .refs-ui img{height:54px;border-radius:8px;background:#6b2244;object-fit:cover;width:44px;object-position:top}
+  .refs-ui img{filter:grayscale(1);height:54px;border-radius:8px;background:#6b2244;object-fit:cover;width:44px;object-position:top}
   .refs-ui div{margin-left:6px}
   .refs-ui b{display:block;font-size:13px}
   .refs-ui span{display:block;font-size:12px;color:var(--ui-muted);margin-top:2px}
@@ -646,7 +646,7 @@ function buildPages(container){
   if(!tryPlace(fin)){ next(); c.appendChild(fin); }
   if(R){ // photos posées sur le bas de la page, hors du flux (n'influencent pas la pagination)
     const pg = c.closest(".page"); pg.classList.add("hasref");
-    pg.appendChild(el(`<div class="refphotos">${R.personnes.map(p => `<img src="../commun/img/referents/${p.photo}" style="height:${Math.round(p.h*1.12)}px;${p.chevauche?`margin-left:-${Math.round(p.chevauche*1.12)}px`:""}" alt="${esc(p.prenom+" "+p.nom)}">`).join("")}</div>`));
+    pg.appendChild(el(`<div class="refphotos">${R.personnes.map(p => `<img src="../commun/img/referents/${p.photo}" style="height:${Math.round(p.h*.92)}px;${p.chevauche?`margin-left:-${Math.round(p.chevauche*.92)}px`:""}" alt="${esc(p.prenom+" "+p.nom)}">`).join("")}</div>`));
   }
 
   // Pieds de page

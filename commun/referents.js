@@ -5,7 +5,7 @@ window.REFERENTS = {
   hebergement: {
     LC: { titre: "Vos référentes hébergement long-courrier",
           personnes: [ {prenom:"Manelle", nom:"Boumenikra", photo:"lc-manelle.png", h:300},
-                       {prenom:"Elsa", nom:"Gilardi", photo:"lc-elsa.png", h:281} ] },
+                       {prenom:"Elsa", nom:"Gilardi", photo:"lc-elsa.png", h:281, chevauche:26} ] },
     MC: { titre: "Vos référents hébergement moyen-courrier",
           noms: [ {prenom:"Chrystel", nom:"Marin"}, {prenom:"Bruno", nom:"Phebidias"} ],
           personnes: [ {prenom:"Bruno", nom:"Phebidias", photo:"mc-bruno.png", h:314},
