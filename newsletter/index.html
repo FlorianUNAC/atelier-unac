@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Newsletter · Atelier UNAC</title>
+<link rel="icon" href="../commun/icons/favicon.png">
+<link rel="apple-touch-icon" href="../commun/icons/apple-touch-icon.png">
+<meta name="theme-color" content="#5b1a3a">
+<meta name="robots" content="noindex, nofollow">
+<script src="../commun/acces.js"></script>
+<style>
+  @font-face{font-family:"T1";src:url("../commun/polices/x1.woff2") format("woff2");font-weight:400;font-display:block}
+  @font-face{font-family:"T1";src:url("../commun/polices/x2.woff2") format("woff2");font-weight:700 800;font-display:block}
+  :root{--mag:#C2286A;--mag2:#A01A55;--rosepale:#FBE4EC;--ui-bg:#f6f1f4;--ui-card:#fff;--ui-line:#e7dbe2;--ui-ink:#2b1225;--ui-muted:#8b6f80}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:"T1",Inter,system-ui,-apple-system,sans-serif;background:var(--ui-bg);color:var(--ui-ink);display:flex;flex-direction:column}
+  button,input,textarea,select{font:inherit;color:inherit}
+
+  /* Barre du haut */
+  .top{display:flex;align-items:center;gap:14px;padding:10px 18px;background:linear-gradient(100deg,#7a2a4e 0%,#5e1d3c 60%,#4f1530 100%);color:#fff;flex:none}
+  .top a.home{display:block}
+  .top img.logo{height:34px;display:block}
+  .top h1{font-size:16px;font-weight:700;letter-spacing:.02em;line-height:1.15}
+  .top h1 small{display:block;font-weight:400;font-size:11.5px;opacity:.75}
+  .top .sp{flex:1}
+  .acts{display:flex;gap:8px;align-items:center}
+  .btn{border:0;border-radius:9px;padding:9px 14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+  .btn svg{width:16px;height:16px;flex:none}
+  .btn.pdf{background:#fff;color:#7a1f48}
+  .btn.ghost{background:rgba(255,255,255,.14);color:#fff}
+  .btn.ghost:hover{background:rgba(255,255,255,.24)}
+  .menu{position:relative}
+  .menu .dd{position:absolute;right:0;top:calc(100% + 6px);background:#fff;color:var(--ui-ink);border-radius:12px;box-shadow:0 12px 36px rgba(40,0,25,.28);padding:6px;min-width:270px;display:none;z-index:50}
+  .menu.open .dd{display:block}
+  .dd button{display:flex;width:100%;text-align:left;border:0;background:none;padding:9px 11px;border-radius:8px;cursor:pointer}
+  .dd button:hover{background:var(--rosepale)}
+  .dd button small{display:block;color:var(--ui-muted);font-size:11.5px}
+  .dd hr{border:0;border-top:1px solid var(--ui-line);margin:4px 6px}
+
+  .app{flex:1;display:grid;grid-template-columns:minmax(380px,520px) 1fr;min-height:0}
+  .form{overflow:auto;padding:18px 18px 60px;border-right:1px solid var(--ui-line)}
+  .preview{overflow:auto;background:#3a3036;padding:26px 20px 60px}
+  .tabs{display:none}
+  .card{background:var(--ui-card);border:1px solid var(--ui-line);border-radius:14px;padding:14px;margin-bottom:12px}
+  .card h2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9b3e69;margin-bottom:10px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .card h2 .st{margin-left:auto;font-size:10.5px;letter-spacing:.08em;background:#f1edf0;color:#7d5a6e;border-radius:999px;padding:2px 9px}
+  .card h2 .st.pub{background:#e3f4ea;color:#23764a}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  label.f{display:block;font-size:12px;color:var(--ui-muted);margin:10px 0 4px}
+  label.f:first-of-type{margin-top:0}
+  input[type=text],textarea,select{width:100%;border:1px solid var(--ui-line);border-radius:9px;padding:8px 10px;background:#fff;outline:none;font-size:14px}
+  input:focus,textarea:focus,select:focus{border-color:#c8487f;box-shadow:0 0 0 3px rgba(200,72,127,.15)}
+  textarea{resize:vertical;min-height:64px;line-height:1.4}
+  .chk{display:flex;gap:8px;align-items:center;font-size:13.5px;cursor:pointer}
+  .chk input{accent-color:#b0386c;width:16px;height:16px}
+  .hint{font-size:11.5px;color:var(--ui-muted);margin-top:6px;line-height:1.4}
+  .imp{background:#fffde0;border-color:#efe48a}
+  .item .ih{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .item .ih .num{font-weight:800;color:#9b3e69;font-size:13px;width:22px}
+  .item .ih select{flex:1}
+  .mini{border:1px solid var(--ui-line);background:#fff;border-radius:8px;padding:5px 9px;font-size:12px;cursor:pointer;color:#6d3a55}
+  .mini:hover{background:var(--rosepale)}
+  .mini.danger{color:#a3263b}
+  .add{width:100%;border:1.5px dashed #d9b3c5;background:#fdf7fa;color:#9b3e69;border-radius:12px;padding:11px;font-weight:700;cursor:pointer}
+  .add:hover{background:var(--rosepale)}
+  .pubcard{display:flex;align-items:center;gap:12px;justify-content:space-between;margin-top:12px}
+  .pubcard b{display:block;font-size:14px}
+  .pubcard span{display:block;font-size:12px;color:var(--ui-muted);margin-top:2px}
+  .pubbtn{background:#23764a;color:#fff}
+  .robanner{background:#e3f4ea;border:1px solid #bfe3cd;border-radius:14px;padding:12px 14px;margin-bottom:12px;color:#1d5c3a}
+  .robanner b{display:block}
+  .robanner span{display:block;font-size:12px;margin-top:2px}
+  .robanner .mini{margin-top:8px}
+  body.ro .form .card:not(.robanner), body.ro .form .add{pointer-events:none;opacity:.6}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#2b1225;color:#fff;padding:11px 18px;border-radius:10px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:99}
+  .toast.on{opacity:1;transform:translateX(-50%)}
+  .pv-meta{color:#d9c6d0;font-size:12px;text-align:center;margin-bottom:14px}
+  .pwrap{margin:0 auto 22px;box-shadow:0 10px 34px rgba(0,0,0,.45);position:relative}
+  .pwrap > .page{transform-origin:0 0;position:absolute;left:0;top:0}
+
+  /* Fenêtres (historique, images) */
+  .modal{position:fixed;inset:0;background:rgba(30,6,20,.55);display:none;align-items:center;justify-content:center;z-index:80;padding:16px}
+  .modal.on{display:flex}
+  .mbox{background:#fff;border-radius:16px;width:min(860px,100%);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .mhead{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--ui-line)}
+  .mhead h3{font-size:16px}
+  .mclose{border:0;background:none;font-size:26px;line-height:1;cursor:pointer;color:var(--ui-muted)}
+  .mbody{overflow:auto;padding:16px 18px;flex:1}
+  .mfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--ui-line)}
+  .mbtn{border:1px solid var(--ui-line);background:#fff;border-radius:9px;padding:9px 14px;font-weight:700;cursor:pointer}
+  .mbtn.pri{background:#9b2f60;border-color:#9b2f60;color:#fff}
+  .mintro{font-size:13.5px;color:#5d4252;line-height:1.45;margin-bottom:14px}
+  .merr{background:#fff4ec;color:#9a3f17;border-radius:9px;padding:10px 12px;font-size:13px}
+  .imgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .imgrid a{display:block;text-decoration:none;color:var(--ui-muted);font-size:12px;text-align:center}
+  .imgrid img{width:100%;display:block;border-radius:8px;box-shadow:0 4px 14px rgba(40,0,25,.25);margin-bottom:6px}
+  .htabs{display:flex;gap:6px;margin-bottom:12px}
+  .htabs button{border:1px solid var(--ui-line);background:#fff;border-radius:999px;padding:6px 14px;font-weight:700;cursor:pointer;color:#7d5a6e}
+  .htabs button.on{background:#7a2a4e;border-color:#7a2a4e;color:#fff}
+  .hrow{display:flex;align-items:center;gap:12px;border:1px solid var(--ui-line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+  .hrow.cur{border-color:#c8487f}
+  .hrow .hi{flex:1;min-width:0}
+  .hrow .hi b{display:block;font-size:14.5px}
+  .hrow .hi span{display:block;font-size:12px;color:var(--ui-muted);margin-top:2px}
+  .hrow .ha{display:flex;gap:6px;flex-wrap:wrap}
+  .hempty{text-align:center;color:var(--ui-muted);padding:30px}
+
+  /* formulaire : blocs */
+  .sec-card{border-left:4px solid #B33868}
+  .sec-card .sh{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+  .sec-card .sh b{flex:1;font-size:13px;color:#9b3e69;letter-spacing:.08em;text-transform:uppercase}
+  .blk-card{background:#faf6f8;border:1px solid var(--ui-line);border-radius:12px;padding:10px 12px;margin-top:10px}
+  .blk-card .bh{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+  .blk-card .bh b{flex:1;font-size:12.5px;color:#7a2a4e}
+  .addblk{display:flex;gap:6px;margin-top:10px}
+  .addblk select{flex:1}
+  .pictos{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+  .pictos button{width:46px;height:46px;border:1.5px solid var(--ui-line);border-radius:10px;background:#fff center/34px no-repeat;cursor:pointer;font-size:10px;color:var(--ui-muted)}
+  .pictos button.on{border-color:#B33868;box-shadow:0 0 0 2px rgba(179,56,104,.2)}
+  .fmt{font-size:11px;color:var(--ui-muted);margin-top:4px;line-height:1.4}
+  .fmt code{background:#f1e8ed;border-radius:4px;padding:0 4px;color:#7a2a4e}
+
+  /* ===== LA FRAME (A4 = 794 × 1123 px) ===== */
+  .page{width:794px;height:1123px;position:relative;overflow:hidden;background:#fff;color:#2B2B30;display:flex;flex-direction:column;
+    font-family:"T1",Inter,system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;--k:1}
+  .page .content{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+  .page .bottomgap{height:56px;flex:none}
+  .page.last .bottomgap{height:0}
+  .page .num{position:absolute;right:46px;bottom:16px;width:26px;height:26px;border-radius:50%;background:#B33868;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .page.last .num{display:none}
+  .nhd{flex:none;padding:38px 42px 0;display:flex;justify-content:space-between;align-items:center;gap:24px}
+  .nhd h1{margin:0;font-size:calc(var(--k)*41px);line-height:1.05;color:#B33868;font-weight:400}
+  .nhd h1 b{font-weight:700}
+  .nhd .sous{margin-top:6px;font-size:calc(var(--k)*15px);color:#6E6E74}
+  .nhd .logo{width:56px;flex:none}
+  .avion{flex:none;position:relative;height:104px;margin-top:4px}
+  .avion .band{position:absolute;left:0;right:0;bottom:0;height:47px;background:#B33866}
+  .avion img{position:absolute;right:6px;bottom:-6px;width:442px}
+  .sec{flex:none;padding:calc(var(--k)*20px) 42px;display:flex;flex-direction:column;gap:calc(var(--k)*12px)}
+  .sec.rose{background:#FCF6F8}
+  .sec.grow{flex:1 0 auto}
+  .sh2{display:flex;align-items:flex-end;gap:12px;border-bottom:2px solid #B33868;padding-bottom:8px}
+  .sh2 h2{flex:1;margin:0;font-size:calc(var(--k)*23.5px);line-height:1.15;font-weight:400;color:#2B2B30}
+  .sh2 h2 b{color:#B33868;font-weight:700}
+  .sh2 img{height:calc(var(--k)*52px);width:auto;flex:none;margin-bottom:-2px}
+  .p{font-size:calc(var(--k)*13.6px);line-height:1.5;margin:0;color:#2B2B30}
+  .p b{font-weight:700}
+  .note{font-size:calc(var(--k)*12.2px);line-height:1.45;margin:0;color:#66666C}
+  .lb{font-size:calc(var(--k)*13.6px);font-weight:700;color:#B33868;margin:0}
+  .rt{display:flex;flex-direction:column;gap:calc(var(--k)*6px)}
+  .ul{display:flex;flex-direction:column;gap:calc(var(--k)*4px)}
+  .ul div{display:flex;gap:9px;align-items:baseline}
+  .ul span{color:#B33868;font-size:9px;flex:none}
+  .stp{display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:7px 12px}
+  .rond{width:24px;height:24px;border-radius:50%;background:#B33868;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+  .bx{background:#F9EEF2;border-radius:12px;padding:calc(var(--k)*12px) 16px;display:flex;flex-direction:column;gap:6px}
+  .bx.fonce{background:#B33868}
+  .bx.alerte{background:#8E2A52}
+  .bx.contour{background:#FCF6F8;border:1px solid #EBD3DC;border-radius:14px}
+  .bx.blanc{background:#fff}
+  .bx.fonce .p,.bx.fonce .lb,.bx.fonce .note,.bx.alerte .p,.bx.alerte .lb,.bx.alerte .note{color:#fff}
+  .bx.fonce .ul span,.bx.alerte .ul span{color:#fff}
+  .bx.fonce .stp .p,.bx.alerte .stp .p{color:#2B2B30}
+  .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
+  .gcol{display:flex;flex-direction:column;gap:12px}
+  .enbref{background:#FCF6F8;border:1px solid #EBD3DC;border-radius:14px;padding:calc(var(--k)*14px) 18px;display:flex;flex-direction:column;gap:9px}
+  .enbref h3{margin:0;font-size:calc(var(--k)*17px);font-weight:400}
+  .enbref h3 b{color:#B33868}
+  .enbref .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:calc(var(--k)*7px) 22px}
+  .enbref .ck{display:flex;gap:8px;align-items:flex-start}
+  .enbref .ck span{color:#B33868;font-weight:700;font-size:14px}
+  .enbref .ck .p{font-size:calc(var(--k)*12.8px)}
+  .etapes{display:grid;gap:12px}
+  .etapes .bx{gap:5px}
+  .etapes .bx .p{font-size:calc(var(--k)*12.6px)}
+  .chiffres{display:grid;gap:12px}
+  .chiffres .val{font-size:calc(var(--k)*28px);font-weight:700;color:#B33868;line-height:1}
+  .chiffres .val small{font-size:13px;margin-left:3px}
+  .chiffres .p{font-size:calc(var(--k)*12.4px)}
+  .tab{border:1px solid #EBD3DC;border-radius:12px;overflow:hidden;background:#fff}
+  .tab table{width:100%;border-collapse:collapse}
+  .tab th{background:#B33868;color:#fff;font-size:calc(var(--k)*11.5px);font-weight:700;padding:10px 10px;text-align:center;line-height:1.25}
+  .tab th:first-child{text-align:left;padding-left:16px}
+  .tab td{padding:calc(var(--k)*14px) 10px;border-top:1px solid #EBD3DC;text-align:center;font-size:calc(var(--k)*13px);font-weight:700}
+  .tab td:first-child{text-align:left;padding-left:16px}
+  .tab.grand td:not(:first-child){color:#B33868;font-size:calc(var(--k)*19px)}
+  .tab th+th,.tab td+td{border-left:1px solid #EBD3DC}
+  .pers{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+  .pers .lab{color:#B33868;font-weight:700;font-size:calc(var(--k)*13.6px);margin-right:4px}
+  .pers .chip{border:1px solid #EBD3DC;background:#fff;border-radius:999px;padding:4px 12px;font-size:calc(var(--k)*12.6px)}
+  .roles{background:#fff;border-radius:12px;padding:12px 16px;display:flex;flex-direction:column}
+  .roles .lb{margin-bottom:4px}
+  .roles .rw{display:grid;grid-template-columns:230px minmax(0,1fr);gap:10px;padding:6px 0}
+  .roles .rw+.rw{border-top:1px solid #EBD3DC}
+  .roles .k{font-size:calc(var(--k)*12.4px);font-weight:700;color:#B33868}
+  .roles .v{font-size:calc(var(--k)*12.4px)}
+  .appli{display:flex;gap:20px;align-items:center}
+  .appli .badge{display:flex;align-items:center;gap:10px;border:1px solid #EBD3DC;border-radius:12px;padding:10px 14px;flex:none;background:#fff}
+  .appli .badge img{width:46px;height:46px;border-radius:11px}
+  .appli .badge .st{display:flex;gap:5px;margin-top:5px}
+  .appli .badge .st span{background:#2B2B30;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px}
+  .nfin{flex:none;margin-top:auto;background:#B33866;color:#fff;display:flex;align-items:center;gap:16px;padding:20px 42px}
+  .nfin .ap{width:52px;height:52px;border-radius:12px}
+  .nfin .t{flex:1}
+  .nfin .t small{display:block;font-size:12px;opacity:.9}
+  .nfin .t b{display:block;font-size:19px;margin-top:2px}
+  .nfin .c{text-align:right;font-size:12px}
+  .nfin .c b{display:block;font-size:15px;margin-top:2px}
+  .nfin .lw{width:44px}
+
+  @page{size:A4;margin:0}
+  @media print{
+    html,body{background:none;height:auto;display:block}
+    .top,.form,.tabs,.pv-meta,.toast,.modal{display:none!important}
+    .app{display:block}
+    .preview{overflow:visible;padding:0;background:none}
+    .pwrap{margin:0;box-shadow:none;width:auto!important;height:auto!important;position:static}
+    .pwrap > .page{position:relative;transform:none!important;break-after:page}
+    .pwrap:last-child > .page{break-after:auto}
+  }
+  @media screen and (max-width:900px){
+    .top{flex-wrap:wrap;gap:10px;padding:10px 12px}
+    .top h1{font-size:14px}
+    .top .sp{display:none}
+    .acts{width:100%;justify-content:space-between}
+    .top .lg{display:none}
+    .top .btn{padding:9px 12px}
+    .app{grid-template-columns:1fr}
+    .tabs{display:flex;background:#fff;border-bottom:1px solid var(--ui-line);flex:none}
+    .tabs button{flex:1;border:0;background:none;padding:11px;font-weight:700;color:var(--ui-muted);border-bottom:3px solid transparent}
+    .tabs button.on{color:#8a2b57;border-color:#b0386c}
+    body.tab-apercu .form{display:none}
+    body:not(.tab-apercu) .preview{display:none}
+    .form{border-right:0;padding:12px 12px 80px}
+  }
+</style>
+</head>
+<body>
+<div class="top">
+  <a href="../" class="home" title="Retour à l'Atelier UNAC"><img class="logo" src="../commun/img/logo-unac-blanc.png" alt="Atelier UNAC"></a>
+  <h1>Newsletter<small>Lettre d'information par sections — mise en page automatique</small></h1>
+  <div class="sp"></div>
+  <div class="acts">
+    <button class="btn ghost" id="histBtn" title="Newsletters publiées et brouillons"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/></svg><span class="lg">Historique</span></button>
+    <button class="btn ghost" id="resetBtn" title="Nouvelle newsletter vierge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span class="lg">Recommencer</span></button>
+    <div class="menu" id="menu">
+      <button class="btn ghost" id="menuBtn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg><span class="lg">Brouillon</span></button>
+      <div class="dd">
+        <button id="aPublish"><div>Publier cette newsletter<small>Elle passe dans « Publiées » et n'est plus modifiable.</small></div></button>
+        <hr>
+        <button id="aShare"><div>Copier le lien de partage<small>Le brouillon est contenu dans le lien.</small></div></button>
+        <button id="aSave"><div>Enregistrer le brouillon (.json)</div></button>
+        <button id="aOpen"><div>Ouvrir un brouillon (.json)</div></button>
+        <hr>
+        <button id="aDemo"><div>Repartir de la newsletter de novembre 2026<small>Ouvre le modèle complet dans un nouveau brouillon.</small></div></button>
+      </div>
+    </div>
+    <button class="btn ghost" id="imgBtn" title="Une image par page, pour Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-8 9"/></svg><span class="lg">Images</span></button>
+    <button class="btn pdf" id="pdfBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span class="lg">Télécharger le&nbsp;</span>PDF</button>
+  </div>
+</div>
+<div class="tabs" id="tabs"><button data-tab="saisie" class="on">Saisie</button><button data-tab="apercu">Aperçu</button></div>
+<div class="app">
+  <div class="form" id="form"></div>
+  <div class="preview" id="preview"><div class="pv-meta" id="pvMeta"></div><div id="pages"></div></div>
+</div>
+<input type="file" id="fileJson" accept="application/json,.json" hidden>
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="histModal"><div class="mbox" role="dialog" aria-modal="true">
+  <div class="mhead"><h3>Historique des newsletters</h3><button class="mclose" data-x aria-label="Fermer">×</button></div>
+  <div class="mbody" id="hBody"></div>
+  <div class="mfoot"><button class="mbtn" id="hNew">+ Nouvelle newsletter</button><button class="mbtn pri" data-x>Fermer</button></div>
+</div></div>
+
+<script>
+/* Modèle : la newsletter Mutuelle MNPAF de novembre 2026 */
+const MODELE = {
+ mois:"2026-11", titreA:"Mutuelle", titreB:"MNPAF", sous:"Votre nouveau rendez-vous d'information mutuelle",
+ contactLabel:"Vos élu.es UNAC à la MNPAF", contactMail:"mutuelleaf@unac.asso.fr",
+ sections:[
+  {titreA:"", titreB:"", picto:"", fond:"blanc", blocs:[
+   {type:"enbref", titreA:"En", titreB:"bref", texte:"**Un doute sur un remboursement ?** écrivez à vos élu.es UNAC : mutuelleaf@unac.asso.fr\n**Un devis à faire chiffrer ?** scannez-le dans l'appli MNPAF\n**Médecin en tiers payant ?** plus de facture de consultation à envoyer\n**Envie d'un PASS en cours d'année ?** comptez trois mois avant la prise d'effet\n**Un coup dur ?** pensez au Fonds social\n**Un désaccord ?** suivez le circuit de réclamation"},
+   {type:"encadre", style:"contour", titre:"", texte:"**Vos élu.es UNAC œuvrent à l'amélioration constante de vos garanties**, malgré des négociations infructueuses avec la Direction.\nLe niveau de nos prestations dépend directement des fonds que l'employeur alloue à la mutuelle.\n> Pour rappel, notre tract **« Mutuelle et frais de santé »** fait le point sur le sujet."}]},
+  {titreA:"Votre appli", titreB:"MNPAF", picto:"appli", fond:"auto", blocs:[
+   {type:"appli", texte:"Disponible **depuis le mois de mai**, elle vous donne accès dès à présent, depuis votre téléphone, à :\n- vos relevés de remboursement\n- votre messagerie\n- et bien d'autres services"},
+   {type:"colonnes", gStyle:"clair", gTitre:"Connaître un remboursement avant de payer", gTexte:"Dans l'appli ou sur le site internet MNPAF, scannez votre devis :\n1) Accéder à l'espace adhérent\n2) Analyser un devis\n> Optique, dentaire, hospitalisation, audioprothèses et autres.",
+    dStyle:"fonce", dTitre:"Bon à savoir · Santéclair", dTexte:"Espace adhérent › Services › My Santéclair › **Analyser un devis** ou **Trouver un professionnel** :\n- une estimation de vos remboursements\n- des solutions pour réduire le reste à charge\n- des explications sur le 100 % Santé", dAlerteTitre:"", dAlerteTexte:""}]},
+  {titreA:"Aussi offert", titreB:"avec la MNPAF", picto:"", fond:"auto", blocs:[
+   {type:"texte", texte:"D'autres applications vous sont offertes avec la MNPAF : **OMENA**, une application dédiée à la ménopause, et **MindDay**, pour l'auto-thérapie (www.mindday.com/partenaire/mnpaf). Le **magazine Escales** et le compte **Instagram MNPAF** sont également disponibles.\nLa revue trimestrielle « Mon escale Santé » et la newsletter de la MNPAF (sur inscription) proposent aussi des informations téléchargeables au format PDF."}]},
+  {titreA:"Factures :", titreB:"ce qui change", picto:"factures", fond:"auto", blocs:[
+   {type:"colonnes", gStyle:"clair", gTitre:"Plus besoin de l'envoyer", gTexte:"Depuis le 1er juin, au titre du tiers payant : **la facture de consultation ou la facturette de carte Vitale** pour les médecins.", dStyle:"clair", dTitre:"Toujours nécessaire", dTexte:"Une facture pour **certains remboursements complémentaires**, notamment en dentaire, quand la mutuelle prend en charge des soins que la CPAM ne rembourse pas.", dAlerteTitre:"", dAlerteTexte:""},
+   {type:"encadre", style:"clair", titre:"Souscrire en ligne", texte:"Actifs et retraités disposent d'un outil pour :\n- choisir leur couverture\n- obtenir un devis\n- souscrire en ligne, s'ils le souhaitent\n> Une difficulté ? Contactez la MNPAF ou vos délégués élus (mutuelleaf@unac.asso.fr)."}]},
+  {titreA:"Options PASS :", titreB:"tarifs mensuels", picto:"lit", fond:"auto", blocs:[
+   {type:"colonnes", gStyle:"tableau", gTitre:"", gTexte:"Formule | PASS Hospi | PASS Hospi + Médecine de ville\nSolo | 8,20 € | 15,00 €\nDuo | 15,60 € | 29,00 €\nFamille | 20,00 € | 40,00 €",
+    dStyle:"aucun", dTitre:"", dTexte:"- À souscrire pour **toutes les personnes rattachées** au contrat : adhérent, conjoint et enfants.\n- Possible **en cours d'année**, tout comme le passage à une gamme supérieure.", dAlerteTitre:"Attention", dAlerteTexte:"**Un délai de trois mois** est annoncé avant la prise d'effet. Une intervention ou des soins coûteux sont prévus ? Vérifiez les conditions et délais exacts auprès de la MNPAF avant d'engager les soins."}]},
+  {titreA:"Arrêté", titreB:"à l'étranger ?", picto:"etranger", fond:"auto", blocs:[
+   {type:"texte", texte:"Si un médecin vous arrête dans un pays étranger, envoyez **à easyRH**, pour sa prise en compte, au minimum **3 documents** :"},
+   {type:"etapes", texte:"L'arrêt maladie | document original délivré par le médecin\nSa traduction | en français\nUne lettre sur l'honneur | attestant la bonne traduction du document"},
+   {type:"texte", texte:"> **Et la subrogation ?** Ce dispositif, qui éviterait les décalages de paie et de trésorerie pendant un arrêt maladie, n'est toujours pas en place. Vos élu.es UNAC continuent de le réclamer : la migration vers les nouveaux outils RH de la Compagnie doit le rendre techniquement possible."}]},
+  {titreA:"Un coup dur ?", titreB:"Le Fonds social", picto:"fonds", fond:"auto", blocs:[
+   {type:"texte", texte:"Le Fonds social vient en aide aux adhérent.es, **de façon exceptionnelle et ponctuelle**. Son aide financière peut :\n- couvrir partiellement ou totalement une dépense (exemple : l'achat d'un fauteuil roulant) ;\n- et/ou rembourser vos cotisations annuelles à la mutuelle."},
+   {type:"encadre", style:"fonce", titre:"Le bon réflexe", texte:"**Parlez-en à vos délégués UNAC : nous vous aiderons à remplir le dossier de saisine.**"}]},
+  {titreA:"Retraite :", titreB:"ce qui évolue", picto:"", fond:"auto", blocs:[
+   {type:"colonnes", gStyle:"clair", gTitre:"Futurs retraités : la gamme Altitude s'agrandit", gTexte:"Vous aurez désormais **le choix entre deux garanties différentes**.", dStyle:"fonce", dTitre:"Tranches de revenus", dTexte:"Les tranches de revenus **vont être revues** : elles n'ont pas été actualisées depuis dix ans.\nVos délégués UNAC ont soulevé le sujet à la MNPAF. **Nous vous tiendrons informés des évolutions.**", dAlerteTitre:"", dAlerteTexte:""}]},
+  {titreA:"Qui finance", titreB:"votre complémentaire santé ?", picto:"", fond:"auto", blocs:[
+   {type:"texte", texte:"Le contrat collectif est financé par les cotisations, partagées entre l'employeur et les salariés. Quelques repères :"},
+   {type:"chiffres", texte:"50/50 | | C'est la répartition actuelle des cotisations : Air France en paie la moitié, les salariés l'autre (voir votre fiche de paie). C'est le **minimum légal**.\n0,5 | % | de la masse salariale : la part qu'Air France consacre aux frais de santé de ses salariés.\n3,1 | % | de la masse salariale : à titre de comparaison, la part consacrée aux activités sociales et culturelles des CSE."}]},
+  {titreA:"Un désaccord ?", titreB:"Le bon circuit", picto:"reclamation", fond:"auto", blocs:[
+   {type:"etapes", texte:"Faites une réclamation | Espace adhérent › « Aide et Contact » › « Faire une demande de réclamation ». La MNPAF répond sous dix jours.\nHors délai ou insatisfaisant ? | Écrivez à vos élu.es MNPAF : **mutuelleaf@unac.asso.fr**\nVos élu.es prennent le relais | Nous saisissons le directeur de la mutuelle ainsi que son président."},
+   {type:"encadre", style:"alerte", titre:"Attention", texte:"**Ce circuit est à respecter :** ce cadre légal vous protège en cas de réponse insatisfaisante, lors de la saisine du médiateur de la mutualité. Un doute ? Contactez-nous."}]},
+  {titreA:"Vos", titreB:"14 élu.es UNAC à la MNPAF", picto:"elus", fond:"auto", blocs:[
+   {type:"texte", texte:"Ils vous représentent pour les cinq prochaines années."},
+   {type:"personnes", texte:"Actifs : Corinne CORDIER, Rémy DIESEN, Alexandre FLORIS, Frédérick FORMIS, Barbara MARCEAU, Chrystel MARIN, Stéphane PASQUALINI, Leila SAMYN, Jérôme SORRIBAS\nRetraité.es : Pascale PIERSON, Sébastien MONNET, Laurent SCHMITT, Laettitia NAUDIN, Sandrine SCHMITT"},
+   {type:"roles", titre:"Où siègent-ils ?", texte:"Commission Prévention | Stéphane PASQUALINI\nCommission Innovation produits | Frédérick FORMIS & Pascale PIERSON (retraitée)\nCommission Fonds social | Alexandre FLORIS & Sébastien MONNET (retraité)\nConseil d'administration | Stéphane PASQUALINI & Sébastien MONNET (retraité)\nBureau | Stéphane PASQUALINI"}]}
+ ]};
+
+"use strict";
+const MOIS = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const $ = s => document.querySelector(s);
+const uid = () => Math.random().toString(36).slice(2,9);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const gras = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const moisLabel = m => { const [y,mm] = m.split("-"); return MOIS[+mm-1] + " " + y; };
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("on"), 2600); }
+const IMG = "../commun/img/";
+const PICTOS = {appli:"Appli / téléphone", factures:"Documents et pièces", lit:"Lit (hospitalisation)", etranger:"Étranger", fonds:"Fonds social / santé", reclamation:"Réclamation", elus:"Élu.es"};
+
+/* Texte enrichi : - puce · 1) étape · > note · **gras** */
+function rt(t){
+  const lines = String(t||"").split("\n"); let h = "", ul = null;
+  const flush = () => { if(ul){ h += `<div class="ul">${ul.map(x => `<div><span>●</span><p class="p">${gras(x)}</p></div>`).join("")}</div>`; ul = null; } };
+  for(const raw of lines){
+    const l = raw.trim(); if(!l){ flush(); continue; }
+    let m;
+    if((m = l.match(/^[-•]\s+(.*)/))){ (ul = ul || []).push(m[1]); continue; }
+    flush();
+    if((m = l.match(/^(\d+)[).]\s+(.*)/))) h += `<div class="stp"><span class="rond">${m[1]}</span><p class="p"><b>${gras(m[2])}</b></p></div>`;
+    else if((m = l.match(/^>\s*(.*)/))) h += `<p class="note">${gras(m[1])}</p>`;
+    else h += `<p class="p">${gras(l)}</p>`;
+  }
+  flush(); return `<div class="rt">${h}</div>`;
+}
+const noms = s => gras(s).replace(/(^|[\s(&,])([A-ZÉÈÊÀÂÎÔÛÇ][a-zéèêëàâîïôöûüç'’-]+(?:[- ][A-ZÉ][a-zéèêëàâîïôöûüç-]+)?)(?=\s+[A-ZÉÈÀÇ'’-]{2,})/g, "$1<b>$2</b>");
+const rows = t => String(t||"").split("\n").map(l => l.trim()).filter(Boolean).map(l => l.split("|").map(c => c.trim()));
+
+/* ---------- Types de blocs ---------- */
+const TYPES = {
+  texte:   {nom:"Texte", champs:[["texte","Texte","area"]], aide:"<code>- </code> puce · <code>1) </code> étape numérotée · <code>&gt; </code> note grise · <code>**gras**</code>"},
+  enbref:  {nom:"En bref (liste à cocher)", champs:[["titreA","Titre","text","En"],["titreB","Suite en couleur","text","bref"],["texte","Une ligne par point","area"]], aide:"Une ligne par point, ex. <code>**Un coup dur ?** pensez au Fonds social</code>"},
+  encadre: {nom:"Encadré", champs:[["style","Style","select",{clair:"Rose clair",fonce:"Rose foncé",alerte:"Prune (attention)",contour:"Clair avec contour"}],["titre","Titre (facultatif)","text"],["texte","Texte","area"]], aide:"<code>- </code> puce · <code>1) </code> étape · <code>&gt; </code> note grise · <code>**gras**</code>"},
+  colonnes:{nom:"Deux colonnes", champs:[["gStyle","Gauche : style","select",{clair:"Encadré rose clair",fonce:"Encadré rose foncé",alerte:"Encadré prune",aucun:"Texte simple",tableau:"Tableau"}],["gTitre","Gauche : titre","text"],["gTexte","Gauche : texte","area"],
+             ["dStyle","Droite : style","select",{fonce:"Encadré rose foncé",clair:"Encadré rose clair",alerte:"Encadré prune",aucun:"Texte simple",tableau:"Tableau"}],["dTitre","Droite : titre","text"],["dTexte","Droite : texte","area"],["dAlerteTitre","Droite : encadré en dessous (titre)","text"],["dAlerteTexte","Droite : encadré en dessous (texte)","area"]],
+             aide:"Style « Tableau » : une ligne par rangée, cellules séparées par <code>|</code>, la 1re ligne = en-têtes."},
+  etapes:  {nom:"Étapes numérotées", champs:[["texte","Une ligne par étape : Titre | texte","area"]], aide:"ex. <code>L'arrêt maladie | document original délivré par le médecin</code>"},
+  chiffres:{nom:"Chiffres clés", champs:[["texte","Une ligne par chiffre : valeur | unité | texte","area"]], aide:"ex. <code>0,5 | % | de la masse salariale…</code> (unité facultative)"},
+  tableau: {nom:"Tableau", champs:[["texte","Une ligne par rangée, cellules séparées par |","area"],["grand","Chiffres en grand (tarifs)","check"]], aide:"La 1re ligne = en-têtes. ex. <code>Formule | PASS Hospi</code>"},
+  personnes:{nom:"Liste de personnes", champs:[["texte","Une ligne par groupe : Groupe : Prénom NOM, Prénom NOM…","area"]], aide:"ex. <code>Actifs : Corinne CORDIER, Rémy DIESEN</code> (prénom en gras automatiquement)"},
+  roles:   {nom:"Tableau clé / valeur", champs:[["titre","Titre","text","Où siègent-ils ?"],["texte","Une ligne par rangée : clé | valeur","area"]], aide:"ex. <code>Bureau | Stéphane PASQUALINI</code>"},
+  appli:   {nom:"Appli MNPAF (avec badge)", champs:[["texte","Texte à gauche","area"]], aide:"<code>- </code> puce · <code>**gras**</code>"}
+};
+function blocHTML(b){
+  switch(b.type){
+    case "texte": return rt(b.texte);
+    case "enbref": return `<div class="enbref"><h3>${esc(b.titreA||"")} <b>${esc(b.titreB||"")}</b></h3><div class="grid">${String(b.texte||"").split("\n").filter(l => l.trim()).map(l => `<div class="ck"><span>✓</span><p class="p">${gras(l.trim())}</p></div>`).join("")}</div></div>`;
+    case "encadre": return `<div class="bx ${esc(b.style||"clair")}">${b.titre ? `<p class="lb">${gras(b.titre)}</p>` : ""}${rt(b.texte)}</div>`;
+    case "colonnes": {
+      const col = (st, ti, tx) => st === "tableau" ? tabHTML(tx, true) : st === "aucun" ? `<div class="rt">${ti ? `<p class="lb">${gras(ti)}</p>` : ""}${rt(tx)}</div>` : `<div class="bx ${st}">${ti ? `<p class="lb">${gras(ti)}</p>` : ""}${rt(tx)}</div>`;
+      const droite = col(b.dStyle||"fonce", b.dTitre, b.dTexte) + ((b.dAlerteTitre || b.dAlerteTexte) ? `<div class="bx fonce">${b.dAlerteTitre ? `<p class="lb">${gras(b.dAlerteTitre)}</p>` : ""}${rt(b.dAlerteTexte)}</div>` : "");
+      return `<div class="g2"><div class="gcol">${col(b.gStyle||"clair", b.gTitre, b.gTexte)}</div><div class="gcol">${droite}</div></div>`;
+    }
+    case "etapes": { const r = rows(b.texte); return `<div class="etapes" style="grid-template-columns:repeat(${Math.max(1,Math.min(4,r.length))},minmax(0,1fr))">${r.map((c,i) => `<div class="bx"><span class="rond">${i+1}</span><p class="p" style="font-weight:700">${gras(c[0]||"")}</p>${c[1] ? `<p class="p">${gras(c.slice(1).join(" | "))}</p>` : ""}</div>`).join("")}</div>`; }
+    case "chiffres": { const r = rows(b.texte); return `<div class="chiffres" style="grid-template-columns:repeat(${Math.max(1,Math.min(4,r.length))},minmax(0,1fr))">${r.map(c => `<div class="bx"><div class="val">${esc(c[0]||"")}${c[1] ? `<small>${esc(c[1])}</small>` : ""}</div><p class="p">${gras(c.slice(2).join(" | "))}</p></div>`).join("")}</div>`; }
+    case "tableau": return tabHTML(b.texte, b.grand !== false);
+    case "personnes": return String(b.texte||"").split("\n").filter(l => l.trim()).map(l => { const i = l.indexOf(":"); const lab = i > 0 ? l.slice(0,i).trim() : ""; const ns = (i > 0 ? l.slice(i+1) : l).split(",").map(x => x.trim()).filter(Boolean);
+      return `<div class="pers">${lab ? `<span class="lab">${esc(lab)}</span>` : ""}${ns.map(n => `<span class="chip">${noms(n)}</span>`).join("")}</div>`; }).join("");
+    case "roles": return `<div class="roles">${b.titre ? `<p class="lb">${gras(b.titre)}</p>` : ""}${rows(b.texte).map(c => `<div class="rw"><span class="k">${gras(c[0]||"")}</span><span class="v">${noms(c.slice(1).join(" | "))}</span></div>`).join("")}</div>`;
+    case "appli": return `<div class="appli"><div style="flex:1">${rt(b.texte)}</div><div class="badge"><img src="${IMG}appli-mnpaf.png" alt=""><div><p class="note">Disponible sur</p><div class="st"><span>App Store</span><span>Google Play</span></div></div></div></div>`;
+  }
+  return "";
+}
+function tabHTML(t, grand){
+  const r = rows(t); if(!r.length) return "";
+  return `<div class="tab ${grand ? "grand" : ""}"><table><thead><tr>${r[0].map(c => `<th>${gras(c)}</th>`).join("")}</tr></thead><tbody>${r.slice(1).map(l => `<tr>${l.map(c => `<td>${gras(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+const blocVide = b => !TYPES[b.type].champs.some(([k,,ty,def]) => (ty === "text" || ty === "area") && String(b[k]||"").trim() && b[k] !== def);
+
+/* ---------- État ---------- */
+const DOCS_KEY = "nl:docs", CUR_KEY = "nl:current";
+let DOCS = {}, S = null;
+function moisDefaut(){ const d = new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); }
+function nouveauBloc(type){ const b = {id:uid(), type}; TYPES[type].champs.forEach(([k,,ty,def]) => { b[k] = ty === "select" ? Object.keys(def)[0] : ty === "check" ? true : (typeof def === "string" ? def : ""); }); return b; }
+function blank(){
+  return {v:1, id:uid(), statut:"brouillon", cree:Date.now(), maj:Date.now(), mois:moisDefaut(), titreA:"Mutuelle", titreB:"MNPAF",
+    sous:"Votre nouveau rendez-vous d'information mutuelle", contactLabel:"Vos élu.es UNAC à la MNPAF", contactMail:"mutuelleaf@unac.asso.fr",
+    sections:[{id:uid(), titreA:"", titreB:"", picto:"", fond:"blanc", blocs:[nouveauBloc("enbref")]},{id:uid(), titreA:"", titreB:"", picto:"", fond:"auto", blocs:[nouveauBloc("texte")]}]};
+}
+function hasContent(d){ return d.sections.some(s => s.titreA || s.titreB || s.blocs.some(b => !blocVide(b))); }
+function persist(){ try{ localStorage.setItem(DOCS_KEY, JSON.stringify(DOCS)); localStorage.setItem(CUR_KEY, S.id); }catch(e){ toast("Mémoire de l'appareil pleine"); } }
+let saveT = null;
+function save(){ if(S.statut === "publie") return; S.maj = Date.now(); DOCS[S.id] = S; clearTimeout(saveT); saveT = setTimeout(persist, 300); }
+function changed(structural){ save(); if(structural) renderForm(); schedulePreview(); }
+function openDoc(d){ if(S && S !== d && S.statut === "brouillon" && !hasContent(S)) delete DOCS[S.id]; S = d; DOCS[d.id] = d; persist(); document.body.classList.toggle("ro", S.statut === "publie"); renderForm(); renderPreview(); }
+function latestDraft(){ return Object.values(DOCS).filter(d => d.statut === "brouillon").sort((a,b) => b.maj - a.maj)[0]; }
+function copyToDraft(d){ const c = JSON.parse(JSON.stringify(d)); Object.assign(c, {id:uid(), statut:"brouillon", cree:Date.now(), maj:Date.now()}); delete c.publieLe; openDoc(c); toast("Brouillon créé à partir de cette newsletter"); }
+
+/* ---------- Formulaire ---------- */
+function moisOptions(sel){ const now = new Date(); let o = ""; for(let k=-14;k<=4;k++){ const d = new Date(now.getFullYear(), now.getMonth()+k, 1); const v = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); o += `<option value="${v}" ${v===sel?"selected":""}>${cap(MOIS[d.getMonth()])} ${d.getFullYear()}</option>`; } return o; }
+function champ(b, [k, lab, ty, def]){
+  const v = b[k] ?? "";
+  if(ty === "area") return `<label class="f">${lab}</label><textarea data-b="${k}" rows="${Math.min(10, Math.max(3, String(v).split("\n").length + 1))}">${esc(v)}</textarea>`;
+  if(ty === "select") return `<label class="f">${lab}</label><select data-b="${k}">${Object.entries(def).map(([o,l]) => `<option value="${o}" ${o===v?"selected":""}>${l}</option>`).join("")}</select>`;
+  if(ty === "check") return `<label class="chk" style="margin-top:8px"><input type="checkbox" data-b="${k}" ${v !== false ? "checked" : ""}> ${lab}</label>`;
+  return `<label class="f">${lab}</label><input type="text" data-b="${k}" value="${esc(v)}">`;
+}
+function renderForm(){
+  const f = $("#form"), sc = f.scrollTop, ro = S.statut === "publie";
+  const dt = ts => new Date(ts).toLocaleDateString("fr-FR");
+  let h = ro ? `<div class="card robanner"><b>Newsletter publiée le ${dt(S.publieLe||S.maj)}</b><span>Consultation seule.</span><button class="mini" id="roCopy">Créer un brouillon à partir de celle-ci</button></div>` : "";
+  h += `<div class="card"><h2>En-tête <span class="st ${ro?"pub":""}">${ro?"Publiée":"Brouillon"}</span></h2>
+    <div class="row2"><div><label class="f">Titre</label><input type="text" data-k="titreA" value="${esc(S.titreA)}"></div><div><label class="f">Suite du titre en gras</label><input type="text" data-k="titreB" value="${esc(S.titreB)}"></div></div>
+    <label class="f">Sous-titre</label><input type="text" data-k="sous" value="${esc(S.sous)}">
+    <div class="row2"><div><label class="f">Mois</label><select data-k="mois">${moisOptions(S.mois)}</select></div><div></div></div>
+    <div class="row2"><div><label class="f">Bandeau final : libellé</label><input type="text" data-k="contactLabel" value="${esc(S.contactLabel)}"></div><div><label class="f">Bandeau final : e-mail</label><input type="text" data-k="contactMail" value="${esc(S.contactMail)}"></div></div></div>`;
+  S.sections.forEach((s, si) => {
+    h += `<div class="card sec-card" data-s="${s.id}"><div class="sh"><b>Section ${si+1}</b>${si>0?`<button class="mini" data-a="sup" title="Monter">↑</button>`:""}${si<S.sections.length-1?`<button class="mini" data-a="sdown" title="Descendre">↓</button>`:""}<button class="mini danger" data-a="sdel">Supprimer</button></div>
+      <div class="row2"><div><label class="f">Titre (vide = sans titre)</label><input type="text" data-s-k="titreA" value="${esc(s.titreA)}" placeholder="Factures :"></div><div><label class="f">Suite en rose gras</label><input type="text" data-s-k="titreB" value="${esc(s.titreB)}" placeholder="ce qui change"></div></div>
+      <div class="row2"><div><label class="f">Fond</label><select data-s-k="fond"><option value="auto" ${s.fond==="auto"?"selected":""}>Automatique (alterné)</option><option value="blanc" ${s.fond==="blanc"?"selected":""}>Blanc</option><option value="rose" ${s.fond==="rose"?"selected":""}>Rose pâle</option></select></div><div></div></div>
+      <label class="f">Picto</label><div class="pictos"><button data-picto="" class="${!s.picto?"on":""}">aucun</button>${Object.entries(PICTOS).map(([k,l]) => `<button data-picto="${k}" title="${l}" class="${s.picto===k?"on":""}" style="background-image:url(${IMG}pictos/${k}.png)"></button>`).join("")}</div>`;
+    s.blocs.forEach((b, bi) => {
+      const T = TYPES[b.type];
+      h += `<div class="blk-card" data-b-id="${b.id}"><div class="bh"><b>${T.nom}</b>${bi>0?`<button class="mini" data-a="bup">↑</button>`:""}${bi<s.blocs.length-1?`<button class="mini" data-a="bdown">↓</button>`:""}<button class="mini danger" data-a="bdel">✕</button></div>
+        ${T.champs.map(c => champ(b, c)).join("")}<p class="fmt">${T.aide}</p></div>`;
+    });
+    h += `<div class="addblk"><select data-addtype>${Object.entries(TYPES).map(([k,t]) => `<option value="${k}">${t.nom}</option>`).join("")}</select><button class="mini" data-a="badd">+ Ajouter ce bloc</button></div></div>`;
+  });
+  h += `<button class="add" id="addSec">+ Ajouter une section</button>
+    ${ro ? "" : `<div class="card pubcard"><div><b>Newsletter terminée ?</b><span>Publiez-la : elle passe dans l'historique et n'est plus modifiable.</span></div><button class="btn pubbtn" id="pubBtn">Publier</button></div>`}`;
+  f.innerHTML = h; f.scrollTop = sc;
+}
+const secOf = el => S.sections.find(s => s.id === el.closest("[data-s]").dataset.s);
+$("#form").addEventListener("input", e => {
+  const t = e.target, v = t.type === "checkbox" ? t.checked : t.value;
+  if(t.dataset.k){ S[t.dataset.k] = v; return changed(false); }
+  if(t.dataset.sK){ secOf(t)[t.dataset.sK] = v; return changed(false); }
+  if(t.dataset.b){ const s = secOf(t), b = s.blocs.find(x => x.id === t.closest("[data-b-id]").dataset.bId); b[t.dataset.b] = v; return changed(false); }
+});
+$("#form").addEventListener("click", e => {
+  if(e.target.id === "addSec"){ S.sections.push({id:uid(), titreA:"", titreB:"", picto:"", fond:"auto", blocs:[nouveauBloc("texte")]}); changed(true); const f = $("#form"); f.scrollTop = f.scrollHeight; return; }
+  if(e.target.id === "pubBtn") return publier();
+  if(e.target.id === "roCopy") return copyToDraft(S);
+  const pb = e.target.closest("[data-picto]"); if(pb){ secOf(pb).picto = pb.dataset.picto; return changed(true); }
+  const b = e.target.closest("[data-a]"); if(!b) return;
+  const s = secOf(b), si = S.sections.indexOf(s), a = b.dataset.a;
+  if(a === "sdel"){ if(hasContent({sections:[s]}) && !confirm("Supprimer cette section et ses blocs ?")) return; S.sections.splice(si,1); }
+  if(a === "sup") [S.sections[si-1], S.sections[si]] = [S.sections[si], S.sections[si-1]];
+  if(a === "sdown") [S.sections[si+1], S.sections[si]] = [S.sections[si], S.sections[si+1]];
+  if(a === "badd"){ s.blocs.push(nouveauBloc(b.closest(".addblk").querySelector("select").value)); }
+  if(["bup","bdown","bdel"].includes(a)){
+    const bi = s.blocs.findIndex(x => x.id === b.closest("[data-b-id]").dataset.bId);
+    if(a === "bdel"){ if(!blocVide(s.blocs[bi]) && !confirm("Supprimer ce bloc ?")) return; s.blocs.splice(bi,1); }
+    if(a === "bup") [s.blocs[bi-1], s.blocs[bi]] = [s.blocs[bi], s.blocs[bi-1]];
+    if(a === "bdown") [s.blocs[bi+1], s.blocs[bi]] = [s.blocs[bi], s.blocs[bi+1]];
+  }
+  changed(true);
+});
+
+/* ---------- Rendu des pages ---------- */
+const DENSITES = [{nom:"aérée",k:1.06},{nom:"standard",k:1},{nom:"compacte",k:.94},{nom:"serrée",k:.88}];
+let DENS = DENSITES[1];
+function el(html){ const d = document.createElement("div"); d.innerHTML = html.trim(); return d.firstChild; }
+const overflows = c => c.scrollHeight > c.clientHeight + 0.5;
+function newPage(box, idx){
+  const w = document.createElement("div"); w.className = "pwrap";
+  const p = document.createElement("section"); p.className = "page"; p.style.setProperty("--k", DENS.k);
+  p.innerHTML = (idx ? "" : `<div class="nhd"><div><h1>${esc(S.titreA)} <b>${esc(S.titreB)}</b></h1><div class="sous">${esc([S.sous, cap(moisLabel(S.mois))].filter(Boolean).join(" · "))}</div></div><img class="logo" src="${IMG}logo-unac-couleur.png" alt="UNAC"></div>
+    <div class="avion"><div class="band"></div><img src="${IMG}avion-unac.png" alt=""></div>`) + `<div class="content"></div><div class="bottomgap"></div>${idx ? `<div class="num">${idx+1}</div>` : ""}`;
+  w.appendChild(p); box.appendChild(w); return p.querySelector(".content");
+}
+function buildPages(box){
+  box.innerHTML = "";
+  let idx = 0, c = newPage(box, 0), alt = 0;
+  const grow = () => { const last = c.lastElementChild; if(last && last.classList.contains("sec")) last.classList.add("grow"); };
+  const next = () => { grow(); idx++; c = newPage(box, idx); };
+  S.sections.forEach(s => {
+    const blocs = s.blocs.filter(b => !blocVide(b)); const titre = s.titreA || s.titreB;
+    if(!blocs.length && !titre) return;
+    const fond = s.fond === "auto" ? (alt++ % 2 ? "rose" : "") : (s.fond === "rose" ? "rose" : "");
+    const head = titre ? `<div class="sh2"><h2>${esc(s.titreA)}${s.titreB ? ` <b>${esc(s.titreB)}</b>` : ""}</h2>${s.picto ? `<img src="${IMG}pictos/${s.picto}.png" alt="">` : ""}</div>` : "";
+    const newSec = withHead => el(`<div class="sec ${fond}">${withHead ? head : ""}</div>`);
+    let sec = newSec(true); c.appendChild(sec);
+    // Le titre part avec le 1er bloc ; si ce 1er bloc n'est qu'un court texte d'introduction, avec le 2e aussi
+    const lie = (titre && blocs.length > 1 && blocs[0].type === "texte" && String(blocs[0].texte||"").length < 260) ? 2 : 1;
+    const premiers = blocs.slice(0, lie).map(b => el(`<div class="blk">${blocHTML(b)}</div>`));
+    premiers.forEach(n => sec.appendChild(n));
+    if(overflows(c) && c.children.length > 1){ c.removeChild(sec); next(); sec = newSec(true); c.appendChild(sec); premiers.forEach(n => sec.appendChild(n)); }
+    blocs.slice(lie).forEach(b => {
+      const node = el(`<div class="blk">${blocHTML(b)}</div>`);
+      sec.appendChild(node);
+      if(overflows(c)){ sec.removeChild(node); next(); sec = newSec(false); c.appendChild(sec); sec.appendChild(node); }
+    });
+  });
+  // bandeau final
+  const fin = el(`<div class="nfin"><img class="ap" src="${IMG}appli-unac.png" alt=""><div class="t"><small>Un doute, une question ?</small><b>Tchat appli UNAC · 24h/24, 7j/7</b></div><div class="c">${esc(S.contactLabel)}<b>${esc(S.contactMail)}</b></div><img class="lw" src="${IMG}logo-unac-blanc.png" alt=""></div>`);
+  c.appendChild(fin); if(overflows(c)){ c.removeChild(fin); next(); c.appendChild(fin); }
+  grow(); c.closest(".page").classList.add("last");
+  return box.querySelectorAll(".page").length;
+}
+let pvT = null;
+function schedulePreview(){ clearTimeout(pvT); pvT = setTimeout(renderPreview, 250); }
+function renderPreview(){
+  const stage = document.createElement("div"); stage.style.cssText = "position:fixed;left:-20000px;top:0;visibility:hidden;width:900px"; document.body.appendChild(stage);
+  let best = null;
+  for(let i=0;i<DENSITES.length;i++){ DENS = DENSITES[i]; const n = buildPages(stage); if(!best || n < best.n) best = {i, n}; }
+  DENS = DENSITES[best.i]; const n = buildPages(stage);
+  const box = $("#pages"); box.innerHTML = ""; while(stage.firstChild) box.appendChild(stage.firstChild); stage.remove();
+  fitPreview();
+  $("#pvMeta").textContent = `${n} page${n>1?"s":""} · ${S.sections.length} section${S.sections.length>1?"s":""} · mise en page ${DENS.nom} (auto) · A4`;
+}
+function fitPreview(){ const pv = $("#preview"); const k = Math.min(pv.clientWidth - 40, 794) / 794; document.querySelectorAll(".pwrap").forEach(w => { w.style.width = (794*k)+"px"; w.style.height = (1123*k)+"px"; w.firstChild.style.transform = `scale(${k})`; }); }
+window.addEventListener("resize", fitPreview);
+
+/* ---------- PDF / images / onglets ---------- */
+let tab = "saisie";
+function syncTab(){ document.body.classList.toggle("tab-apercu", tab === "apercu"); document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === tab)); if(tab === "apercu") fitPreview(); }
+$("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if(b){ tab = b.dataset.tab; syncTab(); } });
+$("#pdfBtn").addEventListener("click", async () => {
+  renderPreview(); if(document.fonts) await document.fonts.ready;
+  await Promise.all([...document.querySelectorAll("#pages img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+  const old = document.title; document.title = `Newsletter ${S.titreA} ${S.titreB} - ${moisLabel(S.mois)}`.replace(/\s+/g," "); document.body.classList.add("tab-apercu");
+  setTimeout(() => { window.print(); setTimeout(() => { document.title = old; syncTab(); }, 500); }, 60);
+});
+window.nomExport = () => `Newsletter-${S.titreA}-${S.titreB}-${moisLabel(S.mois)}`.replace(/[^\wÀ-ÿ-]+/g, "-").replace(/-+/g, "-");
+window.titreExport = () => `${S.titreA} ${S.titreB} · ${moisLabel(S.mois)}`;
+$("#imgBtn").addEventListener("click", () => exportImages());
+
+/* ---------- Publication, historique ---------- */
+function publier(){
+  if(S.statut === "publie") return;
+  if(!hasContent(S)) return toast("Rien à publier");
+  if(!confirm(`Publier la newsletter de ${moisLabel(S.mois)} ?\n\nElle passera dans « Publiées » et ne sera plus modifiable (vous pourrez en faire un nouveau brouillon).`)) return;
+  S.statut = "publie"; S.publieLe = Date.now(); DOCS[S.id] = S; persist(); openDoc(S); toast("Newsletter publiée");
+}
+$("#resetBtn").addEventListener("click", () => {
+  if(S.statut === "brouillon" && hasContent(S) && !confirm("Recommencer à zéro ?\n\nUne nouvelle newsletter vierge est créée. Le brouillon actuel reste disponible dans « Historique ».")) return;
+  openDoc(blank()); toast("Nouvelle newsletter vierge");
+});
+const HM = $("#histModal"); let onglet = "brouillons";
+HM.addEventListener("click", e => { if(e.target === HM || e.target.hasAttribute("data-x")) HM.classList.remove("on"); });
+$("#hNew").addEventListener("click", () => { HM.classList.remove("on"); openDoc(blank()); });
+$("#histBtn").addEventListener("click", () => { persist(); onglet = S.statut === "publie" ? "publies" : "brouillons"; renderHist(); HM.classList.add("on"); });
+function renderHist(){
+  const all = Object.values(DOCS).filter(d => hasContent(d) || d.id === S.id);
+  const br = all.filter(d => d.statut === "brouillon").sort((a,b) => b.maj - a.maj), pu = all.filter(d => d.statut === "publie").sort((a,b) => b.mois.localeCompare(a.mois) || b.publieLe - a.publieLe);
+  const list = onglet === "brouillons" ? br : pu;
+  const dt = ts => new Date(ts).toLocaleDateString("fr-FR") + " à " + new Date(ts).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+  $("#hBody").innerHTML = `<div class="htabs"><button data-t="brouillons" class="${onglet==="brouillons"?"on":""}">Brouillons (${br.length})</button><button data-t="publies" class="${onglet==="publies"?"on":""}">Publiées (${pu.length})</button></div>`
+    + (list.length ? list.map(d => `<div class="hrow ${d.id===S.id?"cur":""}" data-id="${d.id}"><div class="hi"><b>${esc(d.titreA)} ${esc(d.titreB)} · ${esc(cap(moisLabel(d.mois)))}</b><span>${d.sections.length} section(s) · ${d.statut === "publie" ? "publiée le " + dt(d.publieLe) : "modifiée le " + dt(d.maj)}${d.id===S.id?" · ouverte":""}</span></div>
+      <div class="ha">${d.id===S.id?"":`<button class="mini" data-h="open">${d.statut==="publie"?"Consulter":"Ouvrir"}</button>`}<button class="mini" data-h="dup">${d.statut==="publie"?"Nouveau brouillon":"Dupliquer"}</button><button class="mini danger" data-h="del">Supprimer</button></div></div>`).join("")
+      : `<div class="hempty">${onglet === "brouillons" ? "Aucun brouillon." : "Aucune newsletter publiée pour le moment."}</div>`);
+}
+$("#hBody").addEventListener("click", e => {
+  const t = e.target.closest("[data-t]"); if(t){ onglet = t.dataset.t; return renderHist(); }
+  const b = e.target.closest("[data-h]"); if(!b) return;
+  const d = DOCS[b.closest(".hrow").dataset.id];
+  if(b.dataset.h === "open"){ HM.classList.remove("on"); return openDoc(d); }
+  if(b.dataset.h === "dup"){ HM.classList.remove("on"); return copyToDraft(d); }
+  if(b.dataset.h === "del"){ if(!confirm(`Supprimer définitivement la newsletter de ${moisLabel(d.mois)} de cet appareil ?`)) return; delete DOCS[d.id]; if(S.id === d.id){ S = latestDraft() || blank(); DOCS[S.id] = S; openDoc(S); } persist(); renderHist(); }
+});
+
+/* ---------- Brouillon : partage / fichier / modèle ---------- */
+const menu = $("#menu");
+$("#menuBtn").addEventListener("click", e => { e.stopPropagation(); menu.classList.toggle("open"); });
+document.addEventListener("click", e => { if(!menu.contains(e.target)) menu.classList.remove("open"); });
+const exportable = () => { const o = JSON.parse(JSON.stringify(S)); ["id","statut","cree","maj","publieLe"].forEach(k => delete o[k]); return o; };
+async function deflate(str){ const cs = new Blob([new TextEncoder().encode(str)]).stream().pipeThrough(new CompressionStream("deflate-raw")); const buf = new Uint8Array(await new Response(cs).arrayBuffer()); let s = ""; buf.forEach(x => s += String.fromCharCode(x)); return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+async function inflate(s){ let b = s.replace(/-/g,"+").replace(/_/g,"/"); while(b.length % 4) b += "="; const ds = new Blob([Uint8Array.from(atob(b), c => c.charCodeAt(0))]).stream().pipeThrough(new DecompressionStream("deflate-raw")); return await new Response(ds).text(); }
+function recevoir(o){
+  if(!o || !Array.isArray(o.sections)) return toast("Brouillon non reconnu");
+  const d = Object.assign(blank(), o, {id:uid(), statut:"brouillon", cree:Date.now(), maj:Date.now()});
+  d.sections.forEach(s => { s.id = s.id || uid(); s.blocs.forEach(b => b.id = b.id || uid()); }); openDoc(d); toast("Newsletter ouverte dans un nouveau brouillon");
+}
+$("#aPublish").addEventListener("click", () => { menu.classList.remove("open"); publier(); });
+$("#aShare").addEventListener("click", async () => { menu.classList.remove("open"); const url = location.origin + location.pathname + "#d=" + await deflate(JSON.stringify(exportable())); try{ await navigator.clipboard.writeText(url); toast("Lien copié : à coller dans un message"); }catch(e){ prompt("Copiez ce lien :", url); } });
+$("#aSave").addEventListener("click", () => { menu.classList.remove("open"); const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(exportable(), null, 1)], {type:"application/json"})); a.download = `newsletter-${S.mois}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); });
+$("#aOpen").addEventListener("click", () => { menu.classList.remove("open"); $("#fileJson").click(); });
+$("#fileJson").addEventListener("change", async e => { const f = e.target.files[0]; e.target.value = ""; if(!f) return; try{ recevoir(JSON.parse(await f.text())); }catch(err){ toast("Fichier illisible"); } });
+$("#aDemo").addEventListener("click", () => { menu.classList.remove("open"); if((S.statut === "publie" || hasContent(S)) && !confirm("Ouvrir la newsletter de novembre 2026 dans un nouveau brouillon ?")) return; recevoir(MODELE); });
+
+/* ---------- Démarrage ---------- */
+(async function(){
+  try{ DOCS = JSON.parse(localStorage.getItem(DOCS_KEY) || "{}") || {}; }catch(e){ DOCS = {}; }
+  S = DOCS[localStorage.getItem(CUR_KEY)] || latestDraft() || null;
+  if(!S){ S = blank(); Object.assign(S, JSON.parse(JSON.stringify(MODELE))); S.sections.forEach(s => { s.id = uid(); s.blocs.forEach(b => b.id = uid()); }); }
+  DOCS[S.id] = S;
+  document.body.classList.toggle("ro", S.statut === "publie");
+  renderForm(); if(document.fonts) await document.fonts.ready; renderPreview();
+  if(location.hash.startsWith("#d=")){ try{ const o = JSON.parse(await inflate(location.hash.slice(3))); history.replaceState(null, "", location.pathname); recevoir(o); }catch(e){ toast("Lien de brouillon illisible"); } }
+  window.addEventListener("load", renderPreview);
+})();
+
+</script>
+<script src="../commun/export-images.js"></script>
+</body>
+</html>

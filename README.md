@@ -9,6 +9,7 @@ Générateurs de documents pour les délégués UNAC Air France, mis en ligne su
 | `index.html` | Page d'accueil : la liste des outils. |
 | `commun/` | Charte partagée par tous les outils : polices (`polices/`), logo, avion, titres LC/MC, fond (`img/`), icônes, référentiel des escales (`escales.js`), globes des zones (`globes.js`), bibliothèques de lecture PDF/Word (`vendor/`). |
 | `cr-hebergement/` | Compte rendu mensuel de la commission hébergement LC/MC. |
+| `newsletter/` | Newsletter par sections et blocs (modèle : lettre Mutuelle MNPAF de novembre 2026). Pictos dans `commun/img/pictos/`. |
 | `bloc-notes/` | Bloc’ Notes : bulletin d'informations utiles (encadré « Important à savoir », rubriques avec pictos). |
 
 Pour ajouter un outil : créer un dossier à la racine, s'appuyer sur `commun/`, puis ajouter une tuile dans `index.html`.
