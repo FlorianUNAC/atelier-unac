@@ -20,7 +20,8 @@
   header h1{line-height:0}
   header h1 .titre{height:30px;width:auto;display:block}
   header p{margin-top:8px;font-size:15px;opacity:.8;letter-spacing:.02em}
-  header .plane{position:absolute;right:-90px;top:-14px;width:330px;opacity:.95;pointer-events:none}
+  header{min-height:150px}
+  header .illu{position:absolute;right:-30px;top:-46px;width:330px;pointer-events:none}
   h2{font-size:12px;letter-spacing:.2em;text-transform:uppercase;opacity:.65;margin:0 0 14px 2px;font-weight:700}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:38px}
   .tile{display:flex;flex-direction:column;gap:10px;text-decoration:none;color:#fff;border-radius:18px;padding:22px 22px 20px;
@@ -47,7 +48,9 @@
     header .logo{height:60px}
     header h1 .titre{height:21px}
     header p{font-size:13px}
-    header .plane{display:none}
+    header{flex-wrap:wrap;min-height:0}
+    header > div{flex:1;min-width:0}
+    header .illu{position:static;width:78%;max-width:300px;margin:4px auto -6px;order:3}
   }
 </style>
 </head>
@@ -56,7 +59,7 @@
   <header>
     <img class="logo" src="commun/img/logo-unac-blanc.png" alt="UNAC">
     <div><h1><svg class="titre" viewBox="40 62 8010 676" role="img" aria-label="Atelier UNAC"><path fill="#fff" d="M507 492 392 218 277 492ZM744 725H602L551 607H234L182 725H40L336 70H448Z M1428 188H1194V725H1068V188H834V75H1428Z M2071 719Q1968 738 1870 738Q1731 738 1664.5 684.0Q1598 630 1598 504V75H2071V193H1724V335H2045V453H1724V507Q1724 571 1759.0 594.5Q1794 618 1875 618Q1981 618 2071 603Z M2751 719Q2648 738 2543 738Q2409 738 2350.0 682.0Q2291 626 2291 498V75H2417V500Q2417 567 2446.0 592.5Q2475 618 2552 618Q2643 618 2751 604Z M3057 725H2931V75H3057Z M3780 719Q3677 738 3579 738Q3440 738 3373.5 684.0Q3307 630 3307 504V75H3780V193H3433V335H3754V453H3433V507Q3433 571 3468.0 594.5Q3503 618 3584 618Q3690 618 3780 603Z M4314 392Q4379 353 4379 286Q4379 189 4259 189H4136V392ZM4572 725H4418L4236 503H4136V725H4010V75H4247Q4371 75 4440.0 131.5Q4509 188 4509 286Q4509 430 4380 497Z  M5609 422Q5609 572 5529.0 655.0Q5449 738 5293.0 738.0Q5137 738 5057.0 655.0Q4977 572 4977 422V75H5110V422Q5110 523 5151.5 570.5Q5193 618 5293.0 618.0Q5393 618 5434.5 570.5Q5476 523 5476 422V75H5609Z M6526 725H6476Q6416 725 6356.5 688.0Q6297 651 6246.5 591.5Q6196 532 6151.5 470.0Q6107 408 6058.5 345.0Q6010 282 5974 251V725H5849V75H5900Q5950 75 6004.5 114.0Q6059 153 6110.0 215.5Q6161 278 6208.5 343.0Q6256 408 6308.5 473.0Q6361 538 6401 569V75H6526Z M7163 492 7048 218 6933 492ZM7400 725H7258L7207 607H6890L6838 725H6696L6992 70H7104Z M8050 718Q7977 738 7872 738Q7710 738 7615.0 650.5Q7520 563 7520.0 400.0Q7520 237 7615.0 149.5Q7710 62 7872 62Q7977 62 8050 82V199Q7971 184 7903 183Q7775 181 7714.0 233.0Q7653 285 7653.0 400.0Q7653 515 7714.0 567.0Q7775 619 7903 617Q7971 616 8050 601Z"/></svg></h1><p>Les documents des délégués, mis en page automatiquement</p></div>
-    <img class="plane" src="commun/img/avion-unac.png" alt="">
+    <img class="illu" src="commun/img/atelier-creation.svg" alt="">
   </header>
 
   <h2>Documents</h2>
