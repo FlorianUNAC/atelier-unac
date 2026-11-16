@@ -45,7 +45,7 @@
 <div class="wrap">
   <div class="top"><a class="back" href="../">← Atelier</a><div class="sp"></div><img class="logo" id="logo" src="../commun/img/logo-unac-blanc.png" alt="UNAC"></div>
   <h1 id="titre">Formulaires</h1>
-  <p class="sub">Les formulaires PDF à remplir par les délégués, à télécharger directement. Remplis et enregistrés, ils s'importent tels quels dans les outils de l'Atelier.</p>
+  <p class="sub">Téléchargez les formulaires PDF à remplir directement sur votre appareil.</p>
   <nav class="sections" id="sections"></nav>
   <div class="docs" id="docs"></div>
   <p class="note">Les formulaires se remplissent dans Acrobat Reader, Aperçu (Mac) ou un navigateur. Renvoyez le fichier enregistré, pas une version imprimée en PDF : les champs seraient perdus.</p>
@@ -55,6 +55,9 @@
 // Catalogue des formulaires par section : ajouter une entrée pour publier un nouveau formulaire.
 const FORMULAIRES = {
   af: [
+    {titre:"Papier à en-tête UNAC", fichier:"papier-entete-unac-remplissable.pdf",
+     desc:"Modèle de courrier A4 avec champs pour le destinataire, la date, l’objet, le corps du courrier et le signataire.",
+     tags:["A4","Remplissable"]},
     {titre:"Retour du délégué testeur · test d’un nouvel hébergement", fichier:"../test-hebergement/formulaire-test-hebergement.pdf",
      desc:"Escale, hôtel, note, localisation, restauration, chambre, facilités, bilan. S’importe tel quel dans l’outil « Test d’un nouvel hébergement ».",
      tags:["Commission hébergement","LC / MC"]}
