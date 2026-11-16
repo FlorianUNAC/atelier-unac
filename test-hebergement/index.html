@@ -141,24 +141,28 @@
   .page.af .sec p,.page.af .bilan p{font-size:min(16px, calc(var(--k)*17px))}
   .page .bilan p b{font-weight:700;color:var(--mag)}
 
-  .page.social{height:1350px;display:flex;flex-direction:column;padding:64px;background:#f6f1f4}
-  .social .social-entete{display:flex;align-items:center;justify-content:space-between;gap:24px;
-    min-height:100px;padding-bottom:22px;border-bottom:4px solid var(--mag);color:#732044;font-size:30px;font-weight:700}
-  .social .social-entete img{max-width:140px;height:90px;object-fit:contain}
-  .social h2{margin:54px 0 36px;color:#732044;font-size:76px;line-height:1.08;overflow-wrap:anywhere}
-  .social .social-titre{display:flex;align-items:center;gap:24px}
-  .social-titre svg{flex:none;width:60px;height:60px;color:var(--mag)}
-  .social .social-texte{flex:1;min-height:0;font-size:39px;line-height:1.37;white-space:pre-wrap;overflow-wrap:anywhere}
-  .social .social-texte b{color:#732044}
-  .social.couverture h2{font-size:90px;margin:auto 0 52px}
-  .social .social-destination{padding:48px;background:var(--mag);color:#fff;border-radius:35px;overflow-wrap:anywhere}
-  .social-destination strong{display:block;font-size:72px;line-height:1.08;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-  .social-hotel{font-size:38px;margin-top:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .social .social-note{display:flex;align-items:center;gap:9px;margin-top:36px;font-size:34px;font-weight:700;color:#732044}
-  .social-note svg{width:42px;height:42px}
+  .page.social{height:1350px;display:flex;flex-direction:column;padding:245px 61px 60px}
+  .social .social-titre{margin:0 0 30px;color:var(--mag);font-size:48px;line-height:1.1}
+  .social .social-titre .pill{height:auto;min-height:64px;padding:10px 24px;gap:14px;font-size:39px;border-radius:18px}
+  .social .social-titre .pill svg{width:36px;height:36px}
+  .social .social-titre-bilan{display:flex;align-items:flex-end;gap:15px}
+  .social .social-titre-bilan img{height:42px}
+  .social .social-texte{flex:1;min-height:0;font-size:34px;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere}
+  .social .social-texte b{color:var(--mag)}
+  .social.couverture .t-test{top:216px;height:30px}
+  .social.couverture .t-nouvel{top:258px;height:53px}
+  .social.couverture .echo-lc{top:558px}
+  .social.couverture .big{transform:translateY(320px)}
+  .social.couverture .social-destination{position:absolute;inset:608px 0 0;display:flex;flex-direction:column;
+    justify-content:center;padding:120px 61px 70px;background:var(--mag);color:#fff;overflow-wrap:anywhere}
+  .social-destination strong{font-size:86px;line-height:1.06;text-transform:uppercase;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .social-hotel{font-size:40px;margin-top:20px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .social.couverture .avis{left:738px;top:543px;width:281px}
+  .social.couverture .note{left:846px;top:646px}
+  .social.couverture .note svg{width:22px;height:22px}
   .social .social-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;width:100%;max-width:880px;margin-inline:auto}
   .social .social-photos.seule{grid-template-columns:1fr}
-  .social-photos div{aspect-ratio:1;border-radius:30px;overflow:hidden;background:#d5d5d5}
+  .social-photos div{aspect-ratio:1;border-radius:22%;overflow:hidden;background:#949494}
   .social-photos img{display:block;width:100%;height:100%;object-fit:cover}
 
 </style>
@@ -298,13 +302,18 @@ function echo(){
   ).reverse().join("");
   return `<div class="big echo-mc">${repetitions}<img src="${src}" style="position:relative" alt="MC"></div>`;
 }
-function pageHTML(){
-  const nom = S.hotel.trim(), secs = SECTIONS.filter(([k]) => S[k].trim());
-  return `<section class="page${HOP ? "" : " af"}">
+function identiteVisuel(){
+  return `
     ${+S.mois.slice(0,4) >= 2025 && +S.mois.slice(0,4) <= 2030 ? `<img class="mois" src="img/nv/m-${S.mois}.svg" alt="${esc(moisLabel(S.mois))}">` : `<div class="mois">${esc(moisLabel(S.mois))}</div>`}
     <img class="logo${HOP ? " hop" : ""}" src="${HOP ? "../commun/img/logo-unac-hop-couleur.png" : "img/logo-unac.png"}" alt="UNAC">
     <img class="t-test" src="img/test.svg" alt="Test d'un">
     <img class="t-nouvel" src="img/nouvel.svg" alt="nouvel hébergement">
+  `;
+}
+function pageHTML(){
+  const nom = S.hotel.trim(), secs = SECTIONS.filter(([k]) => S[k].trim());
+  return `<section class="page${HOP ? "" : " af"}">
+    ${identiteVisuel()}
     ${echo()}
     <div class="band">${!S.ville.trim() && S.code && refVille(S.type, S.code) ? `<img class="v" src="img/nv/e-${esc(S.code)}.svg" alt="${esc(villeAff())}">` : `<div class="v">${esc(villeAff() || "Escale")}</div>`}${nom ? `<div class="h">${VERSION === "public" ? `<span class="masque"></span>` : esc(nom)}</div>` : ""}</div>
     <img class="avis" src="img/avis.png" alt="">
@@ -334,21 +343,20 @@ const EXEMPLE = {type:"LC", code:"JNB", ville:"", hotel:"Nom de l'hôtel testé"
 const estVide = () => !(S.code || S.ville || S.hotel || S.note || S.loc || S.resto || S.chambre || S.fac || S.bilan || S.photos.length);
 function diapositive(classe = ""){
   const gabarit = document.createElement("template");
-  gabarit.innerHTML = `<section class="page social ${classe}"><header class="social-entete">
-    <span>${esc(moisLabel(S.mois))} · ${esc(S.type)}</span>
-    <img src="${HOP ? "../commun/img/logo-unac-hop-couleur.png" : "img/logo-unac.png"}" alt="UNAC">
-  </header></section>`;
+  gabarit.innerHTML = `<section class="page social ${classe}">${identiteVisuel()}</section>`;
   return gabarit.content.firstElementChild;
 }
 
 function apercuCarrousel(box, exemple){
   const couverture = diapositive("couverture");
   const hotel = VERSION === "adherents" && S.hotel.trim();
-  couverture.insertAdjacentHTML("beforeend", `<h2>Test d’un nouvel hébergement</h2>
+  couverture.insertAdjacentHTML("beforeend", `${echo()}
     <div class="social-destination"><strong>${esc(villeAff() || "Escale")}</strong>
       ${hotel ? `<div class="social-hotel">${esc(hotel)}</div>` : ""}
     </div>
-    ${S.note ? `<div class="social-note">${[1,2,3,4,5].map(n=>STAR(n<=S.note?"#F2A91D":"#cfc4ca")).join("")} <span>${S.note}/5</span></div>` : ""}`);
+    <img class="avis" src="img/avis.png" alt="">
+    ${S.note ? `<div class="note" role="img" aria-label="Note : ${S.note} sur 5">${[1,2,3,4,5].map(n=>STAR(n<=S.note?"#F2A91D":"#E3E3E3")).join("")}</div>` : ""}`);
+
 
   function ajouter(page){
     const w = document.createElement("div");
@@ -358,7 +366,7 @@ function apercuCarrousel(box, exemple){
     box.append(w);
   }
 
-  function ajouterTexte(titre, texte, icone = ""){
+  function ajouterTexte(titre, texte){
     // Conserver le gras même lorsqu’un paragraphe se poursuit sur une autre carte.
     const mots = texte.split(/(\*\*.+?\*\*)/g).flatMap((partie, i) => {
       const fragment = i % 2 ? partie.slice(2, -2) : partie;
@@ -368,7 +376,7 @@ function apercuCarrousel(box, exemple){
     });
     for(let debut = 0; debut < mots.length;){
       const page = diapositive();
-      page.insertAdjacentHTML("beforeend", `<h2 class="social-titre">${icone}${titre}</h2><div class="social-texte"></div>`);
+      page.insertAdjacentHTML("beforeend", `${titre}<div class="social-texte"></div>`);
       ajouter(page);
       const zone = page.lastElementChild;
       let lo = debut + 1, hi = mots.length;
@@ -385,16 +393,16 @@ function apercuCarrousel(box, exemple){
 
   ajouter(couverture);
   for(const [cle, titre] of SECTIONS){
-    if(S[cle].trim()) ajouterTexte(titre, S[cle].trim(), IC[cle]);
+    if(S[cle].trim()) ajouterTexte(`<h2 class="social-titre sec"><span class="pill">${IC[cle]}${titre}</span></h2>`, S[cle].trim());
   }
   for(let i = 0; i < S.photos.length; i += 4){
     const photos = S.photos.slice(i, i + 4);
     const page = diapositive();
-    page.insertAdjacentHTML("beforeend", `<h2>Photos</h2><div class="social-photos${photos.length === 1 ? " seule" : ""}">
+    page.insertAdjacentHTML("beforeend", `<h2 class="social-titre sec"><span class="pill">Photos</span></h2><div class="social-photos${photos.length === 1 ? " seule" : ""}">
       ${photos.map(src => src === "#" ? "<div></div>" : `<div><img src="${esc(src)}" alt=""></div>`).join("")}</div>`);
     ajouter(page);
   }
-  if(S.bilan.trim()) ajouterTexte("Bilan du test", S.bilan.trim());
+  if(S.bilan.trim()) ajouterTexte(`<h2 class="social-titre social-titre-bilan"><img src="img/bilan.svg" alt="Bilan"><img src="img/dutest.svg" alt="du test"></h2>`, S.bilan.trim());
   const sc = Math.min(1, Math.max(1, box.parentElement.clientWidth - 40) / 1080);
   for(const w of box.children){
     w.style.width = `${1080*sc}px`;
