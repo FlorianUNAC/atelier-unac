@@ -149,6 +149,11 @@
   .addblk select{flex:1}
   .pictos{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
   .pictos button{width:44px;height:44px;border:1.5px solid var(--ui-line);border-radius:10px;background:#B33868 center/34px no-repeat;cursor:pointer;font-size:10px;color:#fff}
+  .picto-import{display:flex;align-items:center;gap:8px;margin-top:8px}
+  .picto-import .mini{position:relative;display:inline-flex;align-items:center}
+  .picto-import .mini:focus-within{outline:2px solid #7a2a4e;outline-offset:2px}
+  .picto-import input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+  .picto-import img{width:44px;height:44px;object-fit:contain;border:1px solid var(--ui-line);border-radius:8px}
   .pictos button.on{border-color:#2b1225;box-shadow:0 0 0 2px rgba(179,56,104,.35)}
   .fmt{font-size:11px;color:var(--ui-muted);margin-top:4px;line-height:1.4}
   .fmt code{background:#f1e8ed;border-radius:4px;padding:0 4px;color:#7a2a4e}
@@ -609,6 +614,11 @@ function qrSVG(url){
   }catch(e){ return ""; }
 }
 const lignes = t => String(t||"").split("\n").map(x => x.trim()).filter(Boolean);
+const pictoImporte = valeur => typeof valeur === "string" && /^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(valeur);
+function imagePicto(valeur){
+  const src = pictoImporte(valeur) ? valeur : Object.hasOwn(PICTOS,valeur) ? `${IMG}pictos/${valeur}.png` : "";
+  return src ? `<img src="${esc(src)}" alt="">` : "";
+}
 function blocHTML(b){
   switch(b.type){
     case "banniere": return renduBanniere(b, "bloc-banniere");
@@ -616,8 +626,8 @@ function blocHTML(b){
     case "accroche": return `<p class="acc ${b.taille === "petit" ? "petit" : ""}">${riche(b.texte)}</p>`;
     case "chiffre": return `<div class="fig"><div class="t">${riche(b.libelle)} <b>${riche(b.valeur)}</b></div>${b.badge ? `<div class="badge ${esc(b.couleur||"vert")}"><span>${esc(b.badge)}</span></div>` : ""}</div>`;
     case "texte": return `<p class="tx ${b.taille === "grand" ? "grand" : ""}">${riche(b.texte)}</p>`;
-    case "picto": return `<div class="lig">${b.picto ? `<img src="${IMG}pictos/${b.picto}.png" alt="">` : ""}<p class="tx">${riche(b.texte)}</p></div>`;
-    case "carte": return `<div class="carte">${[[b.p1,b.t1],[b.p2,b.t2]].filter(([p,t]) => p || (t||"").trim()).map(([p,t]) => `<div class="it">${p ? `<img src="${IMG}pictos/${p}.png" alt="">` : ""}<p>${riche(t)}</p></div>`).join("")}</div>`;
+    case "picto": return `<div class="lig">${imagePicto(b.picto)}<p class="tx">${riche(b.texte)}</p></div>`;
+    case "carte": return `<div class="carte">${[[b.p1,b.t1],[b.p2,b.t2]].filter(([p,t]) => p || (t||"").trim()).map(([p,t]) => `<div class="it">${imagePicto(p)}<p>${riche(t)}</p></div>`).join("")}</div>`;
     case "conclusion": return `<div class="concl"><p>${riche(b.texte)}</p></div>`;
     case "signature": return `<p class="sign">${riche(b.texte)}</p>`;
     case "espace": return `<div class="esp"></div>`;
@@ -658,7 +668,11 @@ function champ(b, [k, lab, ty, def]){
   if(ty === "area") return `<label class="f">${lab}</label><textarea data-b="${k}" rows="${Math.min(8, Math.max(2, String(v).split("\n").length + 1))}">${esc(v)}</textarea>`;
   if(ty === "select") return `<label class="f">${lab}</label><select data-b="${k}">${Object.entries(def).map(([o,l]) => `<option value="${o}" ${o===v?"selected":""}>${l}</option>`).join("")}</select>`;
   if(ty === "photo") return `<label class="f">${lab}</label><div class="phf">${v ? `<img src="${esc(v)}" alt="">` : ""}<label class="mini">${v ? "Changer la photo" : "Choisir une photo"}<input type="file" accept="image/*" data-photo="${k}" hidden></label>${v ? `<button class="mini" data-pk="${k}" data-pv="">Retirer</button>` : ""}</div>`;
-  if(ty === "picto") return `<label class="f">${lab}</label><div class="pictos"><button data-pk="${k}" data-pv="" class="${!v?"on":""}">aucun</button>${Object.entries(PICTOS).map(([p,l]) => `<button data-pk="${k}" data-pv="${p}" title="${l}" class="${v===p?"on":""}" style="background-image:url(${IMG}pictos/${p}.png)"></button>`).join("")}</div>`;
+  if(ty === "picto") return `<label class="f">${lab}</label><div class="pictos"><button data-pk="${k}" data-pv="" class="${!v?"on":""}">aucun</button>${Object.entries(PICTOS).map(([p,l]) => `<button data-pk="${k}" data-pv="${p}" title="${l}" class="${v===p?"on":""}" style="background-image:url(${IMG}pictos/${p}.png)"></button>`).join("")}</div>
+    <div class="picto-import">${pictoImporte(v) ? imagePicto(v) : ""}<label class="mini">
+      ${pictoImporte(v) ? "Remplacer le picto importé" : "Importer un picto"}
+      <input type="file" accept="image/png,image/jpeg,image/webp" data-picto="${k}" aria-label="Importer un picto · ${esc(lab)}">
+    </label></div>`;
   return `<label class="f">${lab}</label><input type="text" data-b="${k}" value="${esc(v)}">`;
 }
 function renderForm(){
@@ -689,6 +703,44 @@ function renderForm(){
 }
 const slideOf = el => S.slides.find(s => s.id === el.closest("[data-s]").dataset.s);
 const blocOf = el => slideOf(el).blocs.find(x => x.id === el.closest("[data-b-id]").dataset.bId);
+const importsPictos = new WeakMap();
+$("#form").addEventListener("change", async e => {
+  const champ = e.target;
+  if(!champ.dataset.picto || !champ.files?.[0] || S.statut === "publie") return;
+  const fichier = champ.files[0];
+  const cle = champ.dataset.picto;
+  const doc = S;
+  const slide = slideOf(champ);
+  const bloc = blocOf(champ);
+  const demandes = importsPictos.get(bloc) || new Map();
+  importsPictos.set(bloc, demandes);
+  demandes.set(cle, fichier);
+  champ.value = "";
+  if(!["image/png","image/jpeg","image/webp"].includes(fichier.type)){
+    demandes.delete(cle);
+    toast("Choisissez une image PNG, JPEG ou WebP.");
+    return;
+  }
+  const url = URL.createObjectURL(fichier);
+  try{
+    const image = new Image();
+    image.src = url;
+    await image.decode();
+    const echelle = Math.min(1, 512 / Math.max(image.naturalWidth,image.naturalHeight));
+    const toile = document.createElement("canvas");
+    toile.width = Math.max(1, Math.round(image.naturalWidth * echelle));
+    toile.height = Math.max(1, Math.round(image.naturalHeight * echelle));
+    toile.getContext("2d").drawImage(image,0,0,toile.width,toile.height);
+    if(S !== doc || S.statut === "publie" || !S.slides.includes(slide) || !slide.blocs.includes(bloc) || demandes.get(cle) !== fichier) return;
+    bloc[cle] = toile.toDataURL("image/png");
+    changed(true);
+  }catch(e){
+    if(S === doc && demandes.get(cle) === fichier) toast("Impossible de lire ce pictogramme.");
+  }finally{
+    if(demandes.get(cle) === fichier) demandes.delete(cle);
+    URL.revokeObjectURL(url);
+  }
+});
 $("#form").addEventListener("change", e => {
   const t = e.target; if(!t.dataset.photo || !t.files[0]) return;
   const f = t.files[0], b = blocOf(t), k = t.dataset.photo, im = new Image();
@@ -719,7 +771,12 @@ $("#form").addEventListener("click", e => {
   if(e.target.id === "pubBtn") return publier();
   if(e.target.id === "roCopy") return copyToDraft(S);
   const st = e.target.closest("[data-set]"); if(st){ S[st.dataset.set] = st.dataset.v; if(st.dataset.set === "section"){ SECTION_DEF = st.dataset.v; try{ localStorage.setItem("chrono:section", SECTION_DEF); }catch(_){} } return changed(true); }
-  const pk = e.target.closest("[data-pk]"); if(pk){ blocOf(pk)[pk.dataset.pk] = pk.dataset.pv; return changed(true); }
+  const pk = e.target.closest("[data-pk]"); if(pk){
+    const bloc = blocOf(pk);
+    importsPictos.get(bloc)?.delete(pk.dataset.pk);
+    bloc[pk.dataset.pk] = pk.dataset.pv;
+    return changed(true);
+  }
   const b = e.target.closest("[data-a]"); if(!b) return;
   const s = slideOf(b), si = S.slides.indexOf(s), a = b.dataset.a;
   if(a === "sdel"){ if(!confirm("Supprimer ce visuel ?")) return; S.slides.splice(si,1); }
