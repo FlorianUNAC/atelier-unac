@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Le message · Atelier UNAC</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../commun/icons-atelier/favicon.png">
+<link rel="apple-touch-icon" href="../commun/icons-atelier/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Atelier UNAC">
+<script src="../commun/acces.js"></script>
+<style>
+  @font-face{font-family:"T1";src:url("../commun/polices/x1.woff2") format("woff2");font-weight:400;font-display:block}
+  @font-face{font-family:"T1";src:url("../commun/polices/x2.woff2") format("woff2");font-weight:700 800;font-display:block}
+  :root{--ui-line:#e7dbe2;--ui-muted:#8b6f80;--ui-ink:#2b1225;--mag:#B33868}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:"T1",Inter,system-ui,sans-serif;background:#f6f1f4;color:var(--ui-ink);display:flex;flex-direction:column;font-size:14px}
+  button,input,textarea,select{font:inherit;color:inherit}
+  .top{display:flex;align-items:center;gap:12px;padding:10px 18px;background:linear-gradient(100deg,#7a2a4e 0%,#5e1d3c 60%,#4f1530 100%);color:#fff;flex:none;flex-wrap:wrap}
+  .top img.logo{height:34px;display:block}
+  .top h1{font-size:16px;font-weight:700;line-height:1.15}
+  .top h1 small{display:block;font-weight:400;font-size:11.5px;opacity:.75}
+  .top .sp{flex:1}
+  .btn{border:0;border-radius:9px;padding:9px 14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+  .btn svg{width:16px;height:16px}
+  .btn.pdf{background:#fff;color:#7a1f48}
+  .btn.ghost{background:rgba(255,255,255,.14);color:#fff}
+  .app{flex:1;display:grid;grid-template-columns:minmax(360px,520px) 1fr;min-height:0}
+  .form{overflow:auto;padding:18px 18px 60px;border-right:1px solid var(--ui-line)}
+  .preview{overflow:auto;background:#3a3036;padding:22px 20px 60px}
+  .card{background:#fff;border:1px solid var(--ui-line);border-radius:14px;padding:14px;margin-bottom:12px}
+  .card h2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9b3e69;margin-bottom:10px;font-weight:700;display:flex;align-items:center;gap:8px}
+  label.f{display:block;font-size:12px;color:var(--ui-muted);margin:10px 0 4px}
+  .card > label.f:first-of-type,.bl > label.f:first-of-type{margin-top:0}
+  input[type=text],textarea,select{width:100%;border:1px solid var(--ui-line);border-radius:9px;padding:8px 10px;background:#fff;outline:none;font-size:14px}
+  input:focus,textarea:focus,select:focus{border-color:#c8487f;box-shadow:0 0 0 3px rgba(200,72,127,.15)}
+  textarea{resize:vertical;min-height:60px;line-height:1.4}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .hint{font-size:12px;color:var(--ui-muted);margin-top:6px;line-height:1.4}
+  .hint code{background:#f4ecf0;border-radius:4px;padding:0 4px}
+  .bl{border:1px solid var(--ui-line);border-radius:12px;padding:12px;margin-bottom:10px;background:#fcfafb}
+  .bl .bh{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+  .bl .bh b{flex:1;font-size:13px;color:#7a2a4e}
+  .mini{border:1px solid var(--ui-line);background:#fff;border-radius:8px;padding:5px 9px;font-size:12px;font-weight:700;cursor:pointer;color:#7d5a6e}
+  .mini.danger{color:#a3263b}
+  .adds{display:flex;gap:6px;flex-wrap:wrap}
+  .adds button{border:1px dashed #d9c3cf;background:#fff;border-radius:10px;padding:8px 10px;font-weight:700;font-size:12.5px;color:#7a2a4e;cursor:pointer}
+  .grp{border-top:1px dashed var(--ui-line);margin-top:10px;padding-top:8px}
+  .grp > b{font-size:12px;color:#9b3e69}
+  .phf{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .phf img{width:56px;height:56px;border-radius:10px;object-fit:cover;background:#eee}
+  .phf label.mini{cursor:pointer}
+  .seg2{display:flex;gap:6px;flex-wrap:wrap}
+  .seg2 button{border:1px solid var(--ui-line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;cursor:pointer;color:#7d5a6e;font-size:13px}
+  .seg2 button.on{background:#7a2a4e;border-color:#7a2a4e;color:#fff}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#2b1225;color:#fff;padding:11px 18px;border-radius:10px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:99}
+  .toast.on{opacity:1;transform:translateX(-50%)}
+  .pwrap{margin:0 auto 22px;box-shadow:0 10px 34px rgba(0,0,0,.45);position:relative}
+  .pwrap > .page{transform-origin:0 0;position:absolute;left:0;top:0}
+  .pv-meta{color:#d9c9d2;text-align:center;font-size:12.5px;margin-bottom:12px}
+  .pv-meta .ex{display:inline-block;background:#F7D160;color:#4f1a30;font-weight:700;border-radius:999px;padding:2px 10px;margin-right:6px}
+  .modal{position:fixed;inset:0;background:rgba(30,6,20,.55);display:none;align-items:center;justify-content:center;z-index:80;padding:16px}
+  .modal.on{display:flex}
+  .mbox{background:#fff;border-radius:16px;width:min(860px,100%);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .mhead{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--ui-line)}
+  .mhead h3{font-size:16px}
+  .mclose{border:0;background:none;font-size:24px;cursor:pointer;color:var(--ui-muted)}
+  .mbody{overflow:auto;padding:16px 18px;flex:1}
+  .mfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--ui-line)}
+  .mbtn{border:1px solid var(--ui-line);background:#fff;border-radius:9px;padding:9px 14px;font-weight:700;cursor:pointer}
+  .mbtn.pri{background:#9b2f60;border-color:#9b2f60;color:#fff}
+  .mintro{font-size:13.5px;color:#5d4252;line-height:1.45;margin-bottom:14px}
+  .imgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .imgrid a{display:block;text-decoration:none;color:var(--ui-muted);font-size:12px;text-align:center}
+  .imgrid img{width:100%;display:block;border-radius:8px;box-shadow:0 4px 14px rgba(40,0,25,.25);margin-bottom:6px}
+  @media (max-width:900px){.app{display:block;overflow:auto}.form{border-right:0;padding-bottom:20px}.preview{padding:18px 10px 40px}.top h1 small{display:none}.lg{display:none}}
+  @media print{
+    @page{size:1080px 1578px;margin:0}
+    body{display:block;background:#fff}
+    .top,.form,.pv-meta,.toast,.modal{display:none!important}
+    .app{display:block}.preview{padding:0;background:none;overflow:visible}
+    .pwrap{width:auto!important;height:auto!important;margin:0;box-shadow:none}
+    .pwrap > .page{position:relative;transform:none!important}
+    .page{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+
+  /* ===== LE VISUEL 1080 × 1578 (maquette Figma 2190 × 3200) ===== */
+  .page{width:1080px;height:1578px;position:relative;overflow:hidden;background:#EBEBEB;color:#1f1f1f;font-family:"T1",Inter,system-ui,sans-serif;--k:1;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .page .hd{position:absolute;left:0;top:0;right:0;height:284px;background:linear-gradient(100deg,#8b3157 0%,#6a2245 45%,#4b1733 100%);color:#fff}
+  .page .plume{position:absolute;left:895.6px;top:25.6px;width:184.4px}
+  .page .logo{position:absolute;left:66px;top:20px;height:52px}
+  .page .sur{position:absolute;left:68px;top:88px;font-size:19px;font-style:italic;max-width:780px}
+  .page .tit{position:absolute;left:68px;top:114px;font-size:25px;font-weight:700;max-width:800px;line-height:1.2}
+  .page .de{position:absolute;left:68px;top:181px;font-size:19px;max-width:800px}
+  .page .de b{font-weight:700}
+  .page .chap{position:absolute;left:54px;top:237px;width:834px;background:var(--mag);color:#fff;border-radius:22px;padding:calc(var(--k)*24px) 26px;font-size:calc(var(--k)*19px);font-weight:700;line-height:1.3;box-shadow:0 10px 26px rgba(80,10,40,.18)}
+  .page .corps{position:absolute;left:68px;right:42px;top:var(--ct,372px);bottom:var(--cb,214px)}
+  .page .corps .excl-a{float:right;width:0;height:calc(100% - var(--exh,230px))}
+  .page .corps .excl-b{float:right;clear:right;width:var(--exw,262px);height:var(--exh,230px)}
+  .page .corps > *:not(.excl-a):not(.excl-b){margin-bottom:calc(var(--k)*18px)}
+  .page .it{color:var(--mag);font-weight:700;font-size:calc(var(--k)*19.5px);line-height:1.25;margin-top:calc(var(--k)*8px)}
+  .page .tx{font-size:calc(var(--k)*16.5px);line-height:1.3;white-space:pre-wrap}
+  .page .tx.italique{font-style:italic}
+  .page .tx.gras{font-weight:700}
+  .page .tx b,.page .it b{font-weight:700}
+  .page .acc{color:var(--mag);font-weight:700}
+  .page .ann{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--k)*20px);margin:calc(var(--k)*10px) 0 calc(var(--k)*24px)!important;clear:none}
+  .page .ann.un{grid-template-columns:1fr}
+  .page .ann .g{text-align:center}
+  .page .ann .g .gt{font-style:italic;font-size:calc(var(--k)*16.5px)}
+  .page .ann .g .gl{font-size:calc(var(--k)*18.5px)}
+  .page .ann .g .ga{font-size:calc(var(--k)*18.5px);font-weight:700;color:#7d1838}
+  .page .ann .rings{display:flex;justify-content:center;gap:calc(var(--k)*26px);margin-top:calc(var(--k)*14px)}
+  .page .ann svg{width:calc(var(--k)*185px);height:calc(var(--k)*185px)}
+  .page .band{position:absolute;left:0;right:0;top:var(--bt,1384px);height:var(--bh,128px);background:var(--mag);color:#fff;display:flex;align-items:center;padding:0 0 0 68px}
+  .page .band p{width:640px;font-size:calc(var(--kb,1)*19.5px);font-weight:700;line-height:1.24}
+  .page .note{position:absolute;left:70px;top:1534px;width:450px;font-size:10.5px;font-style:italic;line-height:1.3;color:#333}
+  .page .sign{position:absolute;left:567px;top:1530px;font-size:19px;color:var(--mag)}
+  .page .sign b{font-weight:700}
+  .page .photo{position:absolute;right:0;bottom:0;height:470px;max-width:330px;object-fit:contain;object-position:right bottom}
+  .page .photo.ronde{right:42px;bottom:120px;width:270px;height:270px;border-radius:50%;object-fit:cover;border:8px solid #fff;box-shadow:0 14px 34px rgba(60,10,35,.25);max-width:none}
+  .filigrane{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:60;overflow:hidden}
+  .filigrane span{transform:rotate(-30deg);font-weight:800;letter-spacing:.1em;color:rgba(140,120,130,.2);font-size:200px;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="top">
+  <a href="../" title="Retour à l'Atelier"><img class="logo" src="../commun/img/logo-unac-blanc.png" alt="UNAC"></a>
+  <h1 id="h1">Le message<small>Visuel du message de section · Facebook, Instagram, PDF</small></h1>
+  <div class="sp"></div>
+  <button class="btn ghost" id="resetBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span class="lg">Recommencer</span></button>
+  <button class="btn ghost" id="pdfBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>PDF</button>
+  <button class="btn pdf" id="imgBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Image</button>
+</div>
+<div class="app">
+  <div class="form" id="form"></div>
+  <div class="preview" id="preview"><div class="pv-meta" id="pvMeta"></div><div id="pages"></div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+// **gras**  ==mot en magenta==
+const riche = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/==(.+?)==/g, '<span class="acc">$1</span>');
+function toast(m){ const t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("on"), 2600); }
+const uid = () => Math.random().toString(36).slice(2, 9);
+
+/* ---------- Section : Air France (secrétaire de section) / HOP! (déléguée) ---------- */
+const HOP = new URLSearchParams(location.search).get("section") === "hop";
+const SEC = HOP
+  ? {nom:"Laure Desrentes", fonction:"votre déléguée", photo:"../commun/img/hop/laure-desrentes.jpg", mode:"ronde", logo:"../commun/img/logo-unac-hop-blanc.png", titreOutil:"Le message de votre déléguée", cle:"msghop:courant"}
+  : {nom:"Fabrice Jaudinaud", fonction:"votre secrétaire de section", photo:"img/fabrice-jaudinaud.png", mode:"detouree", logo:"", titreOutil:"Le message du secrétaire de section", cle:"msgaf:courant"};
+document.getElementById("h1").firstChild.textContent = SEC.titreOutil + " ";
+document.title = SEC.titreOutil + (HOP ? " HOP!" : "") + " · Atelier UNAC";
+
+const TYPES = {inter:"Intertitre (magenta)", texte:"Paragraphe", anneaux:"Chiffres en anneaux"};
+function nouveauBloc(type){
+  if(type === "anneaux") return {id:uid(), type, g1t:"", g1l:"", g1a:"", a1v:"", a1l:"", b1v:"", b1l:"", g2t:"", g2l:"", g2a:"", a2v:"", a2l:"", b2v:"", b2l:""};
+  if(type === "texte") return {id:uid(), type, texte:"", style:"normal"};
+  return {id:uid(), type, texte:""};
+}
+function blank(){ return {sur:"", titre:"", nom:SEC.nom, fonction:SEC.fonction, chapeau:"", blocs:[nouveauBloc("inter"), nouveauBloc("texte")], appel:"", note:"", photo:"", mode:SEC.mode}; }
+let S; try{ S = Object.assign(blank(), JSON.parse(localStorage.getItem(SEC.cle) || "{}")); }catch(e){ S = blank(); }
+function save(){ try{ localStorage.setItem(SEC.cle, JSON.stringify(S)); }catch(e){ toast("Mémoire pleine : photo trop lourde"); } }
+let pvT; function changed(form){ save(); if(form) renderForm(); clearTimeout(pvT); pvT = setTimeout(renderPreview, 200); }
+const hasContent = d => !!(d.titre.trim() || d.chapeau.trim() || d.appel.trim() || d.blocs.some(b => Object.entries(b).some(([k,v]) => !["id","type","style"].includes(k) && String(v).trim())));
+
+/* ---------- Exemples (aperçu tant que rien n'est saisi) ---------- */
+const EXEMPLE_AF = {sur:"Futures élections CSE 2027", titre:"Représentation des PNC dans la Compagnie",
+  chapeau:"Les CSE sont censés, comme pour l’Assemblée Nationale, être représentatifs de la population de l’entreprise et/ou des établissements.",
+  blocs:[
+    {type:"inter", texte:"Pourquoi l’UNAC refuse de signer le Protocole d’Accord Préélectoral 2027 ?"},
+    {type:"texte", style:"italique", texte:"Avant chaque élection du Comité Social et Economique (CSE), le code du travail oblige la Direction d’Air France à négocier avec les syndicats un Accord (PAP) sur l’organisation des futures élections mais également sur la répartition des sièges d’élus CSE entre les différents métiers pour les 4 prochaines années."},
+    {type:"texte", style:"normal", texte:"Or, après 20h00 de négociation, le projet mis à signature par la Direction met en danger la représentativité des 13000 PNC dans l’entreprise."},
+    {type:"inter", texte:"En effet, dans le texte que tente d’imposer la Direction, les PNC sont largement sous représentés tant au CSE Exploitation Aérienne qu’au CSE Central."},
+    {type:"anneaux", g1t:"CSE d’établissement Exploitation Aérienne", g1l:"PNC : 64 % des effectifs*,", g1a:"mais seulement 56 % des sièges", a1v:"64", a1l:"de l’effectif EA*", b1v:"56", b1l:"des sièges",
+      g2t:"CSE Central", g2l:"PNC : 31% des effectifs globaux AF*,", g2a:"mais seulement 21% des sièges", a2v:"31", a2l:"de l’effectif AF*", b2v:"21", b2l:"des sièges"},
+    {type:"texte", style:"normal", texte:"Comment peut-on représenter efficacement les PNC alors qu’ils sont largement et injustement sous représentés tant au CSE central qu’au CSE d’établissement Exploitation Aérienne ?\n\nQui peut raisonnablement considérer cela équitable et loyal vis à vis de nos collègues PNC ?"},
+    {type:"inter", texte:"Cette sous-représentation illégitime ne permet donc pas aux élus PNC d’influer sur les décisions qui les concernent en premier chef : un comble !"},
+    {type:"texte", style:"normal", texte:"Emploi, réorganisations, conditions de travail, avenir de notre métier : les CSE jouent un rôle essentiel dans la défense des salariés et sont amenés à se prononcer sur les grandes décisions de l’entreprise.\n\nLeurs élus peuvent interpeller la Direction, défendre des propositions, rendre des avis et peser sur les orientations qui concernent notre quotidien professionnel."},
+    {type:"texte", style:"gras", texte:"Les PNC ne demandent aucun privilège, simplement une représentation juste et équitable."},
+    {type:"texte", style:"normal", texte:"==L’UNAC== en tant qu’organisation syndicale PNC ne peut pas valider un texte qui va à l’encontre des intérêts des PNC qu’elle représente."}
+  ],
+  appel:"Nous appelons solennellement toutes les organisations syndicales PNC à nous rejoindre et à ne pas valider ce Protocole d’Accord Pré-électoral inique, fait au détriment de la représentation des PNC Air France.",
+  note:"*Nos collègues pilotes détachés chez Transavia bénéficient d’un contrat de travail Air France et sont décomptés comme faisant partie de l’effectif AF, ce qui minore légèrement la part réelle des effectifs opérationnels PNC au global AF."};
+const EXEMPLE_HOP = {sur:"Commission CAT PNC", titre:"Protégeons nos emplois",
+  chapeau:"HOP! n’est pas une compagnie saisonnière : la vocation d’un contrat temporaire est de passer par la case titularisation.",
+  blocs:[
+    {type:"inter", texte:"Ce que nous avons porté en commission"},
+    {type:"texte", style:"normal", texte:"Les effectifs PNC sont à l’équilibre entre janvier et juin, mais les **contrats CDD** sont en forte hausse. Votre OSR veille à ce que cela n’augmente pas davantage."},
+    {type:"anneaux", g1t:"Contrats temporaires", g1l:"CDD en cours", g1a:"de 2 en janvier à 48 en juin", a1v:"8", a1l:"des effectifs", b1v:"92", b1l:"en CDI",
+      g2t:"", g2l:"", g2a:"", a2v:"", a2l:"", b2v:"", b2l:""},
+    {type:"inter", texte:"Nos demandes à la Direction"},
+    {type:"texte", style:"normal", texte:"Alléger les rotations longues, mieux quantifier les réserves, obtenir d’Air France des lignes régulières, et continuer à **titulariser** et à nommer de jeunes chefs de cabine."},
+    {type:"texte", style:"gras", texte:"HOP! ne doit pas devenir seulement l’école d’Air France."}
+  ],
+  appel:"Venez échanger avec nous en salle PPV : ensemble, protégeons nos emplois.", note:""};
+
+/* ---------- Formulaire ---------- */
+const champ = (k, lab, val, area, ph="") => `<label class="f">${lab}</label>${area ? `<textarea data-k="${k}" rows="3" placeholder="${esc(ph)}">${esc(val)}</textarea>` : `<input type="text" data-k="${k}" value="${esc(val)}" placeholder="${esc(ph)}">`}`;
+function blocForm(b, i, n){
+  const ctl = `<div class="bh"><b>${TYPES[b.type]}</b>${i ? `<button class="mini" data-a="up" title="Monter">↑</button>` : ""}${i < n-1 ? `<button class="mini" data-a="down" title="Descendre">↓</button>` : ""}<button class="mini danger" data-a="del">Supprimer</button></div>`;
+  const f = (k, lab, area, ph) => `<label class="f">${lab}</label>${area ? `<textarea data-b="${k}" rows="3" placeholder="${esc(ph||"")}">${esc(b[k])}</textarea>` : `<input type="text" data-b="${k}" value="${esc(b[k])}" placeholder="${esc(ph||"")}">`}`;
+  let h = "";
+  if(b.type === "inter") h = f("texte", "Texte", true, "Question ou phrase forte, en magenta");
+  if(b.type === "texte") h = f("texte", "Texte", true) + `<label class="f">Style</label><div class="seg2">${[["normal","Normal"],["italique","Italique"],["gras","Gras"]].map(([v,l]) => `<button data-st="${v}" class="${b.style===v?"on":""}">${l}</button>`).join("")}</div>`;
+  if(b.type === "anneaux") h = [1,2].map(g => `<div class="grp"><b>${g === 1 ? "Comparaison 1" : "Comparaison 2 (facultative)"}</b>
+      ${f(`g${g}t`, "Titre (italique)")}${f(`g${g}l`, "Ligne", false, "ex. PNC : 64 % des effectifs")}${f(`g${g}a`, "Phrase en gras", false, "ex. mais seulement 56 % des sièges")}
+      <div class="row"><div>${f(`a${g}v`, "Anneau magenta : %", false, "64")}</div><div>${f(`a${g}l`, "Légende", false, "de l’effectif")}</div></div>
+      <div class="row"><div>${f(`b${g}v`, "Anneau gris : %", false, "56")}</div><div>${f(`b${g}l`, "Légende", false, "des sièges")}</div></div></div>`).join("");
+  return `<div class="bl" data-i="${i}">${ctl}${h}</div>`;
+}
+function renderForm(){
+  const photo = S.photo || SEC.photo;
+  $("#form").innerHTML = `
+  <div class="card"><h2>En-tête</h2>
+    ${champ("sur", "Surtitre (italique)", S.sur, false, "ex. Futures élections CSE 2027")}
+    ${champ("titre", "Titre", S.titre, false, "ex. Représentation des PNC dans la Compagnie")}
+    <div class="row"><div>${champ("nom", "Message de", S.nom)}</div><div>${champ("fonction", "Fonction", S.fonction)}</div></div>
+    ${champ("chapeau", "Chapeau (encadré magenta)", S.chapeau, true, "L’idée clé du message, en une ou deux phrases")}
+  </div>
+  <div class="card"><h2>Le message</h2>
+    ${S.blocs.map((b,i) => blocForm(b, i, S.blocs.length)).join("")}
+    <div class="adds">${Object.entries(TYPES).map(([t,l]) => `<button data-add="${t}">+ ${l}</button>`).join("")}</div>
+    <p class="hint"><code>**texte**</code> en gras · <code>==texte==</code> en magenta · retours à la ligne conservés</p>
+  </div>
+  <div class="card"><h2>Bas de page</h2>
+    ${champ("appel", "Appel (bandeau magenta)", S.appel, true, "Le message à retenir ou l’appel à l’action")}
+    ${champ("note", "Note de bas de page (facultative)", S.note, true, "Précision sur un chiffre marqué d’un astérisque…")}
+    <label class="f">Photo</label>
+    <div class="phf"><img src="${esc(photo)}" alt=""><label class="mini">Changer la photo<input type="file" id="fPh" accept="image/*" hidden></label>${S.photo ? `<button class="mini" id="phReset">Photo par défaut</button>` : ""}</div>
+    <label class="f">Présentation de la photo</label>
+    <div class="seg2"><button data-mode="detouree" class="${S.mode==="detouree"?"on":""}">Détourée (fond transparent)</button><button data-mode="ronde" class="${S.mode==="ronde"?"on":""}">Ronde</button></div>
+  </div>`;
+}
+const blocOf = el => S.blocs[+el.closest(".bl").dataset.i];
+$("#form").addEventListener("input", e => {
+  const t = e.target;
+  if(t.dataset.k){ S[t.dataset.k] = t.value; return changed(false); }
+  if(t.dataset.b){ blocOf(t)[t.dataset.b] = t.value; return changed(false); }
+});
+$("#form").addEventListener("click", e => {
+  const add = e.target.closest("[data-add]"); if(add){ S.blocs.push(nouveauBloc(add.dataset.add)); return changed(true); }
+  const st = e.target.closest("[data-st]"); if(st){ blocOf(st).style = st.dataset.st; return changed(true); }
+  const md = e.target.closest("[data-mode]"); if(md){ S.mode = md.dataset.mode; return changed(true); }
+  if(e.target.id === "phReset"){ S.photo = ""; S.mode = SEC.mode; return changed(true); }
+  const a = e.target.closest("[data-a]"); if(!a) return;
+  const i = +a.closest(".bl").dataset.i;
+  if(a.dataset.a === "del"){ S.blocs.splice(i, 1); }
+  if(a.dataset.a === "up"){ [S.blocs[i-1], S.blocs[i]] = [S.blocs[i], S.blocs[i-1]]; }
+  if(a.dataset.a === "down"){ [S.blocs[i+1], S.blocs[i]] = [S.blocs[i], S.blocs[i+1]]; }
+  changed(true);
+});
+$("#form").addEventListener("change", e => {
+  if(e.target.id !== "fPh" || !e.target.files[0]) return;
+  const f = e.target.files[0], im = new Image();
+  im.onload = () => { const c = document.createElement("canvas"), s = Math.min(1, 900 / Math.max(im.width, im.height)); c.width = Math.round(im.width*s); c.height = Math.round(im.height*s);
+    c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(im.src);
+    const png = /png|webp/i.test(f.type); S.photo = c.toDataURL(png ? "image/png" : "image/jpeg", .86); if(!png) S.mode = "ronde"; changed(true);
+    toast(png ? "Photo ajoutée" : "Photo ajoutée en rond (pour une photo détourée, utilisez un PNG sans fond)"); };
+  im.src = URL.createObjectURL(f);
+});
+
+/* ---------- Visuel ---------- */
+function anneau(v, lib, couleur){
+  const p = Math.max(0, Math.min(100, parseFloat(String(v).replace(",", ".")) || 0)), r = 70, c = 2*Math.PI*r;
+  return `<svg viewBox="0 0 185 185"><circle cx="92.5" cy="92.5" r="${r}" fill="none" stroke="#D6D6D6" stroke-width="31"/>
+    <circle cx="92.5" cy="92.5" r="${r}" fill="none" stroke="${couleur}" stroke-width="31" stroke-dasharray="${(c*p/100).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 92.5 92.5)"/>
+    <text x="92.5" y="96" text-anchor="middle" font-family="T1" font-weight="700" font-size="24" fill="${couleur === "#B33868" ? "#2a2a2a" : "#7d1838"}">${esc(String(v).trim())}%</text>
+    <text x="92.5" y="114" text-anchor="middle" font-family="T1" font-size="11.5" fill="${couleur === "#B33868" ? "#2a2a2a" : "#7d1838"}">${esc(lib)}</text></svg>`;
+}
+function groupe(b, g){
+  if(![`g${g}t`,`g${g}l`,`g${g}a`,`a${g}v`,`b${g}v`].some(k => String(b[k]||"").trim())) return "";
+  return `<div class="g">${b[`g${g}t`] ? `<div class="gt">${riche(b[`g${g}t`])}</div>` : ""}${b[`g${g}l`] ? `<div class="gl">${riche(b[`g${g}l`])}</div>` : ""}${b[`g${g}a`] ? `<div class="ga">${riche(b[`g${g}a`])}</div>` : ""}
+    <div class="rings">${String(b[`a${g}v`]).trim() ? anneau(b[`a${g}v`], b[`a${g}l`], "#B33868") : ""}${String(b[`b${g}v`]).trim() ? anneau(b[`b${g}v`], b[`b${g}l`], "#6B6B6B") : ""}</div></div>`;
+}
+function blocHTML(b){
+  if(b.type === "inter") return b.texte.trim() ? `<p class="it">${riche(b.texte.trim())}</p>` : "";
+  if(b.type === "texte") return b.texte.trim() ? `<p class="tx ${b.style||""}">${riche(b.texte.trim())}</p>` : "";
+  if(b.type === "anneaux"){ const g = [groupe(b,1), groupe(b,2)].filter(Boolean); return g.length ? `<div class="ann ${g.length === 1 ? "un" : ""}">${g.join("")}</div>` : ""; }
+  return "";
+}
+function pageHTML(D){
+  const photo = D.photo || SEC.photo, ronde = (D.mode || SEC.mode) === "ronde";
+  return `<section class="page">
+    <div class="hd">${SEC.logo ? `<img class="logo" src="${SEC.logo}" alt="UNAC HOP!">` : ""}<img class="plume" src="img/plume.png" alt="">
+      ${D.sur.trim() ? `<div class="sur">${esc(D.sur.trim())}</div>` : ""}<div class="tit">${esc(D.titre.trim())}</div>
+      <div class="de">Message de <b>${esc(D.nom)}</b>${D.fonction.trim() ? `, ${esc(D.fonction.trim())}` : ""}</div></div>
+    ${D.chapeau.trim() ? `<div class="chap">${riche(D.chapeau.trim())}</div>` : ""}
+    <div class="corps"><div class="excl-a"></div><div class="excl-b"></div>${D.blocs.map(blocHTML).join("")}</div>
+    ${D.appel.trim() ? `<div class="band"><p>${riche(D.appel.trim())}</p></div>` : ""}
+    ${D.note.trim() ? `<div class="note">${esc(D.note.trim())}</div>` : ""}
+    <div class="sign"><b>${esc(D.nom.split(" ")[0])}</b> ${esc(D.nom.split(" ").slice(1).join(" "))}</div>
+    <img class="photo ${ronde ? "ronde" : ""}" src="${esc(photo)}" alt="">
+  </section>`;
+}
+// Mise en page : le corps commence sous le chapeau et s'arrête au-dessus du bandeau ; le texte s'ajuste au volume.
+function ajuste(p){
+  const ch = p.querySelector(".chap"), band = p.querySelector(".band"), corps = p.querySelector(".corps");
+  const ronde = p.querySelector(".photo.ronde");
+  p.style.setProperty("--exw", ronde ? "330px" : "262px");
+  const fits = () => {
+    const chB = ch ? ch.offsetTop + ch.offsetHeight : 284;
+    p.style.setProperty("--ct", (chB + 34) + "px");
+    const last = [...corps.children].filter(x => !x.className.startsWith("excl")).pop();
+    if(!last) return true;
+    return corps.scrollHeight <= corps.clientHeight + 1 && last.offsetTop + last.offsetHeight <= corps.clientHeight;
+  };
+  // bandeau : hauteur ajustée à son texte
+  if(band){ const bp = band.querySelector("p"); p.style.setProperty("--kb", 1); let kb = 1; while(bp.scrollHeight > 128 && kb > .7){ kb -= .05; p.style.setProperty("--kb", kb); } }
+  p.style.setProperty("--cb", band ? (1578 - 1384 + 20) + "px" : "120px");
+  p.style.setProperty("--exh", ronde ? "300px" : "236px");
+  let lo = 0.6, hi = 1.15; p.style.setProperty("--k", hi);
+  if(!fits()){ for(let i = 0; i < 14; i++){ const m = (lo+hi)/2; p.style.setProperty("--k", m); if(fits()) lo = m; else hi = m; } p.style.setProperty("--k", lo); fits(); }
+  return +p.style.getPropertyValue("--k");
+}
+const enExemple = () => !hasContent(S);
+function renderPreview(){
+  const vide = enExemple();
+  const D = vide ? Object.assign(blank(), HOP ? EXEMPLE_HOP : EXEMPLE_AF, {photo:S.photo, mode:S.mode, nom:S.nom, fonction:S.fonction}) : S;
+  const box = $("#pages"); box.innerHTML = "";
+  const w = document.createElement("div"); w.className = "pwrap"; w.innerHTML = pageHTML(D); box.appendChild(w);
+  const p = w.firstElementChild, pv = $("#preview"), sc = Math.min(1, (pv.clientWidth - 40) / 1080);
+  const fit = () => { p.style.transform = "none"; const k = ajuste(p); p.style.transform = `scale(${sc})`; return k; };
+  const k = fit();
+  w.style.width = 1080*sc + "px"; w.style.height = 1578*sc + "px";
+  if(vide){ const f = document.createElement("div"); f.className = "filigrane"; f.innerHTML = "<span>EXEMPLE</span>"; p.appendChild(f); }
+  $("#pvMeta").innerHTML = (vide ? `<span class="ex">Exemple de rendu</span>Remplissez les champs : votre message remplacera cet exemple. · ` : "") + `1080 × 1578 px` + (k < 0.75 ? " · message long : texte réduit, pensez à raccourcir" : "");
+  p.querySelectorAll("img").forEach(im => { if(!im.complete) im.addEventListener("load", fit, {once:true}); });
+}
+window.addEventListener("resize", () => { clearTimeout(pvT); pvT = setTimeout(renderPreview, 150); });
+
+$("#resetBtn").addEventListener("click", () => { if(!confirm("Effacer ce message et recommencer ?")) return; S = blank(); changed(true); });
+window.EXPORT_LARGEUR = 1080;
+const slug = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
+window.nomExport = () => `Message-${HOP ? "HOP-" : ""}${slug(S.nom)}-${slug(S.titre || "message")}`;
+window.titreExport = () => `Message de ${S.nom}`;
+$("#imgBtn").addEventListener("click", () => { if(enExemple()) return toast("Rédigez d’abord le message : l’aperçu n’est qu’un exemple"); exportImages(); });
+$("#pdfBtn").addEventListener("click", async () => {
+  if(enExemple()) return toast("Rédigez d’abord le message : l’aperçu n’est qu’un exemple");
+  renderPreview(); if(document.fonts) await document.fonts.ready;
+  const old = document.title; document.title = window.nomExport();
+  setTimeout(() => { window.print(); setTimeout(() => { document.title = old; }, 500); }, 80);
+});
+
+renderForm();
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(renderPreview);
+window.addEventListener("load", renderPreview);
+</script>
+<script src="../commun/export-images.js"></script>
+</body>
+</html>
