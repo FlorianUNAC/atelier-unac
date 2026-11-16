@@ -9,14 +9,14 @@ const filigrane = papier.querySelector(".filigrane");
 const infoExemple = document.querySelector("#info-exemple");
 const boutonImprimer = editeur.querySelector('[type="submit"]');
 const exemple = {
-  destinataire: "Madame la Directrice",
-  fonction: "Direction des relations sociales",
-  adresse: "Siège de la compagnie\n95700 Roissy-en-France",
-  "date-lettre": "Roissy, le 16 novembre 2026",
-  objet: "Objet : Demande de réunion sur les conditions de travail des PNC",
-  courrier: "Madame la Directrice,\n\nNous souhaitons vous rencontrer pour échanger sur les conditions de travail des personnels navigants commerciaux.\n\nPlusieurs collègues nous ont fait part de difficultés liées à l’organisation des rotations. Nous aimerions vous présenter leurs retours et examiner avec vous les mesures envisageables.\n\nPourriez-vous nous proposer un créneau de réunion au cours des prochaines semaines ?\n\nNous vous prions d’agréer, Madame la Directrice, nos salutations respectueuses.",
-  signataire: "Camille Martin",
-  mandat: "Pour la section UNAC Air France"
+  destinataire: "Lorem ipsum",
+  fonction: "Dolor sit amet",
+  adresse: "Consectetur adipiscing elit\nSed do eiusmod tempor",
+  "date-lettre": "Lorem ipsum, 16 novembre 2026",
+  objet: "Objet : Lorem ipsum dolor sit amet",
+  courrier: "Lorem ipsum dolor sit amet,\n\nConsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+  signataire: "Lorem ipsum",
+  mandat: "Dolor sit amet"
 };
 const lieuInitial = champs.lieu.defaultValue.trim();
 const apercus = [...document.querySelectorAll("[data-apercu]")];
