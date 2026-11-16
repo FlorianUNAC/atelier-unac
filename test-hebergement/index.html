@@ -162,6 +162,9 @@
   .social.couverture .note svg{width:22px;height:22px}
   .social .social-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;width:100%;max-width:880px;margin-inline:auto}
   .social .social-photos.seule{grid-template-columns:1fr}
+  .social .social-photos.dense{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .social .social-position{position:absolute;right:61px;bottom:16px;margin:0;font-size:25px;font-weight:700;color:var(--mag)}
+  .social.couverture .social-position{color:#fff}
   .social-photos div{aspect-ratio:1;border-radius:22%;overflow:hidden;background:#949494}
   .social-photos img{display:block;width:100%;height:100%;object-fit:cover}
 
@@ -395,19 +398,22 @@ function apercuCarrousel(box, exemple){
   for(const [cle, titre] of SECTIONS){
     if(S[cle].trim()) ajouterTexte(`<h2 class="social-titre sec"><span class="pill">${IC[cle]}${titre}</span></h2>`, S[cle].trim());
   }
-  for(let i = 0; i < S.photos.length; i += 4){
-    const photos = S.photos.slice(i, i + 4);
+  if(S.photos.length){
+    const disposition = S.photos.length === 1 ? " seule" : S.photos.length > 4 ? " dense" : "";
     const page = diapositive();
-    page.insertAdjacentHTML("beforeend", `<h2 class="social-titre sec"><span class="pill">Photos</span></h2><div class="social-photos${photos.length === 1 ? " seule" : ""}">
-      ${photos.map(src => src === "#" ? "<div></div>" : `<div><img src="${esc(src)}" alt=""></div>`).join("")}</div>`);
+    page.insertAdjacentHTML("beforeend", `<h2 class="social-titre sec"><span class="pill">Photos</span></h2><div class="social-photos${disposition}">
+      ${S.photos.map(src => src === "#" ? "<div></div>" : `<div><img src="${esc(src)}" alt=""></div>`).join("")}</div>`);
     ajouter(page);
   }
   if(S.bilan.trim()) ajouterTexte(`<h2 class="social-titre social-titre-bilan"><img src="img/bilan.svg" alt="Bilan"><img src="img/dutest.svg" alt="du test"></h2>`, S.bilan.trim());
   const sc = Math.min(1, Math.max(1, box.parentElement.clientWidth - 40) / 1080);
-  for(const w of box.children){
+  const total = box.children.length;
+  for(const [i, w] of Array.from(box.children).entries()){
+    const page = w.firstElementChild;
+    page.insertAdjacentHTML("beforeend", `<p class="social-position" aria-label="Carte ${i+1} sur ${total}">${i+1} / ${total}</p>`);
     w.style.width = `${1080*sc}px`;
     w.style.height = `${1350*sc}px`;
-    w.firstElementChild.style.transform = `scale(${sc})`;
+    page.style.transform = `scale(${sc})`;
   }
 }
 function renderPreview(){
