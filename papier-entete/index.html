@@ -7,8 +7,9 @@
 <title>Papier à en-tête UNAC · Atelier UNAC</title>
 <link rel="icon" href="../commun/icons-atelier/favicon.png">
 <script src="../commun/acces.js"></script>
-<link rel="stylesheet" href="papier.css?v=signature">
-<script src="papier.js?v=signature" defer></script>
+<link rel="stylesheet" href="papier.css?v=import-courrier">
+<script src="papier.js?v=import-courrier" defer></script>
+<script src="import-courrier.js" defer></script>
 </head>
 <body>
 <main class="atelier">
@@ -17,6 +18,13 @@
   <div class="espace">
     <form class="editeur" autocomplete="off">
       <p>Renseignez les champs utiles ou imprimez le modèle vierge. Pour obtenir un PDF, choisissez « Enregistrer au format PDF » dans la fenêtre d’impression.</p>
+      <section class="import-courrier" aria-labelledby="titre-import-courrier">
+        <h2 id="titre-import-courrier">Importer un courrier</h2>
+        <label for="fichier-courrier">Fichier Word (.docx) ou PDF avec texte sélectionnable</label>
+        <input id="fichier-courrier" type="file" accept=".docx,.pdf" aria-describedby="aide-import-courrier">
+        <p id="aide-import-courrier">Le texte s’ajoute au corps du courrier et reste modifiable. Le fichier reste dans votre navigateur.</p>
+        <p id="etat-import-courrier" role="status" hidden></p>
+      </section>
       <label>Destinataire<input data-champ="destinataire" maxlength="160"></label>
       <label>Fonction du destinataire<input data-champ="fonction" maxlength="160"></label>
       <label>Adresse du destinataire<textarea data-champ="adresse" rows="2" maxlength="500"></textarea></label>

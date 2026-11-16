@@ -26,7 +26,10 @@ label { display: grid; gap: 5px; margin-bottom: 12px; font-weight: 700; font-siz
 input, textarea, button { font: inherit; }
 input, textarea { width: 100%; min-width: 0; border: 1px solid #b49da7; border-radius: 6px; padding: 8px; color: inherit; background: #fff; font-weight: 400; }
 textarea { resize: vertical; }
-#fichier-signature { margin-bottom: 6px; }
+#fichier-signature, #fichier-courrier { margin-bottom: 6px; }
+.import-courrier { border-bottom: 1px solid #dfd1d8; margin-bottom: 16px; }
+.import-courrier h2 { margin: 0 0 8px; font-size: 1rem; }
+.import-courrier [data-erreur] { color: #8a1745; }
 #erreur-signature { color: #8a1745; }
 .ligne { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; }
