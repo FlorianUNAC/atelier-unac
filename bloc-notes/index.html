@@ -170,6 +170,9 @@
     body:not(.tab-apercu) .preview{display:none}
     .form{border-right:0;padding:12px 12px 80px}
   }
+  .filigrane{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:60;overflow:hidden}
+  .filigrane span{transform:rotate(-28deg);font-weight:800;letter-spacing:.1em;color:rgba(140,120,130,.22);font-size:var(--fz,150px);white-space:nowrap}
+  .pv-meta .ex,#pvMeta .ex{display:inline-block;background:#F7D160;color:#4f1a30;font-weight:700;border-radius:999px;padding:2px 10px;margin-right:6px}
 </style>
 </head>
 <body>
@@ -354,7 +357,30 @@ function buildPages(box){
 }
 let pvT = null;
 function schedulePreview(){ clearTimeout(pvT); pvT = setTimeout(renderPreview, 220); }
+
+/* ---------- Aperçu d'exemple : tant que rien n'est saisi, on montre un document type (filigrane « EXEMPLE ») ---------- */
+function exempleDoc(){
+  const d = blank();
+  d.important = {actif:true, titreA:"Attribution des", titreB:"blocs réserve", texte:"À compter des TDS d’octobre 2025, les blocs réserve seront positionnés sur vos plannings après le **DDA2** et son rattrapage."};
+  d.items = [
+    {id:uid(), rubrique:"Plannings", titreA:"Attribution des", titreB:"blocs réserve", texte:"À compter des TDS d’octobre 2025, les blocs réserve seront positionnés sur vos plannings après le DDA2 et son rattrapage."},
+    {id:uid(), rubrique:"Rémunération", titreA:"Prime", titreB:"de fin d’année", texte:"Le versement interviendra sur la paie de décembre. Vérifiez la ligne correspondante sur votre bulletin."},
+    {id:uid(), rubrique:"Hébergement", titreA:"Commission", titreB:"hébergement LC", texte:"Le compte rendu du mois est disponible auprès de vos délégués et sur l’appli UNAC."},
+    {id:uid(), rubrique:"Repos & congés", titreA:"Demandes de", titreB:"congés d’été", texte:"La campagne de demandes ouvre le 1er décembre. Pensez à saisir vos vœux dans les délais."}
+  ];
+  return d;
+}
+const enExemple = () => S && S.statut !== "publie" && !hasContent(S);
 function renderPreview(){
+  const vide = enExemple(), garde = S;
+  if(vide) S = exempleDoc();
+  try{ renderPreviewReel(); } finally { S = garde; }
+  if(vide){
+    document.querySelectorAll("#pages .page").forEach(p => { const f = document.createElement("div"); f.className = "filigrane"; f.innerHTML = "<span>EXEMPLE</span>"; p.appendChild(f); });
+    const m = document.getElementById("pvMeta"); if(m) m.innerHTML = `<span class="ex">Exemple de rendu</span>Remplissez les champs${document.getElementById("impOpen") || document.getElementById("aImport") ? " ou importez des notes" : ""} : votre contenu remplacera cet exemple.`;
+  }
+}
+function renderPreviewReel(){
   const stage = document.createElement("div"); stage.style.cssText = "position:fixed;left:-20000px;top:0;visibility:hidden;width:900px"; document.body.appendChild(stage);
   let best = null;
   for(let i=0;i<DENSITES.length;i++){ DENS = DENSITES[i]; const n = buildPages(stage); if(!best || n < best.n) best = {i, n}; if(n === 1) break; }
@@ -374,7 +400,7 @@ window.addEventListener("resize", fitPreview);
 let tab = "saisie";
 function syncTab(){ document.body.classList.toggle("tab-apercu", tab === "apercu"); document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === tab)); if(tab === "apercu") fitPreview(); }
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if(b){ tab = b.dataset.tab; syncTab(); } });
-$("#pdfBtn").addEventListener("click", async () => {
+$("#pdfBtn").addEventListener("click", async () => { if(enExemple()) return toast("Remplissez d’abord le document : l’aperçu n’est qu’un exemple");
   renderPreview(); if(document.fonts) await document.fonts.ready;
   await Promise.all([...document.querySelectorAll("#pages img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
   const old = document.title; document.title = `Bloc’ Notes UNAC - ${moisLabel(S.mois)}`; document.body.classList.add("tab-apercu");
@@ -382,7 +408,7 @@ $("#pdfBtn").addEventListener("click", async () => {
 });
 window.nomExport = () => `Bloc-Notes-${HOP ? "UNAC-HOP" : "UNAC"}-${moisLabel(S.mois).replace(/\s+/g, "-")}`;
 window.titreExport = () => `Bloc’ Notes ${NOM_SECTION} · ${moisLabel(S.mois)}`;
-$("#imgBtn").addEventListener("click", () => exportImages());
+$("#imgBtn").addEventListener("click", () => { if(enExemple()) return toast("Remplissez d’abord le document : l’aperçu n’est qu’un exemple"); return exportImages(); });
 
 /* ---------- Publication, historique, nouveau ---------- */
 function publier(){
@@ -457,14 +483,7 @@ $("#fileJson").addEventListener("change", async e => { const f = e.target.files[
 $("#aDemo").addEventListener("click", () => {
   menu.classList.remove("open");
   if(S.statut === "publie" || hasContent(S)){ if(!confirm("Ouvrir l'exemple dans un nouveau Bloc’ Notes ?")) return; }
-  const d = blank();
-  d.important = {actif:true, titreA:"Attribution des", titreB:"blocs réserve", texte:"À compter des TDS d’octobre 2025, les blocs réserve seront positionnés sur vos plannings après le **DDA2** et son rattrapage."};
-  d.items = [
-    {id:uid(), rubrique:"Plannings", titreA:"Attribution des", titreB:"blocs réserve", texte:"À compter des TDS d’octobre 2025, les blocs réserve seront positionnés sur vos plannings après le DDA2 et son rattrapage."},
-    {id:uid(), rubrique:"Rémunération", titreA:"Prime", titreB:"de fin d’année", texte:"Le versement interviendra sur la paie de décembre. Vérifiez la ligne correspondante sur votre bulletin."},
-    {id:uid(), rubrique:"Hébergement", titreA:"Commission", titreB:"hébergement LC", texte:"Le compte rendu du mois est disponible auprès de vos délégués et sur l’appli UNAC."},
-    {id:uid(), rubrique:"Repos & congés", titreA:"Demandes de", titreB:"congés d’été", texte:"La campagne de demandes ouvre le 1er décembre. Pensez à saisir vos vœux dans les délais."}
-  ];
+  const d = exempleDoc(); d.id = uid();
   openDoc(d);
 });
 
