@@ -122,6 +122,7 @@
   .hd .bntitre{position:absolute;left:48px;top:106px;height:31px;width:auto}
   .hd .sous{position:absolute;left:49px;top:146px;font-size:14px;color:#9d9d9d}
   .hd .ed{position:absolute;right:48px;top:150px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mag);font-weight:700}
+  .hd .logoaf{position:absolute;right:52px;top:34px;height:96px}
   .hd .logohop{position:absolute;right:48px;top:30px;height:104px}
   .hd .ligne{position:absolute;left:0;right:0;top:183px;height:3px;background:linear-gradient(90deg,#C2286A 0%,#C2286A 35%,rgba(194,40,106,.15) 85%,rgba(194,40,106,0) 100%)}
   .impb{flex:none;margin:26px 0 8px}
@@ -333,7 +334,7 @@ function newPage(box, idx){
   const p = document.createElement("section"); p.className = "page " + (idx ? "cont" : "first");
   p.style.cssText = `--gap:${DENS.gap}px;--pad:${DENS.pad}px;--ft:${DENS.ft}px;--fx:${DENS.fx}px`;
   p.innerHTML = (idx ? "" : `<div class="hd"><img class="plume" src="../commun/img/plume-main.png" alt="">${TITRE_SVG}<div class="sous">${esc(S.sous)}</div>
-      <div class="ed">${esc([S.edition, cap(moisLabel(S.mois))].filter(Boolean).join(" · "))}</div><div class="ligne"></div>${HOP ? `<img class="logohop" src="../commun/img/logo-unac-hop-couleur.png" alt="UNAC HOP!">` : ""}</div>`)
+      <div class="ed">${esc([S.edition, cap(moisLabel(S.mois))].filter(Boolean).join(" · "))}</div><div class="ligne"></div>${HOP ? `<img class="logohop" src="../commun/img/logo-unac-hop-couleur.png" alt="UNAC HOP!">` : `<img class="logoaf" src="../commun/img/logo-unac-mag.png" alt="UNAC">`}</div>`)
     + `<div class="content"></div><div class="bottomgap"></div><div class="foot"><span></span><span></span></div>`;
   w.appendChild(p); box.appendChild(w); return p.querySelector(".content");
 }
