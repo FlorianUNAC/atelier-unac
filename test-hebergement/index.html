@@ -143,6 +143,7 @@
   <div class="mhead"><h3>Importer le compte rendu du test</h3><button class="mclose" data-x aria-label="Fermer">×</button></div>
   <div class="mbody" id="impBody">
     <p class="mintro">Déposez le compte rendu du test (PDF, Word ou texte) ou collez-le ci-dessous. L'outil repère l'escale, l'hôtel, la note et range le texte dans <b>Localisation, Restauration, Chambre, Facilités</b> et <b>Bilan</b> grâce aux titres du document. La mise en page s'ajuste ensuite toute seule. Rien ne quitte l'appareil.</p>
+    <p class="mintro" style="margin-top:-6px">📄 Pour un import sans retouche, faites remplir le <a href="formulaire-test-hebergement.pdf" download><b>formulaire PDF du délégué testeur</b></a>.</p>
     <label class="drop" id="drop"><input type="file" id="impFile" accept=".pdf,.docx,.txt,.md,text/plain,application/pdf" hidden><b>Choisir un fichier</b><span>ou le glisser ici · PDF, Word (.docx), texte</span></label>
     <label class="f" style="margin-top:14px">… ou coller le texte</label>
     <textarea id="impTxt" rows="7" placeholder="Escale : JNB&#10;Hôtel : …&#10;Note : 4/5&#10;Localisation : …&#10;Restauration : …&#10;Chambre : …&#10;Facilités : …&#10;Bilan : …"></textarea>
@@ -191,6 +192,7 @@ function moisOptions(){
 function renderForm(){
   const rv = refVille(S.type, S.code);
   $("#form").innerHTML = `
+  <div class="card" style="display:flex;gap:12px;align-items:center;background:#fdf3f7;border-color:#f0cfe0"><div style="flex:1;font-size:13px;line-height:1.4"><b>Formulaire du délégué testeur</b><br><span style="color:#8b6f80">PDF à remplir, puis à importer ici avec « Importer un CR ».</span></div><a class="mbtn" href="formulaire-test-hebergement.pdf" download style="text-decoration:none;white-space:nowrap">Télécharger</a></div>
   <div class="card"><h2>Le test</h2>
     <div class="row"><div><label class="f">Réseau</label><select data-k="type"><option ${S.type==="LC"?"selected":""}>LC</option><option ${S.type==="MC"?"selected":""}>MC</option></select></div>
     <div><label class="f">Mois</label><select data-k="mois">${moisOptions()}</select></div></div>
@@ -299,6 +301,21 @@ const RUBRIQUES = [
 ];
 const loadedS = {};
 const loadScript = src => loadedS[src] || (loadedS[src] = new Promise((ok, ko) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => ko(new Error("chargement impossible")); document.head.appendChild(s); }));
+// Formulaire PDF remplissable de l'UNAC : lecture directe des champs
+async function champsFormulaire(file){
+  await loadScript("../commun/vendor/pdf.min.js"); pdfjsLib.GlobalWorkerOptions.workerSrc = "../commun/vendor/pdf.worker.min.js";
+  const pdf = await pdfjsLib.getDocument({data: new Uint8Array(await file.arrayBuffer())}).promise;
+  const fo = await pdf.getFieldObjects(); if(!fo || !fo.localisation || !fo.bilan) return null;
+  const v = k => { const a = fo[k]; if(!a) return ""; const x = a.map(o => o.value).find(x => x && x !== "Off" && x !== "-"); return String(x || "").replace(/^\//, "").trim(); };
+  const lignes = [`Escale : ${v("escale")} ${v("ville")}`, `Hôtel : ${v("hotel")}`, `Note : ${v("note")}`, `Mois : ${v("mois")}`, v("reseau") === "MC" ? "moyen-courrier" : v("reseau") === "LC" ? "long-courrier" : ""];
+  const r = analyser(lignes.join("\n"));
+  Object.assign(r, {loc:v("localisation"), resto:v("restauration"), chambre:v("chambre"), fac:v("facilites"), bilan:v("bilan"), libre:""});
+  if(v("reseau")) r.type = v("reseau");
+  const code = v("escale").toUpperCase().replace(/[^A-Z]/g, "");
+  if(code.length === 3){ r.code = code; r.ville = refVille("LC", code) || refVille("MC", code) ? "" : v("ville"); }
+  else if(v("ville")){ r.code = ""; r.ville = v("ville"); }
+  r.formulaire = true; return r;
+}
 async function texteFichier(file){
   const n = file.name.toLowerCase();
   if(n.endsWith(".pdf") || file.type === "application/pdf"){
@@ -321,8 +338,10 @@ function analyser(text){
   const lignes = text.split(/\r?\n/).map(l => l.replace(/[ \t]+/g, " ").trim());
   const out = {loc:[], resto:[], chambre:[], fac:[], bilan:[], libre:[]}; let cur = null;
   const meta = {};
+  const FIXES = ["quartier, temps de transfert","petit-dejeuner (horaires), restaurant","taille, literie, calme","wifi, salle de sport, piscine","avis global des delegues","formulaire du delegue testeur","remplissez les champs","photos : jusqu","pour la version publique","ne modifiez pas","unac · commission hebergement","test d'un","test d’un","nouvel hebergement","bilandu test"];
   lignes.forEach(l => {
     if(!l){ return; }
+    if(FIXES.some(f => normTxt(l).startsWith(f))) return;
     const nu = l.replace(/^([-•*·▪►>]+|\d+[.)]|[a-z][.)])\s*/i, "");
     const n = normTxt(nu).replace(/^\W+/, "");
     let trouve = null;
@@ -366,14 +385,16 @@ function analyser(text){
 function montrer(r){
   IMP = r; const v = r.code ? `${r.code} · ${refVille(r.type || "LC", r.code) || refVille("MC", r.code)}` : (r.ville || "");
   const L = (n, x) => `<div><span>${n}</span>${x ? `<pre>${esc(x)}</pre>` : `<span class="vide">non trouvé</span>`}</div>`;
-  $("#impRes").innerHTML = `<div class="ires">${L("Escale", v)}${L("Réseau", r.type)}${L("Mois", r.mois ? moisLabel(r.mois) : "")}${L("Hôtel", r.hotel)}${L("Note", r.note ? "★".repeat(r.note) + ` (${r.note}/5)` : "")}
+  $("#impRes").innerHTML = (r.formulaire ? `<p class="hint" style="color:#23764a;margin:12px 0 0">✓ Formulaire UNAC reconnu : champs lus directement.</p>` : "") + `<div class="ires">${L("Escale", v)}${L("Réseau", r.type)}${L("Mois", r.mois ? moisLabel(r.mois) : "")}${L("Hôtel", r.hotel)}${L("Note", r.note ? "★".repeat(r.note) + ` (${r.note}/5)` : "")}
     ${SECTIONS.map(([k,n]) => L(n, r[k])).join("")}${L("Bilan", r.bilan)}${r.libre ? `<div><span>Non classé</span><pre style="color:#8b6f80">${esc(r.libre)}</pre></div>` : ""}</div>
     ${r.libre ? `<label class="chk"><input type="checkbox" id="impLibre"> Ajouter le texte non classé au bilan</label>` : ""}
     <p class="hint">Seuls les éléments trouvés remplacent la saisie actuelle. Les photos sont conservées.</p>`;
   $("#impOk").disabled = !(r.code || r.ville || r.hotel || r.loc || r.resto || r.chambre || r.fac || r.bilan);
 }
 async function lireFichier(f){ if(!f) return; $("#impRes").innerHTML = `<p class="mintro">Lecture de « ${esc(f.name)} »…</p>`;
-  try{ const t = await texteFichier(f); $("#impTxt").value = t.trim(); montrer(analyser(t)); }catch(e){ $("#impRes").innerHTML = `<p class="mintro" style="color:#a3263b">Fichier illisible : ${esc(e.message)}. Copiez-collez le texte à la place.</p>`; } }
+  try{
+    if(/\.pdf$/i.test(f.name) || f.type === "application/pdf"){ const r = await champsFormulaire(f).catch(() => null); if(r){ $("#impTxt").value = ""; montrer(r); return; } }
+    const t = await texteFichier(f); $("#impTxt").value = t.trim(); montrer(analyser(t)); }catch(e){ $("#impRes").innerHTML = `<p class="mintro" style="color:#a3263b">Fichier illisible : ${esc(e.message)}. Copiez-collez le texte à la place.</p>`; } }
 $("#impBtn").addEventListener("click", () => { IMP = null; $("#impRes").innerHTML = ""; $("#impTxt").value = ""; $("#impOk").disabled = true; IM.classList.add("on"); });
 IM.addEventListener("click", e => { if(e.target === IM || e.target.hasAttribute("data-x")) IM.classList.remove("on"); });
 $("#impFile").addEventListener("change", e => { lireFichier(e.target.files[0]); e.target.value = ""; });
