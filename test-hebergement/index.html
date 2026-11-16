@@ -70,6 +70,12 @@
   .mfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--ui-line)}
   .mbtn{border:1px solid var(--ui-line);background:#fff;border-radius:9px;padding:9px 14px;font-weight:700;cursor:pointer}
   .mbtn.pri{background:#9b2f60;border-color:#9b2f60;color:#fff}
+  .confirmation-export{position:fixed;inset:0;margin:auto;width:min(460px,calc(100% - 32px));border:0;border-radius:16px;color:var(--ui-ink);box-shadow:0 20px 60px #0005}
+  .confirmation-export::backdrop{background:rgba(30,6,20,.55)}
+  .confirmation-export .mfoot{flex-wrap:wrap;justify-content:flex-end}
+  .confirmation-export .mfoot button:first-child{margin-right:auto}
+  .confirmation-export ul{margin:0 0 12px;padding-left:20px;line-height:1.55}
+  .confirmation-export .mintro:last-child{margin-bottom:0}
   .mintro{font-size:13.5px;color:#5d4252;line-height:1.45;margin-bottom:14px}
   .imgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
   .imgrid a{display:block;text-decoration:none;color:var(--ui-muted);font-size:12px;text-align:center}
@@ -206,6 +212,25 @@
   </div>
   <div class="mfoot"><button class="mbtn" id="impAnalyse">Analyser le texte collé</button><button class="mbtn pri" id="impOk" disabled>Appliquer au visuel</button></div>
 </div></div>
+
+<dialog class="confirmation-export" id="confirmationExport" aria-labelledby="titreConfirmationExport">
+  <form method="dialog">
+    <div class="mhead"><h3 id="titreConfirmationExport">Confirmer la version à télécharger</h3></div>
+    <div class="mbody">
+      <p class="mintro" id="versionApercu"></p>
+      <ul>
+        <li><strong>Adhérents</strong> · Le nom de l’hôtel est visible.</li>
+        <li><strong>Public</strong> · Le nom de l’hôtel est masqué dans le bandeau ou sur la couverture.</li>
+      </ul>
+      <p class="mintro">Pour une diffusion publique, vérifiez aussi que les photos et les commentaires ne permettent pas d’identifier l’hôtel.</p>
+    </div>
+    <div class="mfoot">
+      <button class="mbtn" value="annuler" autofocus>Annuler</button>
+      <button class="mbtn" value="adherents">Adhérents</button>
+      <button class="mbtn pri" value="public">Public</button>
+    </div>
+  </form>
+</dialog>
 
 <script src="../commun/escales.js"></script>
 <script>
@@ -446,14 +471,36 @@ function renderPreview(){
 }
 window.addEventListener("resize", () => { clearTimeout(pvT); pvT = setTimeout(renderPreview, 150); });
 
-$("#vers").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if(!b) return; VERSION = b.dataset.v; $("#vers").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); renderPreview(); });
+function choisirVersion(version){
+  VERSION = version;
+  $("#vers").querySelectorAll("[data-v]").forEach(b => b.classList.toggle("on", b.dataset.v === version));
+}
+$("#vers").addEventListener("click", e => {
+  const bouton = e.target.closest("[data-v]");
+  if(!bouton) return;
+  choisirVersion(bouton.dataset.v);
+  renderPreview();
+});
 $("#formatVisuel").addEventListener("change", renderPreview);
 $("#resetBtn").addEventListener("click", () => { if(!confirm("Effacer ce test et recommencer ?")) return; S = blank(); changed(true); });
 window.EXPORT_LARGEUR = 1080;
 if(HOP){ $("#h1").firstChild.textContent = "Test d'un nouvel hébergement HOP! "; document.title = "Test d'un nouvel hébergement HOP! · Atelier UNAC"; }
 window.nomExport = () => `Test-hebergement-${$("#formatVisuel").value === "carrousel" ? "carrousel-" : ""}${HOP ? "HOP-" : ""}${S.type}-${(villeAff() || "escale").replace(/\s+/g,"-")}-${moisLabel(S.mois).replace(/\s+/g,"-")}-${VERSION === "public" ? "public" : "adherents"}`;
 window.titreExport = () => `Test d'un nouvel hébergement · ${villeAff()}`;
-$("#imgBtn").addEventListener("click", () => { if(estVide()) return toast("Remplissez d'abord le test : l'aperçu n'est qu'un exemple"); exportImages(); });
+const confirmationExport = $("#confirmationExport");
+$("#imgBtn").addEventListener("click", () => {
+  if(estVide()) return toast("Remplissez d'abord le test : l'aperçu n'est qu'un exemple");
+  $("#versionApercu").textContent = `Version affichée dans l’aperçu : ${VERSION === "public" ? "Public" : "Adhérents"}.`;
+  confirmationExport.showModal();
+});
+confirmationExport.querySelector("form").addEventListener("submit", e => {
+  e.preventDefault();
+  confirmationExport.close();
+  const version = e.submitter?.value;
+  if(version !== "adherents" && version !== "public") return;
+  choisirVersion(version);
+  exportImages();
+});
 
 
 /* ---------- Import d'un compte rendu ---------- */
