@@ -73,6 +73,14 @@
   .imgrid a{display:block;text-decoration:none;color:var(--ui-muted);font-size:12px;text-align:center}
   .imgrid img{width:100%;display:block;border-radius:8px;box-shadow:0 4px 14px rgba(40,0,25,.25);margin-bottom:6px}
   .tabs{display:none}
+  .importbtn{width:100%;display:flex;gap:12px;align-items:center;text-align:left;border:0;cursor:pointer;margin-bottom:12px;padding:13px 14px;border-radius:14px;color:#fff;background:linear-gradient(100deg,#a8376a,#7a2a4e)}
+  .importbtn svg{width:26px;height:26px;flex:none}
+  .importbtn b{display:block;font-size:14.5px}
+  .importbtn small{display:block;font-size:12px;opacity:.85;margin-top:2px}
+  .formdl{display:flex;gap:10px;align-items:center;margin:-4px 0 12px;font-size:12.5px;color:#8b6f80;line-height:1.35;padding:0 4px}
+  .formdl a{color:#7a2a4e;font-weight:700;white-space:nowrap}
+  .page.exemple::after{content:"EXEMPLE";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-28deg);font-size:190px;font-weight:800;letter-spacing:.08em;color:rgba(122,42,78,.10);pointer-events:none;white-space:nowrap}
+  .pv-meta .ex{display:inline-block;background:#F7D160;color:#4f1a30;font-weight:700;border-radius:999px;padding:3px 10px;margin-right:6px}
   .drop{display:flex;flex-direction:column;align-items:center;gap:4px;border:2px dashed var(--ui-line);border-radius:14px;padding:22px;cursor:pointer;text-align:center;color:var(--ui-muted)}
   .drop b{color:#7a2a4e;font-size:15px}
   .drop.over{border-color:#c8487f;background:#fdf3f7}
@@ -130,7 +138,6 @@
   <h1>Test d'un nouvel hébergement<small>Post Facebook / Instagram · commission hébergement</small></h1>
   <div class="sp"></div>
   <div class="seg" id="vers" title="Version"><button data-v="adherents" class="on">Adhérents</button><button data-v="public">Public</button></div>
-  <button class="btn ghost" id="impBtn" title="Importer le compte rendu du test (PDF, Word, texte)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></svg><span class="lg">Importer un CR</span></button>
   <button class="btn ghost" id="resetBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span class="lg">Recommencer</span></button>
   <button class="btn pdf" id="imgBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Télécharger</button>
 </div>
@@ -192,7 +199,8 @@ function moisOptions(){
 function renderForm(){
   const rv = refVille(S.type, S.code);
   $("#form").innerHTML = `
-  <div class="card" style="display:flex;gap:12px;align-items:center;background:#fdf3f7;border-color:#f0cfe0"><div style="flex:1;font-size:13px;line-height:1.4"><b>Formulaire du délégué testeur</b><br><span style="color:#8b6f80">PDF à remplir, puis à importer ici avec « Importer un CR ».</span></div><a class="mbtn" href="formulaire-test-hebergement.pdf" download style="text-decoration:none;white-space:nowrap">Télécharger</a></div>
+  <button class="importbtn" id="impBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 18v-6M9 14l3-3 3 3"/></svg><span><b>Importer le compte rendu du test</b><small>Formulaire du délégué testeur, PDF, Word ou texte collé : les rubriques sont remplies automatiquement</small></span></button>
+  <div class="formdl">Pas encore de compte rendu ? Faites remplir le formulaire du délégué testeur. <a href="formulaire-test-hebergement.pdf" download>Télécharger le PDF</a></div>
   <div class="card"><h2>Le test</h2>
     <div class="row"><div><label class="f">Réseau</label><select data-k="type"><option ${S.type==="LC"?"selected":""}>LC</option><option ${S.type==="MC"?"selected":""}>MC</option></select></div>
     <div><label class="f">Mois</label><select data-k="mois">${moisOptions()}</select></div></div>
@@ -253,7 +261,7 @@ function pageHTML(){
     ${S.note ? `<div class="note">${[1,2,3,4,5].map(n => STAR(n <= S.note ? "#F2A91D" : "#E3E3E3")).join("")}</div>` : ""}
     <div class="corps">
       ${secs.length ? `<div class="secs">${secs.map(([k,n]) => `<div class="sec"><span class="pill">${IC[k]}${n}</span><p>${riche(S[k].trim())}</p></div>`).join("")}</div>` : ""}
-      ${S.photos.length ? `<div class="phs">${S.photos.map(p => `<div><img src="${p}" alt=""></div>`).join("")}</div>` : ""}
+      ${S.photos.length ? `<div class="phs">${S.photos.map(p => p === "#" ? `<div></div>` : `<div><img src="${p}" alt=""></div>`).join("")}</div>` : ""}
       ${S.bilan.trim() ? `<div class="bilan"><div class="bt"><img src="img/bilan.svg" alt="Bilan"><img src="img/dutest.svg" alt="du test"></div><p>${riche(S.bilan.trim())}</p></div>` : ""}
     </div>
   </section>`;
@@ -265,14 +273,26 @@ function ajuste(p){
   if(!fits()){ for(let i = 0; i < 14; i++){ const m = (lo+hi)/2; p.style.setProperty("--k", m); if(fits()) lo = m; else hi = m; } p.style.setProperty("--k", lo); }
   p.classList.remove("mesure"); return +p.style.getPropertyValue("--k");
 }
+// Document vide : on montre un exemple de rendu (filigrane « EXEMPLE »), pour savoir à quoi s'attendre
+const EXEMPLE = {type:"LC", code:"JNB", ville:"", hotel:"Nom de l'hôtel testé", note:4,
+  loc:"Quartier, temps de transfert depuis l'aéroport, transports, **sécurité aux abords**.",
+  resto:"Horaires du **petit-déjeuner**, restaurant, room service, possibilités autour de l'hôtel.",
+  chambre:"Taille, **literie**, calme, propreté, occultation, climatisation.",
+  fac:"Wifi, salle de sport, piscine, blanchisserie, réception 24h/24.",
+  photos:["#","#","#","#","#","#"],
+  bilan:"Avis global des délégués : **hôtel retenu ou non**, réserves éventuelles et suite donnée par la commission."};
+const estVide = () => !(S.code || S.ville || S.hotel || S.note || S.loc || S.resto || S.chambre || S.fac || S.bilan || S.photos.length);
 function renderPreview(){
   const box = $("#pages"); box.innerHTML = "";
+  const vide = estVide(), garde = S;
+  if(vide) S = Object.assign({}, garde, EXEMPLE, {mois:garde.mois, type:garde.type, code:garde.type === "MC" ? "NCE" : "JNB"});
   const w = document.createElement("div"); w.className = "pwrap"; w.innerHTML = pageHTML(); box.appendChild(w);
+  S = garde; if(vide) w.firstElementChild.classList.add("exemple");
   const p = w.firstElementChild, pv = box.parentElement;
   const sc = Math.min(1, (pv.clientWidth - 40) / 1080);
   p.style.transform = "none"; const k = ajuste(p);
   w.style.width = 1080*sc + "px"; w.style.height = 1768*sc + "px"; p.style.transform = `scale(${sc})`;
-  $("#pvMeta").textContent = `1080 × 1768 px · version ${VERSION === "public" ? "publique (nom de l'hôtel masqué)" : "adhérents"}` + (k < 0.75 ? " · beaucoup de texte : pensez à raccourcir" : "");
+  $("#pvMeta").innerHTML = (vide ? `<span class="ex">Exemple de rendu</span>Remplissez les champs ou importez un compte rendu : votre contenu remplacera cet exemple. · ` : "") + `1080 × 1768 px · version ${VERSION === "public" ? "publique (nom de l'hôtel masqué)" : "adhérents"}` + (k < 0.75 ? " · beaucoup de texte : pensez à raccourcir" : "");
   p.querySelectorAll("img").forEach(im => { if(!im.complete) im.addEventListener("load", () => { p.style.transform = "none"; ajuste(p); p.style.transform = `scale(${sc})`; }, {once:true}); });
 }
 window.addEventListener("resize", () => { clearTimeout(pvT); pvT = setTimeout(renderPreview, 150); });
@@ -282,7 +302,7 @@ $("#resetBtn").addEventListener("click", () => { if(!confirm("Effacer ce test et
 window.EXPORT_LARGEUR = 1080;
 window.nomExport = () => `Test-hebergement-${S.type}-${(villeAff() || "escale").replace(/\s+/g,"-")}-${moisLabel(S.mois).replace(/\s+/g,"-")}-${VERSION === "public" ? "public" : "adherents"}`;
 window.titreExport = () => `Test d'un nouvel hébergement · ${villeAff()}`;
-$("#imgBtn").addEventListener("click", () => exportImages());
+$("#imgBtn").addEventListener("click", () => { if(estVide()) return toast("Remplissez d'abord le test : l'aperçu n'est qu'un exemple"); exportImages(); });
 
 
 /* ---------- Import d'un compte rendu ---------- */
@@ -395,7 +415,7 @@ async function lireFichier(f){ if(!f) return; $("#impRes").innerHTML = `<p class
   try{
     if(/\.pdf$/i.test(f.name) || f.type === "application/pdf"){ const r = await champsFormulaire(f).catch(() => null); if(r){ $("#impTxt").value = ""; montrer(r); return; } }
     const t = await texteFichier(f); $("#impTxt").value = t.trim(); montrer(analyser(t)); }catch(e){ $("#impRes").innerHTML = `<p class="mintro" style="color:#a3263b">Fichier illisible : ${esc(e.message)}. Copiez-collez le texte à la place.</p>`; } }
-$("#impBtn").addEventListener("click", () => { IMP = null; $("#impRes").innerHTML = ""; $("#impTxt").value = ""; $("#impOk").disabled = true; IM.classList.add("on"); });
+document.addEventListener("click", e => { if(!e.target.closest("#impBtn")) return; IMP = null; $("#impRes").innerHTML = ""; $("#impTxt").value = ""; $("#impOk").disabled = true; IM.classList.add("on"); });
 IM.addEventListener("click", e => { if(e.target === IM || e.target.hasAttribute("data-x")) IM.classList.remove("on"); });
 $("#impFile").addEventListener("change", e => { lireFichier(e.target.files[0]); e.target.value = ""; });
 const dz = $("#drop");
