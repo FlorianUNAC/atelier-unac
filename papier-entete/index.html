@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Papier à en-tête UNAC · Atelier UNAC</title>
+<link rel="icon" href="../commun/icons-atelier/favicon.png">
+<script src="../commun/acces.js"></script>
+<link rel="stylesheet" href="papier.css">
+<script src="papier.js" defer></script>
+</head>
+<body>
+<main class="atelier">
+  <a class="retour" href="../#af">← Atelier UNAC</a>
+  <h1>Papier à en-tête UNAC</h1>
+  <div class="espace">
+    <form class="editeur" autocomplete="off">
+      <p>Renseignez les champs utiles ou imprimez le modèle vierge. Pour obtenir un PDF, choisissez « Enregistrer au format PDF » dans la fenêtre d’impression.</p>
+      <label>Destinataire<input data-champ="destinataire" maxlength="160"></label>
+      <label>Fonction du destinataire<input data-champ="fonction" maxlength="160"></label>
+      <label>Adresse du destinataire<textarea data-champ="adresse" rows="2" maxlength="500"></textarea></label>
+      <div class="ligne">
+        <label>Lieu<input data-champ="lieu" value="Roissy" maxlength="120"></label>
+        <label>Date<input data-champ="date" type="date"></label>
+      </div>
+      <label>Objet<input data-champ="objet" maxlength="240"></label>
+      <label>Corps du courrier<textarea data-champ="courrier" rows="9"></textarea></label>
+      <label>Nom du signataire<input data-champ="signataire" maxlength="160"></label>
+      <label>Fonction du signataire<input data-champ="mandat" maxlength="160"></label>
+      <div class="actions">
+        <button type="submit">Imprimer le courrier</button>
+        <button type="button" id="modele-vierge">Imprimer le modèle vierge</button>
+      </div>
+    </form>
+    <section class="apercu" aria-labelledby="titre-apercu">
+      <h2 id="titre-apercu">Aperçu du courrier</h2>
+      <article class="papier">
+        <header class="entete">
+          <img src="../commun/img/logo-unac-couleur.png" alt="UNAC">
+          <strong>Union des navigants<br>de l’aviation civile</strong>
+        </header>
+        <table class="pagination" role="presentation">
+          <thead aria-hidden="true"><tr><td></td></tr></thead>
+          <tbody><tr><td class="lettre">
+            <div class="coordonnees">
+              <strong data-apercu="destinataire" hidden></strong>
+              <em data-apercu="fonction" hidden></em>
+              <div data-apercu="adresse" hidden></div>
+              <div class="date-lettre" data-apercu="date-lettre" hidden></div>
+            </div>
+            <p class="objet" data-apercu="objet" hidden></p>
+            <div class="courrier" data-apercu="courrier" hidden></div>
+            <div class="signature">
+              <strong data-apercu="signataire" hidden></strong>
+              <em data-apercu="mandat" hidden></em>
+            </div>
+          </td></tr></tbody>
+          <tfoot aria-hidden="true"><tr><td></td></tr></tfoot>
+        </table>
+        <footer class="pied">
+          <address>45 rue de Paris 95747 Tremblay-en-France<br><strong>Bât. Pégase 2e étage aile Sud</strong></address>
+          <img src="../commun/img/logo-unac-blanc.png" alt="">
+        </footer>
+      </article>
+    </section>
+  </div>
+</main>
+</body>
+</html>
