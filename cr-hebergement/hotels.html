@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Liste des hôtels · CR hébergement</title>
+<link rel="icon" href="../commun/icons-atelier/favicon.png">
+<script src="../commun/acces.js"></script>
+<style>
+  @font-face{font-family:"T1";src:url("../commun/polices/x1.woff2") format("woff2");font-weight:400}
+  @font-face{font-family:"T1";src:url("../commun/polices/x2.woff2") format("woff2");font-weight:700 800}
+  :root{--ink:#2b1225;--muted:#8b6f80;--line:#e7dbe2;--mag:#7a2a4e}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"T1",Inter,system-ui,sans-serif;background:#f6f1f4;color:var(--ink)}
+  .top{background:linear-gradient(90deg,#5a1a3a,#8a2a5a);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:14px}
+  .top a{color:#fff;text-decoration:none;font-weight:700;opacity:.85}
+  .top h1{font-size:17px;margin:0}
+  main{max-width:1100px;margin:0 auto;padding:18px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+  .card h2{margin:0 0 6px;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:#a01a55}
+  .card p{margin:4px 0 10px;font-size:13.5px;line-height:1.45;color:#5b4252}
+  .btn{border:0;border-radius:10px;padding:10px 16px;font-weight:700;font-size:14px;cursor:pointer;background:var(--mag);color:#fff}
+  .btn.ghost{background:#fff;color:var(--mag);border:1px solid var(--line)}
+  .btn:disabled{opacity:.45;cursor:default}
+  input[type=password],input[type=text]{border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px;width:100%;font-family:inherit}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .row > *{flex:1 1 240px}
+  .row > .btn{flex:0 0 auto}
+  table{border-collapse:collapse;width:100%;font-size:13px}
+  th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+  th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);position:sticky;top:0;background:#fff}
+  td input,td select{border:1px solid transparent;background:transparent;font:inherit;width:100%;padding:4px;border-radius:6px}
+  td input:hover,td input:focus,td select:hover{border-color:var(--line);background:#fff}
+  .tw{max-height:55vh;overflow:auto;border:1px solid var(--line);border-radius:10px}
+  .warn{color:#b4552a}
+  .ok{color:#2f7a22}
+  .msg{font-size:13.5px;margin-top:8px}
+  .force{height:6px;border-radius:3px;background:var(--line);margin-top:6px;overflow:hidden}
+  .force i{display:block;height:100%;width:0;background:#d43b2e;transition:.2s}
+  small.h{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+  .del{border:0;background:none;color:#b9a2b0;cursor:pointer;font-size:16px}
+</style>
+</head>
+<body>
+<div class="top"><a href="./">← CR hébergement</a><h1>Liste des hôtels (chiffrée)</h1></div>
+<main>
+  <div class="card">
+    <h2>1 · Charger la liste</h2>
+    <p>Importez le fichier des hôtels (Excel ou CSV). Colonnes reconnues automatiquement : <b>trigramme</b> (ou ville), <b>hôtel</b>, <b>étoiles</b>, <b>fin / échéance du contrat</b>, et éventuellement <b>LC / MC</b>. Le fichier est lu uniquement sur cet appareil.</p>
+    <div class="row"><button class="btn" id="bFichier">Importer un fichier Excel / CSV</button><button class="btn ghost" id="bActuelle">Ouvrir la liste actuellement en ligne</button><button class="btn ghost" id="bAjout">+ Ajouter une ligne</button></div>
+    <input type="file" id="fichier" accept=".xlsx,.xls,.csv,.ods" hidden>
+    <div class="msg" id="mLoad"></div>
+  </div>
+  <div class="card" id="cTable" hidden>
+    <h2>2 · Vérifier</h2>
+    <p id="resume"></p>
+    <div class="tw"><table><thead><tr><th style="width:70px">Réseau</th><th style="width:80px">Code</th><th style="width:150px">Ville</th><th>Hôtel</th><th style="width:80px">Étoiles</th><th style="width:150px">Fin de contrat</th><th style="width:30px"></th></tr></thead><tbody id="tb"></tbody></table></div>
+  </div>
+  <div class="card" id="cPub" hidden>
+    <h2>3 · Chiffrer et mettre en ligne</h2>
+    <p>Choisissez une <b>phrase secrète longue</b> (au moins 4 mots, par exemple « valise rouge escale minuit »), différente du code d'accès à l'Atelier. Transmettez-la uniquement aux délégués, de vive voix ou par message privé. Elle n'est jamais enregistrée sur le site : sans elle, le fichier en ligne est illisible. Si vous la changez, chaque délégué devra saisir la nouvelle.</p>
+    <div class="row"><div><input type="password" id="p1" placeholder="Phrase secrète" autocomplete="new-password"><div class="force"><i id="force"></i></div><small class="h" id="forceTx"></small></div><div><input type="password" id="p2" placeholder="Confirmer la phrase secrète" autocomplete="new-password"></div></div>
+    <div class="row" style="margin-top:12px"><button class="btn" id="bPublier">Chiffrer et publier pour tous</button><button class="btn ghost" id="bTelecharger">Télécharger le fichier chiffré</button></div>
+    <small class="h">La publication utilise le jeton GitHub enregistré sur cet appareil (menu Historique → « Publication pour tous les délégués »). Sans jeton : téléchargez le fichier chiffré et déposez-le sous le nom <code>cr-hebergement/hotels.enc.json</code> dans le dépôt.</small>
+    <div class="msg" id="mPub"></div>
+  </div>
+</main>
+<script src="../commun/escales.js"></script>
+<script src="../commun/coffre.js"></script>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const sansAccent = s => String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
+let LIGNES = [];
+
+// Référentiels : code -> {ville, LC/MC}
+const REF = {};
+["LC","MC"].forEach(t => (ESCALES[t]||[]).forEach(z => Object.entries(z.escales).forEach(([c,v]) => { (REF[c] = REF[c] || {ville:v, reseaux:[]}).reseaux.push(t); })));
+const PAR_VILLE = {}; Object.entries(REF).forEach(([c,o]) => { PAR_VILLE[sansAccent(o.ville)] = c; });
+
+function isoDate(v){
+  if(v == null || v === "") return "";
+  if(v instanceof Date && !isNaN(v)){ const d = new Date(v.getTime() + 432e5); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+  if(typeof v === "number"){ const d = new Date(Math.round((v - 25569) * 864e5)); return d.toISOString().slice(0,10); }
+  const s = String(v).trim();
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if(m) return `${m[1]}-${m[2].padStart(2,"0")}-${m[3].padStart(2,"0")}`;
+  m = s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})$/); if(m){ const a = m[3].length === 2 ? "20"+m[3] : m[3]; return `${a}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`; }
+  return s;
+}
+function etoiles(v){ const s = String(v ?? ""); const n = (s.match(/★|\*/g)||[]).length || parseInt(s, 10) || 0; return n >= 1 && n <= 5 ? String(n) : ""; }
+function colonne(h){
+  const x = sansAccent(h);
+  if(/^(lc|mc|lc\/mc|reseau|type|secteur|flotte)$/.test(x) || /long.?courrier|moyen.?courrier|reseau/.test(x)) return "reseau";
+  if(/trigram|code|iata|oaci/.test(x)) return "code";
+  if(/etoile|categorie|\bnb.*etoile|stars?/.test(x)) return "etoiles";
+  if(/echeance|fin|contrat|expir|date/.test(x)) return "echeance";
+  if(/hotel|hebergement|etablissement|nom/.test(x)) return "hotel";
+  if(/ville|escale|destination|city/.test(x)) return "ville";
+  return null;
+}
+function normaliser(brut){
+  const out = [];
+  brut.forEach(r => {
+    const o = {reseau:"", code:"", ville:"", hotel:"", etoiles:"", echeance:""};
+    Object.entries(r).forEach(([h,v]) => { const c = colonne(h); if(c && !o[c]) o[c] = v instanceof Date ? v : String(v ?? "").trim(); });
+    o.code = String(o.code||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,4);
+    if(!o.code && /^[A-Za-z]{3}$/.test(o.ville) && REF[o.ville.toUpperCase()]){ o.code = o.ville.toUpperCase(); o.ville = ""; }
+    if(!o.code && o.ville) o.code = PAR_VILLE[sansAccent(o.ville)] || "";
+    if(!o.ville && REF[o.code]) o.ville = REF[o.code].ville;
+    o.etoiles = etoiles(o.etoiles); o.echeance = isoDate(o.echeance);
+    const rs = sansAccent(o.reseau); o.reseau = /mc|moyen/.test(rs) ? "MC" : /lc|long/.test(rs) ? "LC" : "";
+    if(!o.reseau && REF[o.code]) o.reseau = REF[o.code].reseaux.length === 1 ? REF[o.code].reseaux[0] : "LC+MC";
+    if(o.code || String(o.hotel).trim()) out.push(o);
+  });
+  return out;
+}
+function rendu(){
+  $("#cTable").hidden = $("#cPub").hidden = !LIGNES.length;
+  const pb = LIGNES.filter(l => !l.code || !l.hotel || !l.reseau).length;
+  $("#resume").innerHTML = `<b>${LIGNES.length}</b> hôtel(s)` + (pb ? ` · <span class="warn">${pb} ligne(s) incomplète(s) en orange : code, réseau ou nom manquant. Elles ne seront pas utilisées tant qu'elles ne sont pas complétées.</span>` : ` · <span class="ok">tout est complet</span>`);
+  $("#tb").innerHTML = LIGNES.map((l,i) => `<tr data-i="${i}" class="${!l.code || !l.hotel || !l.reseau ? "warn" : ""}">
+    <td><select data-k="reseau">${["","LC","MC","LC+MC"].map(v => `<option ${l.reseau===v?"selected":""} value="${v}">${v||"?"}</option>`).join("")}</select></td>
+    <td><input data-k="code" value="${esc(l.code)}" maxlength="4"></td>
+    <td><input data-k="ville" value="${esc(l.ville)}"></td>
+    <td><input data-k="hotel" value="${esc(l.hotel)}"></td>
+    <td><select data-k="etoiles">${["","1","2","3","4","5"].map(v => `<option ${l.etoiles===v?"selected":""} value="${v}">${v?v+" ★":"–"}</option>`).join("")}</select></td>
+    <td><input type="date" data-k="echeance" value="${/^\d{4}-\d{2}-\d{2}$/.test(l.echeance)?esc(l.echeance):""}"></td>
+    <td><button class="del" data-del title="Supprimer">✕</button></td></tr>`).join("");
+}
+$("#tb").addEventListener("input", e => { const tr = e.target.closest("tr"), k = e.target.dataset.k; if(!tr || !k) return; let v = e.target.value; if(k === "code"){ v = v.toUpperCase().replace(/[^A-Z0-9]/g,""); e.target.value = v; } LIGNES[+tr.dataset.i][k] = v; });
+$("#tb").addEventListener("change", () => rendu());
+$("#tb").addEventListener("click", e => { if(e.target.closest("[data-del]")){ LIGNES.splice(+e.target.closest("tr").dataset.i, 1); rendu(); } });
+$("#bAjout").addEventListener("click", () => { LIGNES.push({reseau:"", code:"", ville:"", hotel:"", etoiles:"", echeance:""}); rendu(); });
+
+function chargerScript(src){ return new Promise((ok, ko) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = ko; document.head.appendChild(s); }); }
+$("#bFichier").addEventListener("click", () => $("#fichier").click());
+$("#fichier").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if(!f) return;
+  $("#mLoad").textContent = "Lecture du fichier…";
+  try{
+    if(!window.XLSX) await chargerScript("../commun/vendor/xlsx.mini.min.js");
+    const wb = XLSX.read(await f.arrayBuffer(), {type:"array", cellDates:true});
+    let brut = [];
+    wb.SheetNames.forEach(n => {
+      // recherche de la ligne d'en-tête (la première qui contient une colonne « hôtel »)
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, defval:"", raw:true});
+      let hi = -1, best = 1;
+      rows.slice(0, 30).forEach((r, i) => { const cols = new Set(r.map(c => colonne(String(c))).filter(Boolean)); if(cols.has("hotel") && cols.size > best){ best = cols.size; hi = i; } });
+      if(hi < 0) return;
+      const H = rows[hi].map(String);
+      rows.slice(hi+1).forEach(r => { const o = {}; H.forEach((h,j) => { if(h) o[h] = r[j]; }); brut.push(o); });
+    });
+    if(!brut.length) throw new Error("aucune colonne « hôtel » trouvée");
+    LIGNES = normaliser(brut); rendu();
+    $("#mLoad").innerHTML = `<span class="ok">${LIGNES.length} ligne(s) lue(s) dans « ${esc(f.name)} ».</span>`;
+  }catch(err){ $("#mLoad").innerHTML = `<span class="warn">Fichier non lu : ${esc(err.message)}</span>`; }
+});
+$("#bActuelle").addEventListener("click", async () => {
+  try{
+    const r = await fetch("hotels.enc.json", {cache:"no-store"}); if(!r.ok) throw new Error("aucune liste en ligne pour le moment");
+    const f = await r.json(); const p = prompt("Phrase secrète de la liste actuelle :"); if(!p) return;
+    const {obj} = await COFFRE.ouvrir(f, p);
+    LIGNES = [];
+    ["LC","MC"].forEach(t => Object.entries(obj[t]||{}).forEach(([c,h]) => { const ex = LIGNES.find(l => l.code === c && l.hotel === h.hotel); if(ex){ ex.reseau = "LC+MC"; return; } LIGNES.push({reseau:t, code:c, ville:h.ville || (REF[c]||{}).ville || "", hotel:h.hotel, etoiles:h.etoiles||"", echeance:h.echeance||""}); }));
+    rendu(); $("#mLoad").innerHTML = `<span class="ok">Liste en ligne ouverte (${LIGNES.length} hôtels, mise à jour le ${new Date(obj.maj).toLocaleDateString("fr-FR")}).</span>`;
+  }catch(err){ $("#mLoad").innerHTML = `<span class="warn">${/decrypt|operation/i.test(err.name+err.message) ? "Phrase secrète incorrecte." : esc(err.message)}</span>`; }
+});
+
+// Force de la phrase
+$("#p1").addEventListener("input", () => {
+  const p = $("#p1").value.trim(), mots = p.split(/\s+/).filter(w => w.length >= 3).length;
+  const sc = Math.min(100, p.length * 3 + mots * 12);
+  const ok = p.length >= 16 && mots >= 3;
+  $("#force").style.width = sc + "%"; $("#force").style.background = ok ? "#3E8C2A" : sc > 50 ? "#e0a020" : "#d43b2e";
+  $("#forceTx").textContent = ok ? "Phrase solide." : "Trop courte : au moins 16 caractères et 3 mots.";
+});
+async function fichierChiffre(){
+  const p = $("#p1").value.trim();
+  if(p.length < 16 || p.split(/\s+/).filter(w => w.length >= 3).length < 3) throw new Error("phrase secrète trop courte (au moins 16 caractères et 3 mots)");
+  if(p !== $("#p2").value.trim()) throw new Error("les deux phrases secrètes ne sont pas identiques");
+  const data = {maj:Date.now(), LC:{}, MC:{}};
+  let n = 0;
+  LIGNES.forEach(l => {
+    if(!l.code || !String(l.hotel).trim() || !l.reseau) return;
+    const h = {hotel:String(l.hotel).trim(), etoiles:l.etoiles||"", echeance:l.echeance||"", ville:l.ville||""};
+    (l.reseau === "LC+MC" ? ["LC","MC"] : [l.reseau]).forEach(t => { data[t][l.code] = h; }); n++;
+  });
+  if(!n) throw new Error("aucune ligne complète à chiffrer");
+  return {f: await COFFRE.chiffrer(data, p), n};
+}
+$("#bTelecharger").addEventListener("click", async () => {
+  try{ $("#mPub").textContent = "Chiffrement…"; const {f, n} = await fichierChiffre();
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(f)], {type:"application/json"})); a.download = "hotels.enc.json"; a.click();
+    $("#mPub").innerHTML = `<span class="ok">${n} hôtels chiffrés. Fichier téléchargé.</span>`;
+  }catch(err){ $("#mPub").innerHTML = `<span class="warn">${esc(err.message)}</span>`; }
+});
+$("#bPublier").addEventListener("click", async () => {
+  const tok = localStorage.getItem("crheb:ghtoken");
+  if(!tok){ $("#mPub").innerHTML = `<span class="warn">Aucun jeton GitHub sur cet appareil : utilisez « Télécharger le fichier chiffré », ou configurez le jeton dans Historique.</span>`; return; }
+  try{
+    $("#mPub").textContent = "Chiffrement…"; const {f, n} = await fichierChiffre();
+    const repo = location.hostname.endsWith(".github.io") ? location.hostname.split(".")[0] + "/" + location.pathname.split("/")[1] : "FlorianUNAC/atelier-unac";
+    const url = `https://api.github.com/repos/${repo}/contents/cr-hebergement/hotels.enc.json`;
+    const H = {"Authorization":"Bearer " + tok, "Accept":"application/vnd.github+json", "X-GitHub-Api-Version":"2022-11-28"};
+    $("#mPub").textContent = "Publication…";
+    const cur = await fetch(url + "?ref=main", {headers:H}); const sha = cur.ok ? (await cur.json()).sha : undefined;
+    const r = await fetch(url, {method:"PUT", headers:H, body:JSON.stringify({message:"Liste des hôtels mise à jour (chiffrée)", content:btoa(JSON.stringify(f)), branch:"main", sha})});
+    if(!r.ok) throw new Error(r.status === 401 ? "jeton refusé" : "GitHub a répondu " + r.status);
+    $("#mPub").innerHTML = `<span class="ok">${n} hôtels chiffrés et publiés. Ils seront disponibles pour les délégués d'ici une à deux minutes.</span>`;
+  }catch(err){ $("#mPub").innerHTML = `<span class="warn">${esc(err.message)}</span>`; }
+});
+</script>
+</body>
+</html>
