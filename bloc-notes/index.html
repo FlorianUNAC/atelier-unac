@@ -122,6 +122,7 @@
   .hd .bntitre{position:absolute;left:48px;top:106px;height:31px;width:auto}
   .hd .sous{position:absolute;left:49px;top:146px;font-size:14px;color:#9d9d9d}
   .hd .ed{position:absolute;right:48px;top:150px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mag);font-weight:700}
+  .hd .logohop{position:absolute;right:48px;top:30px;height:104px}
   .hd .ligne{position:absolute;left:0;right:0;top:183px;height:3px;background:linear-gradient(90deg,#C2286A 0%,#C2286A 35%,rgba(194,40,106,.15) 85%,rgba(194,40,106,0) 100%)}
   .impb{flex:none;margin:26px 0 8px}
   .impb .bar{background:var(--mag);color:#fff;text-align:center;font-weight:700;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:8px 0 7px}
@@ -174,7 +175,7 @@
 <body>
 <div class="top">
   <a href="../" class="home" title="Retour à l'Atelier UNAC"><img class="logo" src="../commun/img/logo-unac-blanc.png" alt="Atelier UNAC"></a>
-  <h1>Bloc’ Notes<small>Bulletin d'informations utiles — mise en page automatique</small></h1>
+  <h1 id="h1">Bloc’ Notes<small>Bulletin d'informations utiles — mise en page automatique</small></h1>
   <div class="sp"></div>
   <div class="acts">
     <button class="btn ghost" id="histBtn" title="Bloc’ Notes publiés et brouillons"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/></svg><span class="lg">Historique</span></button>
@@ -239,7 +240,10 @@ const RUBRIQUES = {
 };
 
 /* ---------- État : plusieurs Bloc' Notes mémorisés sur l'appareil ---------- */
-const DOCS_KEY = "bn:docs", CUR_KEY = "bn:current";
+const HOP = new URLSearchParams(location.search).get("section") === "hop";
+const DOCS_KEY = HOP ? "bnhop:docs" : "bn:docs", CUR_KEY = HOP ? "bnhop:current" : "bn:current";
+const NOM_SECTION = HOP ? "UNAC HOP!" : "UNAC";
+if(HOP){ document.getElementById("h1").firstChild.textContent = "Bloc’ Notes HOP! "; document.title = document.title.replace("Bloc", "Bloc").replace(/Bloc’ Notes|Bloc' Notes/, "Bloc’ Notes HOP!"); }
 let DOCS = {}, S = null;
 function moisDefaut(){ const d = new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); }
 function blank(){
@@ -326,7 +330,7 @@ function newPage(box, idx){
   const p = document.createElement("section"); p.className = "page " + (idx ? "cont" : "first");
   p.style.cssText = `--gap:${DENS.gap}px;--pad:${DENS.pad}px;--ft:${DENS.ft}px;--fx:${DENS.fx}px`;
   p.innerHTML = (idx ? "" : `<div class="hd"><img class="plume" src="../commun/img/plume-main.png" alt="">${TITRE_SVG}<div class="sous">${esc(S.sous)}</div>
-      <div class="ed">${esc([S.edition, cap(moisLabel(S.mois))].filter(Boolean).join(" · "))}</div><div class="ligne"></div></div>`)
+      <div class="ed">${esc([S.edition, cap(moisLabel(S.mois))].filter(Boolean).join(" · "))}</div><div class="ligne"></div>${HOP ? `<img class="logohop" src="../commun/img/logo-unac-hop-couleur.png" alt="UNAC HOP!">` : ""}</div>`)
     + `<div class="content"></div><div class="bottomgap"></div><div class="foot"><span></span><span></span></div>`;
   w.appendChild(p); box.appendChild(w); return p.querySelector(".content");
 }
@@ -345,7 +349,7 @@ function buildPages(box){
   S.items.filter(it => it.titreA || it.titreB || it.texte.trim()).forEach(it => place(el(itemHTML(it))));
   place(el(`<div class="fin"><div class="appli"><img src="../commun/img/appli-unac.png" alt=""><div><b>Un doute, une question ?</b><span>Tchat appli UNAC · 24h/24, 7j/7</span></div></div></div>`));
   const pages = box.querySelectorAll(".page");
-  pages.forEach((p,i) => { const f = p.querySelector(".foot").children; f[0].textContent = `UNAC · Bloc’ Notes · ${moisLabel(S.mois)}`; f[1].textContent = pages.length > 1 ? `${i+1} / ${pages.length}` : ""; });
+  pages.forEach((p,i) => { const f = p.querySelector(".foot").children; f[0].textContent = `${NOM_SECTION} · Bloc’ Notes · ${moisLabel(S.mois)}`; f[1].textContent = pages.length > 1 ? `${i+1} / ${pages.length}` : ""; });
   return pages.length;
 }
 let pvT = null;
@@ -376,8 +380,8 @@ $("#pdfBtn").addEventListener("click", async () => {
   const old = document.title; document.title = `Bloc’ Notes UNAC - ${moisLabel(S.mois)}`; document.body.classList.add("tab-apercu");
   setTimeout(() => { window.print(); setTimeout(() => { document.title = old; syncTab(); }, 500); }, 60);
 });
-window.nomExport = () => `Bloc-Notes-UNAC-${moisLabel(S.mois).replace(/\s+/g, "-")}`;
-window.titreExport = () => `Bloc’ Notes UNAC · ${moisLabel(S.mois)}`;
+window.nomExport = () => `Bloc-Notes-${HOP ? "UNAC-HOP" : "UNAC"}-${moisLabel(S.mois).replace(/\s+/g, "-")}`;
+window.titreExport = () => `Bloc’ Notes ${NOM_SECTION} · ${moisLabel(S.mois)}`;
 $("#imgBtn").addEventListener("click", () => exportImages());
 
 /* ---------- Publication, historique, nouveau ---------- */
