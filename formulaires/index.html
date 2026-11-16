@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Formulaires · Atelier UNAC</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../commun/icons-atelier/favicon.png">
+<link rel="apple-touch-icon" href="../commun/icons-atelier/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Atelier UNAC">
+<script src="../commun/acces.js"></script>
+<style>
+  @font-face{font-family:"T1";src:url("../commun/polices/x1.woff2") format("woff2");font-weight:400;font-display:block}
+  @font-face{font-family:"T1";src:url("../commun/polices/x2.woff2") format("woff2");font-weight:700 800;font-display:block}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"T1",Inter,system-ui,sans-serif;color:#fff;min-height:100vh;background:radial-gradient(120% 90% at 0% 0%,#a5466f 0%,#7a2a4e 40%,#4f1530 100%) fixed}
+  .wrap{max-width:1000px;margin:0 auto;padding:28px 22px 60px}
+  .top{display:flex;align-items:center;gap:14px;margin-bottom:30px}
+  .top a.back{color:#fff;text-decoration:none;font-weight:700;font-size:14px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:8px 14px}
+  .top .sp{flex:1}
+  .top img.logo{height:74px;display:block}
+  h1{font-size:30px;font-weight:700;letter-spacing:.01em}
+  .sub{opacity:.8;margin:6px 0 26px;font-size:14.5px;line-height:1.5;max-width:640px}
+  .sections{display:flex;gap:8px;margin-bottom:22px}
+  .sections a{color:#fff;text-decoration:none;font-weight:700;font-size:14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:8px 16px}
+  .sections a.on{background:#fff;color:#7a1f48;border-color:#fff}
+  .docs{display:flex;flex-direction:column;gap:12px}
+  .doc{display:flex;align-items:center;gap:16px;text-decoration:none;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:16px 18px}
+  a.doc:hover{background:rgba(255,255,255,.17)}
+  .doc .pdf{flex:none;width:46px;height:56px;border-radius:8px;background:#fff;color:#B33868;font-weight:800;font-size:13px;display:grid;place-items:center;letter-spacing:.04em}
+  .doc > div{flex:1;min-width:0}
+  .doc b{display:block;font-size:16.5px}
+  .doc div > span{display:block;font-size:13.5px;opacity:.82;line-height:1.45;margin-top:3px}
+  .doc em{display:inline-block;font-style:normal;font-size:11px;font-weight:700;letter-spacing:.06em;background:rgba(255,255,255,.2);border-radius:6px;padding:3px 8px;margin:8px 6px 0 0}
+  .doc .dl{flex:none;display:inline-flex;align-items:center;gap:7px;background:#fff;color:#7a1f48;font-weight:700;border-radius:10px;padding:10px 14px;font-size:14px}
+  .doc .dl svg{width:16px;height:16px}
+  .doc.soon{border-style:dashed;opacity:.7}
+  .doc.soon .pdf{background:rgba(255,255,255,.18);color:#fff;font-size:22px}
+  .note{margin-top:22px;font-size:13px;opacity:.75;line-height:1.5}
+  @media (max-width:600px){.doc{flex-wrap:wrap}.doc .dl{width:100%;justify-content:center}.top img.logo{height:56px}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Atelier</a><div class="sp"></div><img class="logo" id="logo" src="../commun/img/logo-unac-blanc.png" alt="UNAC"></div>
+  <h1 id="titre">Formulaires</h1>
+  <p class="sub">Les formulaires PDF à remplir par les délégués, à télécharger directement. Remplis et enregistrés, ils s'importent tels quels dans les outils de l'Atelier.</p>
+  <nav class="sections" id="sections"></nav>
+  <div class="docs" id="docs"></div>
+  <p class="note">Les formulaires se remplissent dans Acrobat Reader, Aperçu (Mac) ou un navigateur. Renvoyez le fichier enregistré, pas une version imprimée en PDF : les champs seraient perdus.</p>
+</div>
+<script>
+"use strict";
+// Catalogue des formulaires par section : ajouter une entrée pour publier un nouveau formulaire.
+const FORMULAIRES = {
+  af: [
+    {titre:"Retour du délégué testeur · test d’un nouvel hébergement", fichier:"../test-hebergement/formulaire-test-hebergement.pdf",
+     desc:"Escale, hôtel, note, localisation, restauration, chambre, facilités, bilan. S’importe tel quel dans l’outil « Test d’un nouvel hébergement ».",
+     tags:["Commission hébergement","LC / MC"]}
+  ],
+  hop: []
+};
+const SECTIONS = {af:{nom:"Air France", logo:"logo-unac-blanc.png"}, hop:{nom:"HOP!", logo:"logo-unac-hop-blanc.png"}};
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const sec = new URLSearchParams(location.search).get("section") === "hop" ? "hop" : "af";
+document.getElementById("logo").src = "../commun/img/" + SECTIONS[sec].logo;
+document.getElementById("titre").textContent = `Formulaires · ${SECTIONS[sec].nom}`;
+document.title = `Formulaires ${SECTIONS[sec].nom} · Atelier UNAC`;
+document.getElementById("sections").innerHTML = Object.entries(SECTIONS).map(([k,o]) => `<a href="?section=${k}" class="${k===sec?"on":""}">${o.nom}</a>`).join("");
+const DL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>`;
+document.getElementById("docs").innerHTML = FORMULAIRES[sec].map(f => `<a class="doc" href="${esc(f.fichier)}" download>
+    <span class="pdf">PDF</span><div><b>${esc(f.titre)}</b><span>${esc(f.desc)}</span>${(f.tags||[]).map(t => `<em>${esc(t)}</em>`).join("")}</div><span class="dl">${DL}Télécharger</span></a>`).join("")
+  + `<div class="doc soon"><span class="pdf">+</span><div><b>${FORMULAIRES[sec].length ? "Prochains formulaires" : "Aucun formulaire pour le moment"}</b><span>${sec === "hop" ? "Les formulaires aux couleurs UNAC HOP! seront regroupés ici." : "Les autres supports à remplir par les délégués seront regroupés ici."}</span></div></div>`;
+</script>
+</body>
+</html>
