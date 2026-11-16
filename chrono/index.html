@@ -303,6 +303,16 @@
   .qrb .qt p{margin:0;font-size:calc(var(--k)*40px);line-height:1.3;opacity:.92}
   .qrb .qt p b{font-size:inherit}
   .illu{display:flex;justify-content:center}
+  /* illustration en débord bas-droite et bandeau gris d'action : hors du flux, posés sur la page */
+  .page .zone > .illu.debord{position:absolute;right:-24px;bottom:-6px;z-index:2;display:block;pointer-events:none}
+  .illu.debord img{width:660px;max-width:none}.illu.debord.petite img{width:580px}.illu.debord.grande img{width:780px}.illu.debord.pleine img{width:900px}
+  .page .zone > .bandeau-bas{position:absolute;left:0;bottom:var(--bb,44px);width:74%;z-index:1;background:#EBEBEB;color:#2B1225;display:flex;align-items:center;gap:18px;padding:34px 30px 34px 60px;font-size:37px;white-space:nowrap;font-weight:700;line-height:1.15}
+  .bandeau-bas span{flex:none}.bandeau-bas svg{width:40px;height:40px;flex:none}
+  .page.story .zone > .bandeau-bas{--bb:270px}
+  .page.story .logo{top:250px}
+  .page.story .zone > .illu.debord{bottom:236px}
+  .page.story .zone > .bandeau-bas{--bb:300px}
+  .page.story .zone{--pt:560px;--pb:270px}
   .illu.gauche{justify-content:flex-start}.illu.droite{justify-content:flex-end}
   .illu img{display:block;width:calc(var(--k)*620px);max-width:100%;height:auto}
   .illu.petite img{width:calc(var(--k)*430px)}.illu.grande img{width:calc(var(--k)*800px)}
@@ -538,6 +548,21 @@ Object.assign(MODELES, {
     {type:"illustration", image:"declassement-cabine", taille:"moyenne", fond:"carte", place:"centre"},
     {type:"bouton", texte:"Votre cas compte : écrivez-nous", style:"blanc", place:"gauche"}]}]}
 });
+Object.assign(MODELES, {
+  r1jPostV2: {nom:"R1J · Alerte (contre-proposition)", format:"portrait", theme:"nuit", avion:false, logo:"haut", flash:true, slides:[{blocs:[
+    {type:"etiquette", texte:"Alerte R1J", style:"rouge"},
+    {type:"accroche", texte:"Payé en **J**, placé en **W** ou **Y** ?", taille:"grand"},
+    {type:"alerte", titre:"Déclassements sauvages", texte:"Vous êtes nombreux à perdre votre place en J alors que vous aviez **acquitté le tarif J**, parfois à la dernière minute avant l’embarquement."},
+    {type:"illustration", image:"declassement-cabine", taille:"petite", fond:"aucun", place:"debord"},
+    {type:"bandeau", texte:"Signalez-le sur l’appli UNAC"}]}]},
+  r1jStoryV2: {nom:"R1J · Story (contre-proposition)", format:"story", theme:"framboise", avion:false, logo:"haut", slides:[{blocs:[
+    {type:"etiquette", texte:"Alerte R1J", style:"jaune"},
+    {type:"titre", titre:"R1J", sous:"Stop aux déclassements sauvages"},
+    {type:"accroche", texte:"Tarif J acquitté, place en W ou Y, parfois **à la dernière minute**.", taille:"petit"},
+    {type:"texte", texte:"Nous préparons un dossier pour la Direction. **Chaque témoignage compte.**", taille:"normal"},
+    {type:"illustration", image:"declassement-cabine", taille:"moyenne", fond:"aucun", place:"debord"},
+    {type:"bandeau", texte:"Envoyez vos remontées"}]}]}
+});
 const MODELES_INFO = [
   {k:"testHeb", lien:"../test-hebergement/", n:"Test d’un nouvel hébergement", cat:"Informer", apercu:"../test-hebergement/apercu.png", obj:"Restituer le test d’un hôtel par la commission hébergement (outil dédié).",
    pour:["Nouvel hôtel testé en escale","Contre-visite après réclamations"], eviter:["Sujet sans lien avec l’hébergement"]},
@@ -547,6 +572,8 @@ const MODELES_INFO = [
    pour:["Com CAT, CSE, commission rotations","Bilan semestriel","Chiffres effectifs, réserves, absentéisme"], eviter:["Info urgente d’un seul message"]},
   {k:"hopPermanence", n:"HOP! · Permanence avec photo", cat:"Informer", hop:1, obj:"Annoncer une permanence et montrer qui accueille.",
    pour:["Permanence salle PPV","Nouvelle déléguée, nouveau délégué","Réunion d’information"], eviter:["Contenu sans date précise"]},
+  {k:"r1jPostV2", n:"R1J · Alerte, illustration en débord", cat:"Alerter", obj:"Contre-proposition : encadré jaune, illustration en bas à droite, bandeau d’action.", pour:["Fil Facebook / Instagram"], eviter:["Story"]},
+  {k:"r1jStoryV2", n:"R1J · Story, zones sûres", cat:"Mobiliser", obj:"Contre-proposition story : contenu entre les zones masquées par Instagram.", pour:["Story Instagram / Facebook"], eviter:["Fil Instagram"]},
   {k:"r1jAlerte", n:"R1J · Alerte", cat:"Alerter", obj:"Signaler une pratique abusive et dire quoi faire.", pour:["Déclassements R1J","Pratique à faire cesser"], eviter:["Bonne nouvelle"]},
   {k:"r1jTemoignages", n:"R1J · Appel à témoignages", cat:"Mobiliser", obj:"Recueillir des cas précis pour constituer un dossier.", pour:["Dossier à porter à la Direction","Collecte de cas"], eviter:["Simple information"]},
   {k:"r1jSaviez", n:"R1J · Question / réponse", cat:"Informer", obj:"Parler directement au PNC concerné.", pour:["Situation vécue par beaucoup","Rappel d’une démarche"], eviter:["Texte long"]},
@@ -649,7 +676,8 @@ const TYPES = {
   avantapres:{nom:"Avant / Après", champs:[["l1","Étiquette gauche","text","Avant"],["t1","Texte gauche","area"],["l2","Étiquette droite","text","Maintenant"],["t2","Texte droite","area"]]},
   etapes:  {nom:"Liste d'étapes", champs:[["texte","Étapes (une par ligne)","area"],["style","Repères","select",{numeros:"Numéros 1, 2, 3",relies:"Numéros reliés",coches:"Coches vertes ✓",fleches:"Flèches →"}]]},
   citation:{nom:"Citation / prise de position", champs:[["texte","Citation","area"],["auteur","Auteur","text","La section UNAC Air France"]]},
-  illustration:{nom:"Illustration", champs:[["image","Illustration","image"],["taille","Taille","select",{moyenne:"Moyenne",grande:"Grande",petite:"Petite",pleine:"Pleine largeur"}],["fond","Fond","select",{aucun:"Sans fond",carte:"Carte blanche arrondie",disque:"Disque clair"}],["place","Position","select",{centre:"Centrée",gauche:"À gauche",droite:"À droite"}]]},
+  illustration:{nom:"Illustration", champs:[["image","Illustration","image"],["taille","Taille","select",{moyenne:"Moyenne",grande:"Grande",petite:"Petite",pleine:"Pleine largeur"}],["fond","Fond","select",{aucun:"Sans fond",carte:"Carte blanche arrondie",disque:"Disque clair"}],["place","Position","select",{centre:"Centrée",gauche:"À gauche",droite:"À droite",debord:"En débord, bas droite"}]]},
+  bandeau: {nom:"Bandeau d'action en bas (gris)", champs:[["texte","Texte","text","Envoyez vos remontées"]]},
   portrait:{nom:"Portrait (photo ronde + nom)", champs:[["photo","Photo","photo"],["role","Fonction (au-dessus du nom)","text","Votre déléguée syndicale"],["nom","Prénom Nom","text"],["texte","Phrase (en italique)","text","à votre écoute"]]},
   qr:      {nom:"QR code + texte", champs:[["url","Lien du QR code (https://…)","text"],["titre","Titre à côté","text"],["texte","Texte à côté","area"]]},
   bouton:  {nom:"Bouton d'appel à l'action", champs:[["texte","Texte du bouton","text"],["style","Couleur","select",{blanc:"Blanc",jaune:"Jaune"}],["place","Position","select",{gauche:"À gauche",centre:"Centré"}]]},
@@ -693,6 +721,7 @@ function blocHTML(b){
     case "etapes": { const st = b.style || "numeros"; return `<ol class="eta ${st}">${lignes(b.texte).map((l,i) => `<li><span>${st === "coches" ? "✓" : st === "fleches" ? FLECHE_SVG : i+1}</span><div>${riche(l)}</div></li>`).join("")}</ol>`; }
     case "citation": return `<div class="cit"><p>${riche(b.texte)}</p>${b.auteur ? `<div class="au">${esc(b.auteur)}</div>` : ""}</div>`;
     case "illustration": { const src = illuSrc(b.image); return src ? `<div class="illu ${esc(b.taille||"moyenne")} f-${esc(b.fond||"aucun")} ${esc(b.place||"centre")}"><img src="${esc(src)}" alt=""></div>` : ""; }
+    case "bandeau": return `<div class="bandeau-bas"><span>${riche(b.texte)}</span>${FLECHE_SVG}</div>`;
     case "portrait": return `<div class="por">${b.photo ? `<div class="ph"><img src="${esc(b.photo)}" alt=""></div>` : ""}<div class="pt">${b.role ? `<span class="ro">${esc(b.role)}</span>` : ""}${b.nom ? `<b>${esc(b.nom)}</b>` : ""}${b.texte ? `<i>${riche(b.texte)}</i>` : ""}</div></div>`;
     case "qr": return `<div class="qrb">${qrSVG(b.url)}<div class="qt">${b.titre ? `<b>${riche(b.titre)}</b>` : ""}${b.texte ? `<p>${riche(b.texte)}</p>` : ""}</div></div>`;
     case "bouton": return `<div class="cta ${b.style === "jaune" ? "jaune" : ""} ${b.place === "centre" ? "centre" : ""}">${esc(b.texte)}${FLECHE_SVG}</div>`;
@@ -873,8 +902,9 @@ function slideNode(s){
   }
   const titreEnTete = blocs[0] && blocs[0].type === "titre";
   const finConcl = blocs.length && blocs[blocs.length-1].type === "conclusion";
-  p.className = "page" + (S.format === "banniere" ? " en-banniere" : "") + (S.avion && !titreEnTete ? "" : " sansavion") + (titreEnTete ? " titre1" : "") + (S.logo === "bas" ? " logobas" : "") + (S.flash ? " flash" : "");
-  p.style.cssText = `width:${F.w}px;height:${F.h}px;--bg:${T.bg}` + (finConcl ? ";--pb:110px" : "") + (titreEnTete ? ";--just:space-between" : "");
+  p.className = "page" + (S.format === "banniere" ? " en-banniere" : "") + (S.avion && !titreEnTete ? "" : " sansavion") + (titreEnTete ? " titre1" : "") + (S.logo === "bas" ? " logobas" : "") + (S.flash ? " flash" : "") + (S.format === "story" ? " story" : "");
+  const debord = blocs.some(b => (b.type === "illustration" && b.place === "debord") || b.type === "bandeau");
+  p.style.cssText = `width:${F.w}px;height:${F.h}px;--bg:${T.bg}` + (finConcl ? ";--pb:110px" : "") + (debord ? ";--just:flex-start" : titreEnTete ? ";--just:space-between" : "");
   p.innerHTML = (S.format === "banniere" ? "" : (S.avion && !titreEnTete ? `<img class="avion" src="${IMG}avion-nez.png" alt="">` : "") + `<img class="logo ${S.section === "hop" ? "hop" : ""}" src="${IMG}${(SECTIONS[S.section]||SECTIONS.af).logo}" alt="UNAC">`)
     + `<div class="zone">${blocs.map(blocHTML).join("")}</div>`;
   w.appendChild(p); return w;
@@ -885,11 +915,14 @@ function ajuste(p){
   // mesure en haut de zone : un contenu centré qui déborde ne serait pas compté par scrollHeight
   p.classList.add("mesure");
   // marge de sécurité : le rendu en image peut faire passer une ligne de plus
+  const abs = [...z.children].filter(c => c.matches(".illu.debord, .bandeau-bas"));
   const fits = () => {
-    const last = z.lastElementChild; if(!last) return true;
+    const flux = [...z.children].filter(c => !abs.includes(c)), last = flux[flux.length-1]; if(!last) return true;
     const zr = z.getBoundingClientRect(), lr = last.getBoundingClientRect();
     const pb = parseFloat(getComputedStyle(z).paddingBottom) || 0;
-    return (lr.bottom - zr.top) + pb <= zr.height - 24;
+    // le contenu doit s'arrêter au-dessus de l'illustration en débord et du bandeau
+    const lim = abs.reduce((m, a) => Math.min(m, a.getBoundingClientRect().top - zr.top - 40), Infinity);
+    return (lr.bottom - zr.top) + pb <= zr.height - 24 && lr.bottom - zr.top <= lim;
   };
   let lo = 0.45, hi = 1.25;
   p.style.setProperty("--k", hi); if(fits()){ p.classList.remove("mesure"); return hi; }
