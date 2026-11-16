@@ -110,12 +110,16 @@
   .page .big{position:absolute;left:63px;top:238px;height:58px;display:flex;align-items:flex-start}
   .page .big img{height:58px;display:block}
   .page .echo-lc{position:absolute;left:61px;top:237px;width:387px;height:51px}
+  .page .echo-mc{left:61px;top:237px;height:51px}
+  .page .echo-mc img{height:51px;max-width:none}
+  .page .echo-mc .c-repete{position:absolute;top:0;overflow:hidden;height:51px}
+  .page .echo-mc .c-repete img{position:absolute;top:0;right:0}
   .page .band{position:absolute;left:0;right:0;top:287.5px;height:107.5px;background:var(--mag);color:#fff;padding:22px 0 0 61px}
   .page .band .v{font-size:31px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;line-height:1.05;max-width:700px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .page .band .h{font-size:22px;margin-top:9px;display:flex;align-items:center;gap:10px;max-width:700px;white-space:nowrap}
-  .page.lc .band .v{font-size:27px;letter-spacing:0}
-  .page.lc .band img.v{height:29px}
-  .page.lc .band .h{position:absolute;top:58px;left:61px;margin:0;font-size:20px}
+  .page.af .band .v{font-size:27px;letter-spacing:0}
+  .page.af .band img.v{height:29px}
+  .page.af .band .h{position:absolute;top:58px;left:61px;margin:0;font-size:20px}
   .page .band .h .masque{display:inline-block;width:240px;height:20px;border-radius:5px;background:linear-gradient(90deg,rgba(255,255,255,.3),rgba(255,255,255,.65) 30%,rgba(255,255,255,.45) 60%,rgba(255,255,255,.6));filter:blur(2px)}
   .page .avis{position:absolute;left:806.7px;top:240.6px;width:226.4px}
   .page .note{position:absolute;left:895px;top:323px;display:flex;gap:4px}
@@ -172,7 +176,7 @@ const riche = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
 function toast(m){ const t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("on"), 2600); }
 const MOIS = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
 const moisLabel = m => { const [y,mm] = m.split("-"); return MOIS[+mm-1] + " " + y; };
-const TITRE_MC = {src:"img/titre-mc.png", w:248};
+const TITRE_MC = {src:"img/titre-mc.png", largeur:248, hauteur:122, debutC:149};
 const STAR = c => `<svg viewBox="0 0 24 24"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5L2.5 9.5l6.6-.9z" fill="${c}"/></svg>`;
 const IC = {
   loc:`<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.6A2.6 2.6 0 1 1 12 6.4a2.6 2.6 0 0 1 0 5.2Z"/></svg>`,
@@ -258,13 +262,18 @@ function echo(){
     return `<div class="big" style="width:${(x0 + we + step*6).toFixed(0)}px;top:${238 + 58 - H - 4}px">${g}<img src="img/hop-mag.png" style="position:relative;height:${H}px" alt="HOP!"></div>`;
   }
   if(S.type === "LC") return `<img class="echo-lc" src="echo-lc-yanis.png" alt="LC">`;
-  const t = TITRE_MC, H = 58, W = t.w*H/122, step = W*0.5;
-  const ghosts = [0.3,0.22,0.15,0.1,0.065,0.04].map((o,i) => `<img src="${t.src}" style="position:absolute;left:${(step*(i+1)).toFixed(1)}px;top:0;height:${H}px;opacity:${o}" alt="">`).reverse().join("");
-  return `<div class="big" style="width:${(W + step*6).toFixed(0)}px">${ghosts}<img src="${t.src}" style="position:relative" alt="${S.type}"></div>`;
+  const {src, largeur, hauteur, debutC} = TITRE_MC;
+  const echelle = 51 / hauteur;
+  const gaucheC = debutC * echelle;
+  const largeurC = (largeur - debutC) * echelle;
+  const repetitions = [0.34, 0.24, 0.16, 0.10, 0.065, 0.04].map((opacite, i) =>
+    `<span class="c-repete" style="left:${gaucheC + 55 * (i + 1)}px;width:${largeurC}px;opacity:${opacite}" aria-hidden="true"><img src="${src}" alt=""></span>`
+  ).reverse().join("");
+  return `<div class="big echo-mc">${repetitions}<img src="${src}" style="position:relative" alt="MC"></div>`;
 }
 function pageHTML(){
   const nom = S.hotel.trim(), secs = SECTIONS.filter(([k]) => S[k].trim());
-  return `<section class="page${!HOP && S.type === "LC" ? " lc" : ""}">
+  return `<section class="page${HOP ? "" : " af"}">
     ${+S.mois.slice(0,4) >= 2025 && +S.mois.slice(0,4) <= 2030 ? `<img class="mois" src="img/nv/m-${S.mois}.svg" alt="${esc(moisLabel(S.mois))}">` : `<div class="mois">${esc(moisLabel(S.mois))}</div>`}
     <img class="logo${HOP ? " hop" : ""}" src="${HOP ? "../commun/img/logo-unac-hop-couleur.png" : "img/logo-unac.png"}" alt="UNAC">
     <img class="t-test" src="img/test.svg" alt="Test d'un">
