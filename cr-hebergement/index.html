@@ -77,12 +77,21 @@
   .mini{border:1px solid var(--ui-line);background:#fff;border-radius:8px;padding:5px 9px;font-size:12px;cursor:pointer;color:#6d3a55}
   .mini:hover{background:var(--rosepale)}
   .mini.danger{color:#a3263b}
+  .vers{display:flex;background:rgba(255,255,255,.14);border-radius:999px;padding:3px}
+  .vers button{border:0;background:none;color:#fff;font-weight:700;font-size:12.5px;padding:7px 12px;border-radius:999px;cursor:pointer;opacity:.75}
+  .vers button.on{background:#fff;color:#7a2a4e;opacity:1}
   .esc{display:grid;grid-template-columns:72px 1fr 28px;gap:8px;padding:10px 0;border-bottom:1px dashed var(--ui-line);align-items:start}
   .esc:last-of-type{border-bottom:0}
   .esc .code{text-transform:uppercase;font-weight:700;letter-spacing:.06em;text-align:center;padding:8px 4px}
   .esc .city{font-size:11px;color:var(--ui-muted);text-align:center;margin-top:3px;line-height:1.2;word-break:break-word}
   .esc .city.warn{color:#b4552a}
   .esc textarea{min-height:52px;font-size:13.5px}
+  .esc .champs{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .esc .hl{display:flex;gap:6px;flex-wrap:wrap;align-items:stretch}
+  .esc .hl input[data-fld="hotel"]{flex:1 1 160px;min-width:0}
+  .esc .hl select{flex:0 0 74px;padding-left:6px;padding-right:6px}
+  .esc .ech{flex:0 0 auto;display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ui-muted);white-space:nowrap}
+  .esc .ech input{width:140px}
   .esc .del{border:0;background:none;cursor:pointer;color:#b9a2b0;padding:6px 2px}
   .esc .del:hover{color:#a3263b}
   .esc .del svg{width:18px;height:18px}
@@ -139,8 +148,16 @@
   .zh .globe{position:absolute;left:-19px;top:-5px;width:40px;height:40px}
   .zh .zt{font-size:15.5px;font-weight:700;letter-spacing:.01em}
   .zh .zt em{font-style:normal;font-weight:400;opacity:.6;font-size:12px;margin-left:6px}
-  .er{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:30px;padding:0 48px;margin-bottom:var(--rg);flex:none}
-  .en .pill{display:inline-block;background:rgba(255,255,255,.24);border-radius:6px;padding:4px 8px 3px;font-size:var(--pill);font-weight:700;letter-spacing:.06em;line-height:1.1}
+  .er{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px;row-gap:calc(var(--rg)*.6);padding:0 48px;margin-bottom:var(--rg);flex:none}
+  .en .pill{display:inline-block;background:rgba(255,255,255,.24);border-radius:7px;padding:4px 9px 3px;font-size:calc(var(--pill) * 1.12);font-weight:700;letter-spacing:.01em;line-height:1.15}
+  .en .ht{display:flex;flex-wrap:wrap;align-items:center;column-gap:8px;row-gap:2px;margin-top:6px;padding-left:6px;font-size:calc(var(--fs) * .98);line-height:1.25}
+  .en .ht .hn{font-weight:700}
+  .en .ht .hn b{font-weight:700}
+  .en .ht .stars{display:inline-flex;gap:1px;transform:translateY(-1px)}
+  .en .ht .stars svg{width:calc(var(--fs) * .95);height:calc(var(--fs) * .95)}
+  .en .ht i{font-style:italic;opacity:.85;font-size:calc(var(--fs) * .92)}
+  .en .ht .masque{display:inline-block;vertical-align:-2px;width:7.5em;height:.95em;border-radius:4px;background:linear-gradient(90deg,rgba(255,255,255,.25),rgba(255,255,255,.6) 30%,rgba(255,255,255,.4) 60%,rgba(255,255,255,.55));filter:blur(1.6px)}
+  .en .tx{padding-left:6px}
   .en .tx{font-size:var(--fs);line-height:var(--lh);margin-top:6px;opacity:.9;white-space:pre-wrap;overflow-wrap:break-word;text-align:justify;hyphens:auto;-webkit-hyphens:auto}
   .sep{flex:none;height:1px;margin:var(--zb) 0 var(--zt) 48px;background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.32) 6%,rgba(255,255,255,.32) 70%,rgba(255,255,255,0) 100%)}
   .content > .sep:first-child{margin-top:0}
@@ -310,6 +327,7 @@
         <button id="aReset"><div style="color:#a3263b">Nouveau compte rendu (tout effacer)<small>Efface le brouillon LC ou MC affiché.</small></div></button>
       </div>
     </div>
+    <div class="vers" id="vers" title="Version du document"><button data-v="adherents" class="on">Adhérents</button><button data-v="public">Public</button></div>
     <button class="btn ghost" id="imgBtn" title="Une image par page, pour Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-8 9"/></svg><span class="lg">Images</span></button>
     <button class="btn pdf" id="pdfBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span class="lg">Télécharger le&nbsp;</span>PDF</button>
   </div>
@@ -356,9 +374,14 @@ function blank(t){
 /* Plusieurs comptes rendus mémorisés sur l'appareil : brouillons et publiés */
 const DOCS_KEY = "crheb:docs", CUR_KEY = "crheb:current";
 let DOCS = {};
-function hasContent(d){ return !!(d.aNoter && d.aNoter.trim()) || d.zones.some(z => z.escales.some(e => (e.code||"").trim() || (e.texte||"").trim())); }
-function nbEscales(d){ return d.zones.reduce((a,z) => a + z.escales.filter(e => e.code && (e.texte||"").trim()).length, 0); }
-function fixIds(d){ d.zones.forEach(z => { z.id = z.id || uid(); z.open = !!z.open; z.escales.forEach(e => { e.id = e.id || uid(); e.code = e.code||""; e.texte = e.texte||""; }); }); return d; }
+const escVide = e => !((e.texte||"").trim() || (e.hotel||"").trim());
+const villeDe = e => (e.ville||"").trim() || ((refFor(type)[e.code]||{}).ville) || e.code;
+const ETOILE = `<svg viewBox="0 0 24 24"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5L2.5 9.5l6.6-.9z" fill="currentColor"/></svg>`;
+function echeanceFR(v){ v = (v||"").trim(); const m = v.match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? `${m[3]}/${m[2]}/${m[1]}` : v; }
+let VERSION = "adherents";
+function hasContent(d){ return !!(d.aNoter && d.aNoter.trim()) || d.zones.some(z => z.escales.some(e => (e.code||"").trim() || !escVide(e))); }
+function nbEscales(d){ return d.zones.reduce((a,z) => a + z.escales.filter(e => e.code && !escVide(e)).length, 0); }
+function fixIds(d){ d.zones.forEach(z => { z.id = z.id || uid(); z.open = !!z.open; z.escales.forEach(e => { e.id = e.id || uid(); e.code = e.code||""; e.texte = e.texte||""; e.hotel = e.hotel||""; e.etoiles = e.etoiles||""; e.echeance = e.echeance||""; e.ville = e.ville||""; }); }); return d; }
 function newDoc(t){ return Object.assign(blank(t), {id:uid(), statut:"brouillon", cree:Date.now(), maj:Date.now()}); }
 function loadDocs(){
   try{ DOCS = JSON.parse(localStorage.getItem(DOCS_KEY) || "{}") || {}; }catch(e){ DOCS = {}; }
@@ -467,7 +490,15 @@ function renderForm(){
       }
       h += `<div class="esc" data-e="${e.id}">
         <div><input type="text" class="code" maxlength="4" list="dlAll" value="${esc(e.code)}" placeholder="XXX" autocomplete="off" autocapitalize="characters" spellcheck="false" data-fld="code"><div class="cityslot">${city}</div></div>
-        <textarea data-fld="texte" rows="2" placeholder="Hôtel, état des chambres, transport, restauration, sécurité…">${esc(e.texte)}</textarea>
+        <div class="champs">
+          <div class="hl">
+            <input type="text" data-fld="hotel" value="${esc(e.hotel)}" placeholder="Nom de l'hôtel" autocomplete="off">
+            <select data-fld="etoiles" title="Étoiles">${["","1","2","3","4","5"].map(v => `<option value="${v}" ${String(e.etoiles)===v?"selected":""}>${v ? v+" ★" : "★ ?"}</option>`).join("")}</select>
+            <label class="ech"><span>Fin de contrat</span><input type="date" data-fld="echeance" value="${/^\d{4}-\d{2}-\d{2}$/.test(e.echeance)?esc(e.echeance):""}"></label>
+          </div>
+          ${!r && e.code.length>=3 ? `<input type="text" data-fld="ville" value="${esc(e.ville)}" placeholder="Ville affichée (escale hors référentiel)">` : ""}
+          <textarea data-fld="texte" rows="2" placeholder="Commentaire de la commission : état des chambres, transport, restauration, sécurité…">${esc(e.texte)}</textarea>
+        </div>
         <button class="del" data-act="del" title="Supprimer l'escale">${IC.del}</button>
       </div>`;
     });
@@ -513,7 +544,7 @@ $("#form").addEventListener("input", ev => {
     slot.innerHTML = !e.code ? "" : dup ? `<div class="city warn">en double</div>`
       : (r && r.zone !== z.nom) ? `<div class="city warn">${esc(r.ville)}</div><button class="move" data-act="move" data-e="${e.id}">→ ${esc(r.zone)}</button>`
       : r ? `<div class="city">${esc(r.ville)}</div>` : (e.code.length>=3 ? `<div class="city">hors référentiel</div>` : "");
-  } else e.texte = t.value;
+  } else if(t.dataset.fld) e[t.dataset.fld] = t.value;
   changed(false);
 });
 $("#form").addEventListener("change", ev => {
@@ -543,19 +574,19 @@ $("#form").addEventListener("click", ev => {
     const last = document.querySelector(`.zone[data-z="${z.id}"] .esc:last-of-type .code`); last && last.focus(); return; }
   if(act === "del"){
     const id = b.closest(".esc").dataset.e; const e = z.escales.find(x=>x.id===id);
-    if(e.texte.trim() && !confirm(`Supprimer l'escale ${e.code||""} et son texte ?`)) return;
+    if(!escVide(e) && !confirm(`Supprimer l'escale ${e.code||""} et son contenu ?`)) return;
     z.escales = z.escales.filter(x => x.id !== id); return changed(true);
   }
   if(act === "prefill"){
     const known = (ESCALES[type]||[]).find(x => x.zone === z.nom); if(!known) return;
     const have = new Set(z.escales.map(e => e.code));
-    z.escales = z.escales.filter(e => e.code || e.texte);
+    z.escales = z.escales.filter(e => e.code || !escVide(e));
     Object.keys(known.escales).sort().forEach(c => { if(!have.has(c)) z.escales.push({id:uid(),code:c,texte:""}); });
     return changed(true);
   }
   if(act === "rename"){ const n = prompt("Nom de la zone :", z.nom); if(n && n.trim()){ z.nom = n.trim(); changed(true); } return; }
   if(act === "delzone"){
-    const n = z.escales.filter(e => e.code || e.texte).length;
+    const n = z.escales.filter(e => e.code || !escVide(e)).length;
     if(n && !confirm(`Supprimer la zone « ${z.nom} » et ses ${n} escale(s) ?`)) return;
     S.zones = S.zones.filter(x => x !== z); return changed(true);
   }
@@ -632,12 +663,17 @@ const overflows = c => c.scrollHeight > c.clientHeight + 0.5;
 function el(html){ const d = document.createElement("div"); d.innerHTML = html.trim(); return d.firstChild; }
 
 function zoneEntries(z){
-  let list = z.escales.filter(e => e.code.trim() && (!S.masquerVides || e.texte.trim()));
-  if(S.tri === "alpha") list = list.slice().sort((a,b) => a.code.localeCompare(b.code));
+  let list = z.escales.filter(e => e.code.trim() && (!S.masquerVides || !escVide(e)));
+  if(S.tri === "alpha") list = list.slice().sort((a,b) => villeDe(a).localeCompare(villeDe(b), "fr"));
   return list;
 }
 function rowHTML(items){
-  return `<div class="er">${items.map(e => `<div class="en"><span class="pill">${esc(e.code)}</span><div class="tx">${esc(e.texte.trim())}</div></div>`).join("")}</div>`;
+  return `<div class="er">${items.map(e => {
+    const n = (e.hotel||"").trim().replace(/^h[ôo]tel\s+/i, ""), et = +e.etoiles || 0, ec = echeanceFR(e.echeance);
+    const nom = !n ? "" : VERSION === "public" ? `<span class="masque" aria-label="Nom masqué"></span>` : `<b>${esc(n)}</b>`;
+    const ht = (n || et || ec) ? `<div class="ht">${n ? `<span class="hn">Hôtel ${nom}</span>` : ""}${et ? `<span class="stars">${ETOILE.repeat(et)}</span>` : ""}${ec ? `<i>Échéance du contrat au ${esc(ec)}</i>` : ""}</div>` : "";
+    return `<div class="en"><span class="pill">${esc(villeDe(e))}</span>${ht}${(e.texte||"").trim() ? `<div class="tx">${esc(e.texte.trim())}</div>` : ""}</div>`;
+  }).join("")}</div>`;
 }
 const zhHTML = (nom, suite) => `<div class="zh">${globeSVG(nom)}<span class="zt">${esc(nom)}${suite?"<em>(suite)</em>":""}</span></div>`;
 
@@ -668,7 +704,7 @@ function buildPages(container){
 
   S.zones.forEach(z => {
     const list = zoneEntries(z); if(!list.length) return;
-    const rows = []; for(let i=0;i<list.length;i+=3) rows.push(list.slice(i,i+3));
+    const rows = []; for(let i=0;i<list.length;i+=2) rows.push(list.slice(i,i+2));
     if(rows.length <= 3){
       // Petite zone : jamais coupée
       placeWithSep(el(blkHTML(z.nom, false, rows)));
@@ -706,7 +742,7 @@ function buildPages(container){
   const pages = container.querySelectorAll(".page");
   pages.forEach((p,i) => {
     const f = p.querySelector(".foot").children;
-    f[0].textContent = `UNAC · Commission hébergement ${type} · ${moisLabel(S.mois)}`;
+    f[0].textContent = `UNAC · Commission hébergement ${type} · ${moisLabel(S.mois)}` + (VERSION === "adherents" ? " · Réservé aux adhérents, ne pas diffuser" : "");
     f[1].textContent = pages.length > 1 ? `${i+1} / ${pages.length}` : "";
   });
   return pages.length;
@@ -745,6 +781,11 @@ function fitPreview(){
   });
 }
 window.addEventListener("resize", fitPreview);
+$("#vers").addEventListener("click", ev => {
+  const b = ev.target.closest("[data-v]"); if(!b) return;
+  VERSION = b.dataset.v; $("#vers").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+  renderPreview(); toast(VERSION === "public" ? "Version publique : noms d'hôtels masqués" : "Version adhérents : noms d'hôtels visibles");
+});
 
 /* ---------------- PDF ---------------- */
 $("#pdfBtn").addEventListener("click", async () => {
@@ -752,7 +793,7 @@ $("#pdfBtn").addEventListener("click", async () => {
   if(document.fonts && document.fonts.ready) await document.fonts.ready;
   await Promise.all([...document.querySelectorAll("#pages img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
   const old = document.title;
-  document.title = `CR hébergement ${type} - ${moisLabel(S.mois)}`;
+  document.title = `CR hébergement ${type} - ${moisLabel(S.mois)}` + (VERSION === "public" ? " - public" : " - adhérents");
   document.body.classList.add("tab-apercu");
   setTimeout(() => { window.print(); setTimeout(() => { document.title = old; syncTab(); }, 500); }, 60);
 });
@@ -777,7 +818,7 @@ $("#menuBtn").addEventListener("click", e => { e.stopPropagation(); menu.classLi
 document.addEventListener("click", e => { if(!menu.contains(e.target)) menu.classList.remove("open"); });
 
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("on"), 2600); }
-function exportable(d){ const o = JSON.parse(JSON.stringify(d || S)); delete o.id; delete o.statut; delete o.partage; delete o.publieLe; delete o.cree; delete o.maj; delete o.visuel; o.zones.forEach(z => { delete z.open; z.escales = z.escales.filter(e => e.code || e.texte); }); return o; }
+function exportable(d){ const o = JSON.parse(JSON.stringify(d || S)); delete o.id; delete o.statut; delete o.partage; delete o.publieLe; delete o.cree; delete o.maj; delete o.visuel; o.zones.forEach(z => { delete z.open; z.escales = z.escales.filter(e => e.code || !escVide(e)); }); return o; }
 
 async function b64urlDeflate(str){
   const bytes = new TextEncoder().encode(str);
@@ -850,7 +891,7 @@ function incoming(o){
   if(!o || !o.zones){ toast("Brouillon non reconnu"); return; }
   const t = o.type === "MC" ? "MC" : "LC";
   ensureDraft(t);
-  const mine = S.zones.reduce((a,z) => a + z.escales.filter(e => e.code && e.texte.trim()).length, 0);
+  const mine = S.zones.reduce((a,z) => a + z.escales.filter(e => e.code && !escVide(e)).length, 0);
   let mode = "replace";
   if(mine){
     mode = confirm(`Vous avez déjà ${mine} escale(s) renseignée(s) en ${t}.\n\nOK = fusionner avec le brouillon reçu\nAnnuler = remplacer par le brouillon reçu`) ? "merge" : "replace";
@@ -864,10 +905,11 @@ function incoming(o){
       let z = S.zones.find(x => x.nom === oz.nom);
       if(!z){ z = {id:uid(), nom:oz.nom, open:false, escales:[]}; S.zones.push(z); }
       oz.escales.forEach(oe => {
-        if(!oe.code && !oe.texte) return;
+        if(!oe.code && escVide(oe)) return;
         const cur = z.escales.find(e => e.code === oe.code);
-        if(!cur){ z.escales.push({id:uid(), code:oe.code||"", texte:oe.texte||""}); add++; }
-        else if(!cur.texte.trim()){ cur.texte = oe.texte||""; add++; }
+        if(!cur){ z.escales.push({id:uid(), code:oe.code||"", texte:oe.texte||"", hotel:oe.hotel||"", etoiles:oe.etoiles||"", echeance:oe.echeance||"", ville:oe.ville||""}); add++; return; }
+        ["hotel","etoiles","echeance","ville"].forEach(k => { if(!cur[k] && oe[k]) cur[k] = oe[k]; });
+        if(!cur.texte.trim()){ if((oe.texte||"").trim()){ cur.texte = oe.texte; add++; } }
         else if(oe.texte && oe.texte.trim() && cur.texte.trim() !== oe.texte.trim()){ cur.texte = cur.texte.trim() + "\n" + oe.texte.trim(); conflits++; }
       });
     });
@@ -894,7 +936,9 @@ function demo(t){
           "Europe centrale et de l'Est": {PRG:"RAS.",WAW:"Nouvel hôtel en centre-ville, retours positifs."},
           "Afrique du Nord et Méditerranée": {ALG:"RAS.",CMN:"Transfert avec escorte maintenu."} }
   }[t];
-  s.zones.forEach(z => { const m = T[z.nom]||{}; z.escales = Object.entries(m).map(([c,x]) => ({id:uid(),code:c,texte:x})); });
+  const N = ["Exemple Centre","Exemple Aéroport","Exemple Plaza","Exemple Marina","Exemple Gare","Exemple Parc"];
+  let i = 0;
+  s.zones.forEach(z => { const m = T[z.nom]||{}; z.escales = Object.entries(m).map(([c,x]) => { i++; return {id:uid(),code:c,texte:x,hotel:N[i%N.length],etoiles:String(3+i%3),echeance:`202${7+i%2}-${String(1+(i*5)%12).padStart(2,"0")}-30`.replace(/-02-30$/,"-02-28"),ville:""}; }); });
   return s;
 }
 
@@ -921,7 +965,7 @@ function demo(t){
 <script src="import.js"></script>
 <script src="historique.js"></script>
 <script>
-  window.nomExport = () => `CR-hebergement-${type}-${moisLabel(S.mois).replace(/\s+/g, "-")}`;
+  window.nomExport = () => `CR-hebergement-${type}-${moisLabel(S.mois).replace(/\s+/g, "-")}-${VERSION === "public" ? "public" : "adherents"}`;
   window.titreExport = () => `CR hébergement ${type} · ${moisLabel(S.mois)}`;
 </script>
 <script src="../commun/export-images.js"></script>
