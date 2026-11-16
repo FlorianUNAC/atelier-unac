@@ -381,14 +381,15 @@ function refFor(type){
 /* ---------------- État ---------------- */
 /* ---- Section : Air France (LC / MC) ou HOP! (France / Europe) ---- */
 const HOP = new URLSearchParams(location.search).get("section") === "hop";
-const T1 = HOP ? "FR" : "LC", T2 = HOP ? "EU" : "MC";
-const TNOM = {LC:"LC", MC:"MC", FR:"France", EU:"Europe"}, TLONG = {LC:"long-courrier", MC:"moyen-courrier", FR:"France", EU:"Europe"};
-window.TNOM = TNOM; window.TYPES_SECTION = [T1, T2];
+// HOP! : un compte rendu unique France & Europe (escales du réseau moyen-courrier)
+const T1 = HOP ? "HOP" : "LC", T2 = HOP ? "HOP" : "MC";
+const TNOM = {LC:"LC", MC:"MC", HOP:"France & Europe"}, TLONG = {LC:"long-courrier", MC:"moyen-courrier", HOP:"France & Europe"};
+window.TNOM = TNOM; window.TYPES_SECTION = HOP ? ["HOP"] : ["LC","MC"];
 const PFX = HOP ? "crhebhop:" : "crheb:";
-if(HOP){ const mc = ESCALES.MC || []; ESCALES.FR = mc.filter(z => z.zone === "France"); ESCALES.EU = mc.filter(z => z.zone !== "France"); }
+if(HOP) ESCALES.HOP = ESCALES.MC || [];
 let type = localStorage.getItem(PFX + "type"); if(![T1, T2].includes(type)) type = T1;
 if(HOP){
-  document.getElementById("seg").innerHTML = `<button data-t="FR">France</button><button data-t="EU">Europe</button>`;
+  document.getElementById("seg").style.display = "none";
   const h1 = document.querySelector(".top h1"); if(h1 && h1.firstChild) h1.firstChild.textContent = h1.firstChild.textContent.replace("hébergement", "hébergement HOP!");
   document.title = document.title.replace("hébergement", "hébergement HOP!");
 }
@@ -690,9 +691,9 @@ function headerHOP(){
   const g = [0.3,0.18,0.11,0.065,0.035].map((o,i) => `<img src="../commun/img/hop-blanc-excl.png" style="position:absolute;left:${(x0 + step*(i+1)).toFixed(1)}px;top:0;height:${H}px;opacity:${o}" alt="">`).reverse().join("");
   return `<div class="hd">
     <img class="logo hop" src="../commun/img/logo-unac-hop-blanc.png" alt="UNAC HOP!">
-    <img class="plane hop" src="../commun/img/avion-hop.png" alt="">
+    <img class="plane" src="../commun/img/avion-unac.png" alt="">
     <div class="t1">${HEB_SVG}</div>
-    <div class="t2">${esc(moisLabel(S.mois))} · ${esc(TNOM[type])}</div>
+    <div class="t2">${esc(moisLabel(S.mois))}</div>
     <div class="big hopbig" style="width:${(x0 + we + step*5).toFixed(0)}px">${g}<img src="../commun/img/hop-blanc.png" style="position:relative;height:${H}px" alt="HOP!"></div>
     ${S.aNoter.trim() ? `<div class="lbl">À noter</div>` : ""}
   </div>${S.aNoter.trim() ? `<div class="band">${esc(S.aNoter.trim())}</div>` : ""}`;
@@ -818,7 +819,7 @@ function buildPages(container){
   const pages = container.querySelectorAll(".page");
   pages.forEach((p,i) => {
     const f = p.querySelector(".foot").children;
-    f[0].textContent = `${HOP ? "UNAC HOP!" : "UNAC"} · Commission hébergement ${TNOM[type]} · ${moisLabel(S.mois)}` + (VERSION === "adherents" ? " · Réservé aux adhérents, ne pas diffuser" : "");
+    f[0].textContent = `${HOP ? "UNAC HOP! · Commission hébergement" : "UNAC · Commission hébergement " + TNOM[type]} · ${moisLabel(S.mois)}` + (VERSION === "adherents" ? " · Réservé aux adhérents, ne pas diffuser" : "");
     f[1].textContent = pages.length > 1 ? `${i+1} / ${pages.length}` : "";
   });
   return pages.length;
@@ -882,7 +883,7 @@ $("#pdfBtn").addEventListener("click", async () => { if(enExemple()) return toas
   if(document.fonts && document.fonts.ready) await document.fonts.ready;
   await Promise.all([...document.querySelectorAll("#pages img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
   const old = document.title;
-  document.title = `CR hébergement ${HOP ? "HOP! " : ""}${TNOM[type]} - ${moisLabel(S.mois)}` + (VERSION === "public" ? " - public" : " - adhérents");
+  document.title = `CR hébergement ${HOP ? "HOP!" : TNOM[type]} - ${moisLabel(S.mois)}` + (VERSION === "public" ? " - public" : " - adhérents");
   document.body.classList.add("tab-apercu");
   setTimeout(() => { window.print(); setTimeout(() => { document.title = old; syncTab(); }, 500); }, 60);
 });
@@ -1055,8 +1056,8 @@ function demo(t){
 <script src="import.js"></script>
 <script src="historique.js"></script>
 <script>
-  window.nomExport = () => `CR-hebergement-${HOP ? "HOP-" : ""}${TNOM[type]}-${moisLabel(S.mois).replace(/\s+/g, "-")}-${VERSION === "public" ? "public" : "adherents"}`;
-  window.titreExport = () => `CR hébergement ${HOP ? "HOP! " : ""}${TNOM[type]} · ${moisLabel(S.mois)}`;
+  window.nomExport = () => `CR-hebergement-${HOP ? "HOP" : TNOM[type]}-${moisLabel(S.mois).replace(/\s+/g, "-")}-${VERSION === "public" ? "public" : "adherents"}`;
+  window.titreExport = () => `CR hébergement ${HOP ? "HOP!" : TNOM[type]} · ${moisLabel(S.mois)}`;
 </script>
 <script src="../commun/export-images.js"></script>
 </body>

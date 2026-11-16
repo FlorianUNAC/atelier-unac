@@ -153,11 +153,7 @@
     let lc = 0, mc = 0;
     list.forEach(e => { const r = R.codes[e.code]; if(!r) return; if(r.types.has("LC") && !r.types.has("MC")) lc++; if(r.types.has("MC") && !r.types.has("LC")) mc++; });
     let guess = lc === mc ? type : (lc > mc ? "LC" : "MC");
-    if(window.TYPES_SECTION && window.TYPES_SECTION[0] === "FR"){ // HOP! : France ou Europe selon les escales
-      const fr = new Set(Object.keys(((ESCALES.FR||[])[0]||{}).escales || {})); let nf = 0, ne = 0;
-      list.forEach(e => { if(!R.codes[e.code]) return; if(fr.has(e.code)) nf++; else ne++; });
-      guess = nf === ne ? type : (nf > ne ? "FR" : "EU");
-    }
+    if(window.TYPES_SECTION && window.TYPES_SECTION.length === 1) guess = window.TYPES_SECTION[0]; // HOP! : CR unique
     return {list, preambule: pre.join("\n").trim(), guess, R};
   }
 
