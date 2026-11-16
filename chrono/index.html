@@ -14,6 +14,8 @@
 <style>
   @font-face{font-family:"T1";src:url("../commun/polices/x1.woff2") format("woff2");font-weight:400;font-display:block}
   @font-face{font-family:"T1";src:url("../commun/polices/x2.woff2") format("woff2");font-weight:700 800;font-display:block}
+  @font-face{font-family:"Novotype locale";src:local("Novotype Regular"),local("Novotype-Regular");font-weight:400}
+  @font-face{font-family:"Novotype locale";src:local("Novotype Medium"),local("Novotype-Medium");font-weight:700}
   :root{--mag:#C2286A;--mag2:#A01A55;--rosepale:#FBE4EC;--ui-bg:#f6f1f4;--ui-card:#fff;--ui-line:#e7dbe2;--ui-ink:#2b1225;--ui-muted:#8b6f80}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
@@ -175,7 +177,7 @@
   .page .banniere-plein-format{width:100%;height:100%}
   .page.en-banniere .zone{padding:24px 40px;gap:calc(var(--k)*18px)}
   .page.en-banniere .bloc-banniere{width:min(100%,calc(var(--k)*185px*var(--ratio)))}
-  .ban-unac{container-type:inline-size;position:relative;isolation:isolate;overflow:hidden;text-align:center;color:white;
+  .ban-unac{font-family:"Novotype locale",Novotype,T1,Inter,system-ui,sans-serif;container-type:inline-size;position:relative;isolation:isolate;overflow:hidden;text-align:center;color:white;
     background:radial-gradient(ellipse 30% 114% at 63% 58%,#c43e7d 0%,#78425c 41%,transparent 78%),linear-gradient(112deg,#342018,#222328 39%,#281815 93%)}
   .ban-unac .ban-logo{position:absolute;left:50%;top:9%;width:7.6%;height:auto;transform:translateX(-50%);z-index:2}
   .ban-unac .ban-avion{position:absolute;right:-2%;top:8%;width:36%;height:auto}
