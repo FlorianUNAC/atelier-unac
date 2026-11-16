@@ -101,6 +101,7 @@
   .mc .hd > b{font-size:15px;color:var(--ui-ink)}
   .mc .cat{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:3px 8px;background:var(--rosepale);color:#a01a55}
   .mc .cat.hopt{background:#2b1225;color:#fff}
+  .galerie .th.lien img{width:100%;height:100%;object-fit:cover;object-position:top}
   .mc .ob{font-size:12.5px;color:var(--ui-ink);line-height:1.35;margin:0}
   .mc .chte{font-size:11.5px;color:var(--ui-muted)}
   .mc .chte .sw{width:10px;height:10px}
@@ -451,6 +452,8 @@ MODELES.hopComCat = {nom:"HOP! · Com CAT PNC 7 juillet 2026", section:"hop", fo
     {type:"qr", url:"https://card.pm/unac-cfecgc/laure.desrentes", titre:"Sa carte de visite", texte:"Contact direct, numéro et mail"}]}
 ]};
 const MODELES_INFO = [
+  {k:"testHeb", lien:"../test-hebergement/", n:"Test d’un nouvel hébergement", cat:"Informer", apercu:"../test-hebergement/apercu.png", obj:"Restituer le test d’un hôtel par la commission hébergement (outil dédié).",
+   pour:["Nouvel hôtel testé en escale","Contre-visite après réclamations"], eviter:["Sujet sans lien avec l’hébergement"]},
   {k:"hopRecrutement", n:"HOP! · Recrutement délégué·es", cat:"Mobiliser", hop:1, obj:"Donner envie de rejoindre l’équipe UNAC HOP!.",
    pour:["Postes de délégué·es à pourvoir","Préparation des élections","Campagne d’adhésion"], eviter:["Information pratique","Sujet Air France"]},
   {k:"hopComCat", n:"HOP! · Compte rendu de commission (carrousel)", cat:"Informer", hop:1, obj:"Restituer une commission en plusieurs visuels : chiffres, demandes UNAC, contact.",
@@ -772,7 +775,12 @@ function ouvrirBanque(){
   $("#bqCats").innerHTML = CATS.map(c => `<button data-cat="${c}">${c}</button>`).join("");
   const g = $("#galerie");
   const ordre = MODELES_INFO.slice().sort((a,b) => (SECTION_DEF === "hop" ? (b.hop?1:0) - (a.hop?1:0) : (a.hop?1:0) - (b.hop?1:0)));
-  g.innerHTML = ordre.map(m => { const M = MODELES[m.k], T = THEMES[M.theme];
+  g.innerHTML = ordre.map(m => { const M = MODELES[m.k] || {}, T = THEMES[M.theme] || THEMES.prune;
+    if(m.lien) return `<div class="mc" data-c="${m.cat}"><a class="th lien" href="${m.lien}"><img src="${m.apercu}" alt=""></a>
+      <div class="hd"><b>${m.n}</b><span class="cat">${m.cat}</span><span class="cat hopt">Outil dédié</span></div>
+      <p class="ob">${m.obj}</p><div class="chte">Fond gris clair · 1080 × 1768 · photos</div>
+      <ul class="ls ok">${m.pour.map(x => `<li>${x}</li>`).join("")}</ul><ul class="ls ko">${m.eviter.map(x => `<li>${x}</li>`).join("")}</ul>
+      <a class="use" href="${m.lien}" style="text-align:center;text-decoration:none">Ouvrir l’outil</a></div>`;
     return `<div class="mc" data-c="${m.cat}"><div class="th" data-modele="${m.k}" title="Utiliser ce modèle"></div>
       <div class="hd"><b>${m.n}</b><span class="cat">${m.cat}</span>${m.hop ? `<span class="cat hopt">HOP!</span>` : ""}</div>
       <p class="ob">${m.obj}</p>
@@ -793,13 +801,13 @@ function ouvrirBanque(){
   ["wheel","touchstart","keydown","mousedown"].forEach(ev => mb.addEventListener(ev, () => enHaut = false, {once:true, passive:true}));
   mb.addEventListener("scroll", () => { if(enHaut && mb.scrollTop) mb.scrollTop = 0; });
   window._bqRO = new ResizeObserver(en => { en.forEach(e => placer(e.target)); if(enHaut) mb.scrollTop = 0; });
-  g.querySelectorAll(".th").forEach(th => {
+  g.querySelectorAll(".th:not(.lien)").forEach(th => {
     const w = apercuModele(th.dataset.modele), pg = w.firstChild;
     w.style.cssText = "width:0;height:0;overflow:hidden"; th.appendChild(w);
     pg.querySelectorAll("img").forEach(im => { if(!im.complete) im.addEventListener("load", () => placer(th), {once:true}); });
     window._bqRO.observe(th); placer(th);
   });
-  if(document.fonts) document.fonts.ready.then(() => g.querySelectorAll(".th").forEach(placer));
+  if(document.fonts) document.fonts.ready.then(() => g.querySelectorAll(".th:not(.lien)").forEach(placer));
   $("#modModal .mbody").scrollTop = 0;
 }
 $("#aModeles").addEventListener("click", ouvrirBanque);
