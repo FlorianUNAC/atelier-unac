@@ -29,9 +29,27 @@ textarea { resize: vertical; }
 .ligne { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; }
 button { cursor: pointer; color: #fff; background: #7b2449; border: 1px solid #7b2449; border-radius: 8px; padding: 9px 12px; font-weight: 700; }
+button:disabled { cursor: default; opacity: .55; }
 button[type="button"] { background: #fff; color: #7b2449; }
 .apercu h2 { margin: 0 0 8px; font-size: 1rem; }
+#info-exemple { margin: 0 0 10px; font-size: .85rem; }
+.filigrane:not([hidden]) {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+.filigrane span {
+  transform: rotate(-30deg);
+  font-size: 14cqw;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: rgba(123, 36, 73, .19);
+}
 .papier {
+  position: relative;
   container-type: inline-size;
   display: flex;
   flex-direction: column;
@@ -60,7 +78,7 @@ button[type="button"] { background: #fff; color: #7b2449; }
   @page { size: A4; margin: 0; }
   body { background: #fff; color: #141414; }
   .atelier, .espace, .apercu, .papier { display: block; margin: 0; padding: 0; }
-  .retour, h1, .editeur, .apercu h2 { display: none; }
+  .retour, h1, .editeur, .apercu h2, #info-exemple, .filigrane:not([hidden]) { display: none; }
   .papier { container-type: normal; aspect-ratio: auto; }
   .entete, .pied {
     position: fixed;
@@ -76,5 +94,5 @@ button[type="button"] { background: #fff; color: #7b2449; }
   .objet, .courrier { margin-top: 8mm; }
   .objet { break-after: avoid; }
   .signature { margin-top: 15mm; break-inside: avoid; }
-  .impression-vierge .lettre { display: none; }
+  .impression-vierge .lettre, .papier.en-exemple .lettre { display: none; }
 }

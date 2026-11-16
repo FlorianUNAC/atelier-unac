@@ -7,8 +7,8 @@
 <title>Papier à en-tête UNAC · Atelier UNAC</title>
 <link rel="icon" href="../commun/icons-atelier/favicon.png">
 <script src="../commun/acces.js"></script>
-<link rel="stylesheet" href="papier.css?v=58d50b1">
-<script src="papier.js" defer></script>
+<link rel="stylesheet" href="papier.css?v=apercu-exemple">
+<script src="papier.js?v=apercu-exemple" defer></script>
 </head>
 <body>
 <main class="atelier">
@@ -29,13 +29,15 @@
       <label>Nom du signataire<input data-champ="signataire" maxlength="160"></label>
       <label>Fonction du signataire<input data-champ="mandat" maxlength="160"></label>
       <div class="actions">
-        <button type="submit">Imprimer le courrier</button>
+        <button type="submit" disabled>Imprimer le courrier</button>
         <button type="button" id="modele-vierge">Imprimer le modèle vierge</button>
       </div>
     </form>
     <section class="apercu" aria-labelledby="titre-apercu">
       <h2 id="titre-apercu">Aperçu du courrier</h2>
+      <p id="info-exemple">Courrier fictif. Votre aperçu remplacera cet exemple dès la première saisie.</p>
       <article class="papier">
+        <div class="filigrane" aria-hidden="true" hidden><span>EXEMPLE</span></div>
         <header class="entete">
           <img src="entete-unac.png" width="1203" height="200" alt="UNAC · Union des navigants de l’aviation civile">
         </header>
