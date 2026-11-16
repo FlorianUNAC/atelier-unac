@@ -85,13 +85,32 @@
   /* Fenêtres (historique, images) */
   .modal{position:fixed;inset:0;background:rgba(30,6,20,.55);display:none;align-items:center;justify-content:center;z-index:80;padding:16px}
   .modal.on{display:flex}
-  .galerie{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
-  .galerie button{border:1px solid var(--ui-line);background:#fff;border-radius:12px;padding:8px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:8px}
-  .galerie button:hover{border-color:#c8487f;box-shadow:0 6px 18px rgba(120,20,70,.15)}
-  .galerie .th{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px;background:#f3e8ee;display:flex;align-items:center;justify-content:center}
+  .mbox.banque{width:min(1180px,100%);height:94vh}
+  .bq-top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 18px;border-bottom:1px solid var(--ui-line)}
+  .bq-cats{display:flex;gap:6px;flex-wrap:wrap}
+  .bq-cats button{border:1px solid var(--ui-line);background:#fff;border-radius:999px;padding:6px 13px;font-weight:700;cursor:pointer;color:#7d5a6e;font-size:13px}
+  .bq-cats button.on{background:#7a2a4e;border-color:#7a2a4e;color:#fff}
+  .bq-acts{display:flex;gap:8px}
+  .galerie{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+  .galerie .mc{border:1px solid var(--ui-line);background:#fff;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px}
+  .galerie .mc[hidden]{display:none}
+  .galerie .th{position:relative;contain:strict;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:9px;background:#f3e8ee;display:flex;align-items:center;justify-content:center;cursor:pointer}
   .galerie .th .pwrap{margin:0;position:relative;flex:none}
-  .galerie button > b{font-size:14px;color:var(--ui-ink)}
-  .galerie button > small{font-size:12px;color:var(--ui-muted);line-height:1.35}
+  .galerie .mc:hover{border-color:#c8487f;box-shadow:0 6px 18px rgba(120,20,70,.15)}
+  .mc .hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .mc .hd > b{font-size:15px;color:var(--ui-ink)}
+  .mc .cat{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:3px 8px;background:var(--rosepale);color:#a01a55}
+  .mc .ob{font-size:12.5px;color:var(--ui-ink);line-height:1.35;margin:0}
+  .mc .chte{font-size:11.5px;color:var(--ui-muted)}
+  .mc .chte .sw{width:10px;height:10px}
+  .mc .ls{font-size:12px;line-height:1.4;margin:0;padding:0;list-style:none}
+  .mc .ls li{display:flex;gap:6px}
+  .mc .ls.ok li::before{content:"✓";color:#3E8C2A;font-weight:800}
+  .mc .ls.ko li::before{content:"✕";color:#D43B2E;font-weight:800}
+  .mc .ls.ko{color:var(--ui-muted)}
+  .mc .use{margin-top:auto;border:0;background:#7a2a4e;color:#fff;font-weight:700;border-radius:9px;padding:9px;cursor:pointer;font-size:13.5px}
+  .mc .use:hover{background:#a01a55}
+  @media (max-width:600px){.galerie{grid-template-columns:1fr;gap:12px}.galerie .th{aspect-ratio:4/3}.mbox.banque{height:100vh;max-height:100vh;border-radius:0}.modal:has(.banque){padding:0}}
   .mbox{background:#fff;border-radius:16px;width:min(860px,100%);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.35)}
   .mhead{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--ui-line)}
   .mhead h3{font-size:16px}
@@ -256,6 +275,7 @@
   <h1>Chrono’<small>Posts Facebook et Instagram — mise en page automatique</small></h1>
   <div class="sp"></div>
   <div class="acts">
+    <button class="btn ghost" id="bqBtn" title="Banque de visuels"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="lg">Visuels</span></button>
     <button class="btn ghost" id="histBtn" title="Posts publiés et brouillons"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/></svg><span class="lg">Historique</span></button>
     <button class="btn ghost" id="resetBtn" title="Nouveau post vierge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span class="lg">Recommencer</span></button>
     <div class="menu" id="menu">
@@ -267,7 +287,7 @@
         <button id="aSave"><div>Enregistrer le brouillon (.json)</div></button>
         <button id="aOpen"><div>Ouvrir un brouillon (.json)</div></button>
         <hr>
-        <button id="aModeles"><div>Partir d’un modèle…<small>10 modèles selon l’objectif de communication.</small></div></button>
+        <button id="aModeles"><div>Banque de visuels…<small>10 modèles selon l’objectif de communication.</small></div></button>
       </div>
     </div>
     <button class="btn pdf" id="imgBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span class="lg">Télécharger les&nbsp;</span>images</button>
@@ -281,8 +301,9 @@
 <input type="file" id="fileJson" accept="application/json,.json" hidden>
 <div class="toast" id="toast"></div>
 
-<div class="modal" id="modModal"><div class="mbox" role="dialog" aria-modal="true">
-  <div class="mhead"><h3>Choisir un modèle</h3><button class="mclose" data-x aria-label="Fermer">×</button></div>
+<div class="modal" id="modModal"><div class="mbox banque" role="dialog" aria-modal="true">
+  <div class="mhead"><h3>Banque de visuels : que voulez-vous publier ?</h3><button class="mclose" data-x aria-label="Fermer">×</button></div>
+  <div class="bq-top"><div class="bq-cats" id="bqCats"></div><div class="bq-acts"><button class="mbtn" id="bqReprise" hidden>Reprendre mon brouillon</button><button class="mbtn" id="bqVierge">Page vierge</button></div></div>
   <div class="mbody"><div class="galerie" id="galerie"></div></div>
 </div></div>
 <div class="modal" id="histModal"><div class="mbox" role="dialog" aria-modal="true">
@@ -348,17 +369,28 @@ const MODELES = {
     {type:"bouton", texte:"Une anomalie ? Écrivez-nous", style:"blanc", place:"gauche"}]}]}
 };
 const MODELES_INFO = [
-  ["victoire","Victoire / acquis","Valoriser un résultat obtenu par l’UNAC."],
-  ["chiffres","Décryptage chiffré","Mettre des chiffres en perspective et donner l’analyse UNAC."],
-  ["alerte","Alerte / vigilance","Mettre en garde, bandeau rayé, encadré jaune."],
-  ["saviez","Le saviez-vous ?","Rappeler un droit ou un service, question / réponse."],
-  ["mobilisation","Mobilisation","Appeler à agir : étapes cochées et bouton (format story)."],
-  ["evenement","Événement / permanence","Annoncer une date, une heure, un lieu."],
-  ["avantapres","Avant / Après","Montrer concrètement ce qui change."],
-  ["tuto","Mode d’emploi","Expliquer une démarche en étapes numérotées."],
-  ["citation","Prise de position","Une citation forte, sobre, sur fond sombre."],
-  ["flash","Info flash","Une info courte et urgente à relayer vite."]
+  {k:"victoire", n:"Victoire / acquis", cat:"Valoriser", obj:"Faire savoir un résultat obtenu par l’UNAC.",
+   pour:["Procédure améliorée","Réponse favorable de la Direction","Accord ou avenant obtenu","Litige gagné"], eviter:["Négociation encore en cours","Sujet qui divise les PNC"]},
+  {k:"chiffres", n:"Décryptage chiffré", cat:"Informer", obj:"Mettre des chiffres en perspective et donner la lecture UNAC.",
+   pour:["Résultats trimestriels","Données d’une ligne ou d’une escale","Bilan de CSE","Salaires, primes, effectifs"], eviter:["Message sans chiffre clé","Annonce urgente"]},
+  {k:"alerte", n:"Alerte / vigilance", cat:"Alerter", obj:"Mettre en garde et dire quoi faire tout de suite.",
+   pour:["Sécurité, fatigue","Pratique managériale abusive","Risque sur la paie ou le planning","Arnaque, faux mail"], eviter:["Bonne nouvelle","Information de routine (perte d’impact)"]},
+  {k:"saviez", n:"Le saviez-vous ?", cat:"Informer", obj:"Rappeler un droit ou un service méconnu.",
+   pour:["Droit peu connu","Service UNAC (appli, commission)","Règle de l’AC PNC","Démarche RH"], eviter:["Sujet polémique","Annonce datée"]},
+  {k:"mobilisation", n:"Mobilisation", cat:"Mobiliser", obj:"Faire agir : signer, venir, partager.",
+   pour:["Pétition","Rassemblement, consultation","Appel à témoignages","Campagne d’adhésion"], eviter:["Simple information","Sujet sans action demandée"]},
+  {k:"evenement", n:"Événement / permanence", cat:"Informer", obj:"Annoncer une date, une heure, un lieu.",
+   pour:["Permanence Cité PN","Stage retraite, formation","Assemblée, réunion d’info","Élections"], eviter:["Contenu sans date précise"]},
+  {k:"avantapres", n:"Avant / Après", cat:"Valoriser", obj:"Montrer concrètement ce qui change.",
+   pour:["Nouvelle procédure","Évolution d’un accord","Comparaison d’une proposition Direction","Nouveaux barèmes"], eviter:["Plus de deux points à comparer","Changement encore hypothétique"]},
+  {k:"tuto", n:"Mode d’emploi", cat:"Informer", obj:"Expliquer une démarche pas à pas.",
+   pour:["Démarche sur l’appli","Réclamation de paie","Déclaration d’incident","Demande de congés, temps partiel"], eviter:["Plus de 5 étapes (faire une série de visuels)"]},
+  {k:"citation", n:"Prise de position", cat:"Positionner", obj:"Affirmer la ligne de l’UNAC en une phrase forte.",
+   pour:["Réaction à une annonce","Refus de signature","Déclaration en CSE","Message du bureau"], eviter:["Information pratique","Texte long"]},
+  {k:"flash", n:"Info flash", cat:"Alerter", obj:"Relayer vite une info courte.",
+   pour:["Publication des plannings","Changement de dernière minute","Grève, perturbation","Rappel de date limite"], eviter:["Analyse de fond","Sujet non urgent"]}
 ];
+const CATS = ["Tous","Informer","Alerter","Mobiliser","Valoriser","Positionner"];
 
 "use strict";
 const $ = s => document.querySelector(s);
@@ -541,7 +573,7 @@ function renderPreview(){
 function fitPreview(){
   const F = FORMATS[S.format], pv = $("#preview");
   const k = Math.min(pv.clientWidth - 40, 640, F.w) / F.w;
-  document.querySelectorAll(".pwrap").forEach(w => { w.style.width = (F.w*k)+"px"; w.style.height = (F.h*k)+"px"; w.firstChild.style.transform = `scale(${k})`; });
+  document.querySelectorAll("#pages .pwrap").forEach(w => { w.style.width = (F.w*k)+"px"; w.style.height = (F.h*k)+"px"; w.firstChild.style.transform = `scale(${k})`; });
 }
 window.addEventListener("resize", fitPreview);
 window.EXPORT_LARGEUR = 1080;
@@ -604,24 +636,59 @@ $("#aShare").addEventListener("click", async () => { menu.classList.remove("open
 $("#aSave").addEventListener("click", () => { menu.classList.remove("open"); const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(exportable(), null, 1)], {type:"application/json"})); a.download = window.nomExport() + ".json"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); });
 $("#aOpen").addEventListener("click", () => { menu.classList.remove("open"); $("#fileJson").click(); });
 $("#fileJson").addEventListener("change", async e => { const f = e.target.files[0]; e.target.value = ""; if(!f) return; try{ recevoir(JSON.parse(await f.text())); }catch(err){ toast("Fichier illisible"); } });
-const MM = $("#modModal");
-MM.addEventListener("click", e => { if(e.target === MM || e.target.hasAttribute("data-x")) MM.classList.remove("on"); const g = e.target.closest("[data-modele]"); if(g){ MM.classList.remove("on"); recevoir(MODELES[g.dataset.modele], "Modèle ouvert dans un nouveau brouillon"); } });
+const MM = $("#modModal"); let bqCat = "Tous";
+MM.addEventListener("click", e => {
+  if(e.target === MM || e.target.hasAttribute("data-x")){ MM.classList.remove("on"); return; }
+  const c = e.target.closest("[data-cat]"); if(c){ bqCat = c.dataset.cat; filtreBanque(); return; }
+  const g = e.target.closest("[data-modele]"); if(g){ MM.classList.remove("on"); recevoir(MODELES[g.dataset.modele], "Modèle ouvert : remplacez les textes d’exemple"); }
+});
+$("#bqVierge").addEventListener("click", () => { MM.classList.remove("on"); openDoc(blank()); toast("Page vierge"); });
+$("#bqReprise").addEventListener("click", () => { MM.classList.remove("on"); const d = latestDraft(); if(d) openDoc(d); });
 function apercuModele(cle){
   const garde = S; S = Object.assign(blank(), JSON.parse(JSON.stringify(MODELES[cle])));
   const w = slideNode(S.slides[0]); S = garde; return w;
 }
-$("#aModeles").addEventListener("click", () => {
+function filtreBanque(){
+  $("#bqCats").querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.cat === bqCat));
+  $("#galerie").querySelectorAll(".mc").forEach(m => m.hidden = !(bqCat === "Tous" || m.dataset.c === bqCat));
+}
+function ouvrirBanque(){
   menu.classList.remove("open");
-  const g = $("#galerie"); g.innerHTML = MODELES_INFO.map(([k,n,d]) => `<button data-modele="${k}"><div class="th"></div><b>${n}</b><small>${d}</small></button>`).join("");
-  MM.classList.add("on");
-  g.querySelectorAll("[data-modele]").forEach(b => {
-    const th = b.querySelector(".th"), w = apercuModele(b.dataset.modele), pg = w.firstChild;
-    th.appendChild(w); const W = parseFloat(pg.style.width), H = parseFloat(pg.style.height), sc = th.clientWidth / Math.max(W, H);
+  const d = latestDraft(); $("#bqReprise").hidden = !(d && hasContent(d));
+  $("#bqCats").innerHTML = CATS.map(c => `<button data-cat="${c}">${c}</button>`).join("");
+  const g = $("#galerie");
+  g.innerHTML = MODELES_INFO.map(m => { const M = MODELES[m.k], T = THEMES[M.theme];
+    return `<div class="mc" data-c="${m.cat}"><div class="th" data-modele="${m.k}" title="Utiliser ce modèle"></div>
+      <div class="hd"><b>${m.n}</b><span class="cat">${m.cat}</span></div>
+      <p class="ob">${m.obj}</p>
+      <div class="chte"><span class="sw" style="background:${T.bg}"></span>${T.nom} · ${FORMATS[M.format].nom}${M.flash ? " · bandeau rayé" : ""}</div>
+      <ul class="ls ok">${m.pour.map(x => `<li>${x}</li>`).join("")}</ul>
+      <ul class="ls ko">${m.eviter.map(x => `<li>${x}</li>`).join("")}</ul>
+      <button class="use" data-modele="${m.k}">Utiliser ce visuel</button></div>`; }).join("");
+  MM.classList.add("on"); filtreBanque();
+  if(window._bqRO) window._bqRO.disconnect();
+  const placer = th => {
+    const w = th.firstChild; if(!w) return; const pg = w.firstChild, cw = th.clientWidth; if(!cw) return;
+    const W = parseFloat(pg.style.width), H = parseFloat(pg.style.height), sc = cw / Math.max(W, H);
     w.style.cssText = `width:${W*sc}px;height:${H*sc}px`;
-    const fit = () => { pg.style.transform = "none"; ajuste(pg); pg.style.transform = `scale(${sc})`; }; fit();
-    pg.querySelectorAll("img").forEach(im => { if(!im.complete) im.addEventListener("load", fit, {once:true}); });
+    const mb = $("#modModal .mbody"), st = mb.scrollTop;
+    pg.style.transform = "none"; ajuste(pg); pg.style.transform = `scale(${sc})`; mb.scrollTop = st;
+  };
+  const mb = $("#modModal .mbody"); let enHaut = true;
+  ["wheel","touchstart","keydown","mousedown"].forEach(ev => mb.addEventListener(ev, () => enHaut = false, {once:true, passive:true}));
+  mb.addEventListener("scroll", () => { if(enHaut && mb.scrollTop) mb.scrollTop = 0; });
+  window._bqRO = new ResizeObserver(en => { en.forEach(e => placer(e.target)); if(enHaut) mb.scrollTop = 0; });
+  g.querySelectorAll(".th").forEach(th => {
+    const w = apercuModele(th.dataset.modele), pg = w.firstChild;
+    w.style.cssText = "width:0;height:0;overflow:hidden"; th.appendChild(w);
+    pg.querySelectorAll("img").forEach(im => { if(!im.complete) im.addEventListener("load", () => placer(th), {once:true}); });
+    window._bqRO.observe(th); placer(th);
   });
-});
+  if(document.fonts) document.fonts.ready.then(() => g.querySelectorAll(".th").forEach(placer));
+  $("#modModal .mbody").scrollTop = 0;
+}
+$("#aModeles").addEventListener("click", ouvrirBanque);
+$("#bqBtn").addEventListener("click", ouvrirBanque);
 
 /* ---------- Démarrage ---------- */
 (async function(){
@@ -632,6 +699,7 @@ $("#aModeles").addEventListener("click", () => {
   document.body.classList.toggle("ro", S.statut === "publie");
   renderForm(); if(document.fonts) await document.fonts.ready; renderPreview();
   if(location.hash.startsWith("#d=")){ try{ const o = JSON.parse(await inflate(location.hash.slice(3))); history.replaceState(null, "", location.pathname); recevoir(o); }catch(e){ toast("Lien de brouillon illisible"); } }
+  else ouvrirBanque();
   window.addEventListener("load", renderPreview);
 })();
 
