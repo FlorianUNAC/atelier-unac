@@ -171,10 +171,37 @@
   .page:not(.sansavion):not(.titre1) .zone{--pt:400px}
   .page.mesure .zone{justify-content:flex-start}
   .page .zone > *{flex-shrink:0}
-  .page .bloc-banniere{display:block;width:100%;height:auto;max-height:calc(var(--k)*370px);object-fit:contain}
-  .page .banniere-plein-format{display:block;width:100%;height:100%;object-fit:contain}
+  .page .bloc-banniere{width:min(100%,calc(var(--k)*370px*var(--ratio)));margin-inline:auto;aspect-ratio:var(--ratio)}
+  .page .banniere-plein-format{width:100%;height:100%}
   .page.en-banniere .zone{padding:24px 40px;gap:calc(var(--k)*18px)}
-  .page.en-banniere .bloc-banniere{max-height:calc(var(--k)*185px)}
+  .page.en-banniere .bloc-banniere{width:min(100%,calc(var(--k)*185px*var(--ratio)))}
+  .ban-unac{container-type:inline-size;position:relative;isolation:isolate;overflow:hidden;text-align:center;color:white;
+    background:radial-gradient(ellipse 30% 114% at 63% 58%,#c43e7d 0%,#78425c 41%,transparent 78%),linear-gradient(112deg,#342018,#222328 39%,#281815 93%)}
+  .ban-unac .ban-logo{position:absolute;left:50%;top:9%;width:7.6%;height:auto;transform:translateX(-50%);z-index:2}
+  .ban-unac .ban-avion{position:absolute;right:-2%;top:8%;width:36%;height:auto}
+  .ban-unac .ban-intro,.ban-unac .ban-titre,.ban-unac .ban-sous{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.04}
+  .ban-unac .ban-intro{font-size:3.1cqw;letter-spacing:.08em;text-transform:uppercase}
+  .ban-unac .ban-titre{font-size:calc(4.3cqw*var(--texte-k));font-weight:700}
+  .ban-unac .ban-sous{font-size:2.8cqw}
+  .ban-unac .ban-texte{position:absolute;inset:46% 8% auto;display:grid;gap:2.6cqw;z-index:1}
+  .ban-mc .ban-logo{left:4.6%;top:9%;transform:none}
+  .ban-mc .ban-texte{top:26%;left:23%;right:23%;gap:.65cqw}
+  .ban-mc .ban-sous{position:absolute;top:118%;left:0;right:0;font-size:calc(10.3cqw*var(--sous-k));font-weight:700;isolation:isolate}
+  .ban-mc .ban-sous span{position:absolute;top:calc(var(--echo)*.38em);inset-inline:0;opacity:var(--opacite);z-index:-1}
+  .ban-rose{background:radial-gradient(ellipse at 42% 0%,#c65385 0%,transparent 62%),radial-gradient(ellipse at 60% 76%,#ae7b8f 0%,transparent 60%),linear-gradient(110deg,#85003d,#71002f 88%)}
+  .ban-rose::after{content:"";position:absolute;inset:69% 0 0;background:#3a001a6e}
+  .ban-rose .ban-logo{top:auto;bottom:5%;width:8%}
+  .ban-rose .ban-texte{inset:5% 10% 31%;align-content:end;gap:.65cqw}
+  .ban-rose .ban-titre{font-size:calc(var(--titre-rose,10cqw)*var(--texte-k));color:#ffffffa6;line-height:.92}
+  .ban-rose-info{--titre-rose:20cqw}
+  .ban-rose .ban-intro,.ban-rose .ban-sous{font-size:2.45cqw}
+  .ban-lc .ban-texte{inset:42% 0 auto;gap:2.7cqw}
+  .ban-lc .ban-intro{padding:2.55cqw 5%;background:#ffffff49;font-size:2.9cqw;font-weight:700;letter-spacing:.035em}
+  .ban-lc .ban-titre{font-size:calc(3cqw*var(--texte-k));font-weight:400}
+  .ban-lc .ban-sous{margin-top:-1.6cqw;font-size:2.5cqw}
+  .ban-bleu{background:radial-gradient(ellipse 28% 110% at 48% 6%,#8da3b5b8,transparent 78%),
+    radial-gradient(ellipse 35% 96% at 66% 67%,#9c5276b8,transparent 78%),linear-gradient(113deg,#07171e,#213950 48%,#081418 90%)}
+  .ban-bleu .ban-texte{top:47%;gap:2.5cqw}
   .galerie .th[data-modele^="banniere-"]{aspect-ratio:2.4}
   .page.logobas .zone{--pb:70px}
   .page.logobas .zone > .cta:last-child{margin-top:80px}
@@ -490,18 +517,18 @@ const MODELES_INFO = [
    pour:["Publication des plannings","Changement de dernière minute","Grève, perturbation","Rappel de date limite"], eviter:["Analyse de fond","Sujet non urgent"]}
 ];
 const BANNIERES = {
-  "exploitation-mc": {nom:"Bon à savoir · Exploitation MC", largeur:1598, hauteur:640},
-  "bon-a-savoir": {nom:"Bon à savoir", largeur:960, hauteur:409},
-  "exploitation-lc": {nom:"Information utile · Exploitation LC", largeur:1618, hauteur:585},
-  info: {nom:"Info", largeur:960, hauteur:415},
-  "plannings-dda": {nom:"Bon à savoir · Plannings et DDA", largeur:1811, hauteur:640}
+  "exploitation-mc": {nom:"Bon à savoir · Exploitation MC", largeur:1598, hauteur:640, style:"mc", intro:"Bon à savoir", texte:"Exploitation", sous:"MC"},
+  "bon-a-savoir": {nom:"Bon à savoir", largeur:960, hauteur:409, style:"rose", intro:"", texte:"BON\nÀ SAVOIR", sous:""},
+  "exploitation-lc": {nom:"Information utile · Exploitation LC", largeur:1618, hauteur:585, style:"lc", intro:"Information utile", texte:"**Exploitation** Long Courrier", sous:""},
+  info: {nom:"Info", largeur:960, hauteur:415, style:"rose ban-rose-info", intro:"", texte:"INFO", sous:""},
+  "plannings-dda": {nom:"Bon à savoir · Plannings et DDA", largeur:1811, hauteur:640, style:"bleu", intro:"Bon à savoir", texte:"Plannings et DDA", sous:""}
 };
 const CATS = ["Tous","Bannières","Informer","Alerter","Mobiliser","Valoriser","Positionner"];
 MODELES_INFO.unshift(...Object.entries(BANNIERES).map(([cle, banniere]) => {
   const k = "banniere-" + cle;
   MODELES[k] = {nom:banniere.nom, section:"af", format:"banniere", theme:"nuit", avion:false,
     slides:[{blocs:[{type:"banniere", visuel:cle}]}]};
-  return {k, n:banniere.nom, cat:"Bannières", obj:"Visuel UNAC prêt à télécharger en format horizontal.", pour:[], eviter:[]};
+  return {k, n:banniere.nom, cat:"Bannières", obj:"Modèle UNAC horizontal avec texte modifiable.", pour:[], eviter:[]};
 }));
 
 "use strict";
@@ -528,12 +555,28 @@ function formatDoc(d){
   const image = BANNIERES[bloc.visuel];
   return {...format, h:Math.round(format.w * image.hauteur / image.largeur)};
 }
-function imageBanniere(cle, classe){
-  if(!Object.hasOwn(BANNIERES,cle)) return "";
-  return `<img class="${classe}" src="banniere-${cle}.png" alt="${esc(BANNIERES[cle].nom)}">`;
+function renduBanniere(bloc, classe){
+  if(!Object.hasOwn(BANNIERES,bloc.visuel)) return "";
+  const modele = BANNIERES[bloc.visuel];
+  const intro = bloc.intro ?? modele.intro;
+  const texte = bloc.texte ?? modele.texte;
+  const sous = bloc.sous ?? modele.sous;
+  const mc = modele.style === "mc";
+  const taille = Math.min(1, 35 / Math.max(1, ...texte.split("\n").map(l => l.length)));
+  const tailleSous = Math.min(1, 5 / Math.max(1, sous.length));
+  const styles = `--ratio:${modele.largeur/modele.hauteur};--texte-k:${taille};--sous-k:${tailleSous}`;
+  return `<div class="${classe} ban-unac ban-${modele.style}" style="${styles}">
+    <img class="ban-logo" src="${IMG}${(SECTIONS[S.section]||SECTIONS.af).logo}" alt="UNAC">
+    ${mc ? `<img class="ban-avion" src="${IMG}avion-unac.png" alt="">` : ""}
+    <div class="ban-texte">
+      ${intro ? `<div class="ban-intro">${esc(intro)}</div>` : ""}
+      ${texte ? `<div class="ban-titre">${riche(texte)}</div>` : ""}
+      ${sous ? `<div class="ban-sous">${esc(sous)}${mc ? [0.38,0.25,0.14].map((o,i)=>`<span aria-hidden="true" style="--echo:${i+1};--opacite:${o}">${esc(sous)}</span>`).join("") : ""}</div>` : ""}
+    </div>
+  </div>`;
 }
 const TYPES = {
-  banniere:{nom:"Bannière UNAC", champs:[["visuel","Visuel","select",{"":"Choisir une bannière",...Object.fromEntries(Object.entries(BANNIERES).map(([k,b])=>[k,b.nom]))}]]},
+  banniere:{nom:"Bannière UNAC", champs:[["visuel","Visuel","select",{"":"Choisir une bannière",...Object.fromEntries(Object.entries(BANNIERES).map(([k,b])=>[k,b.nom]))}],["intro","Surtitre","text"],["texte","Titre de la bannière","area"],["sous","Complément ou réseau","text"]]},
   titre:   {nom:"Grand titre (avec écho)", champs:[["titre","Titre","text"],["sous","Sous-titre","text"]]},
   accroche:{nom:"Accroche en italique", champs:[["texte","Texte","area"],["taille","Taille","select",{grand:"Grande",petit:"Moyenne"}]]},
   chiffre: {nom:"Chiffre clé + pastille", champs:[["libelle","Libellé","text","Recettes à"],["valeur","Valeur en gras","text"],["badge","Pastille (ex. +5%, vide = aucune)","text"],["couleur","Couleur de la pastille","select",{vert:"Vert (hausse)",rouge:"Rouge (baisse)",blanc:"Blanche"}]]},
@@ -566,7 +609,7 @@ function qrSVG(url){
 const lignes = t => String(t||"").split("\n").map(x => x.trim()).filter(Boolean);
 function blocHTML(b){
   switch(b.type){
-    case "banniere": return imageBanniere(b.visuel, "bloc-banniere");
+    case "banniere": return renduBanniere(b, "bloc-banniere");
     case "titre": return `<div class="gt"><div class="g" aria-hidden="true">${esc(b.titre)}</div><h1>${esc(b.titre)}</h1>${b.sous ? `<p>${riche(b.sous)}</p>` : ""}</div>`;
     case "accroche": return `<p class="acc ${b.taille === "petit" ? "petit" : ""}">${riche(b.texte)}</p>`;
     case "chiffre": return `<div class="fig"><div class="t">${riche(b.libelle)} <b>${riche(b.valeur)}</b></div>${b.badge ? `<div class="badge ${esc(b.couleur||"vert")}"><span>${esc(b.badge)}</span></div>` : ""}</div>`;
@@ -609,7 +652,7 @@ const nomPost = d => d.nom || (d.slides[0].blocs.map(b => b.titre || b.valeur ||
 
 /* ---------- Formulaire ---------- */
 function champ(b, [k, lab, ty, def]){
-  const v = b[k] ?? "";
+  const v = b[k] ?? (b.type === "banniere" ? BANNIERES[b.visuel]?.[k] : "") ?? "";
   if(ty === "area") return `<label class="f">${lab}</label><textarea data-b="${k}" rows="${Math.min(8, Math.max(2, String(v).split("\n").length + 1))}">${esc(v)}</textarea>`;
   if(ty === "select") return `<label class="f">${lab}</label><select data-b="${k}">${Object.entries(def).map(([o,l]) => `<option value="${o}" ${o===v?"selected":""}>${l}</option>`).join("")}</select>`;
   if(ty === "photo") return `<label class="f">${lab}</label><div class="phf">${v ? `<img src="${esc(v)}" alt="">` : ""}<label class="mini">${v ? "Changer la photo" : "Choisir une photo"}<input type="file" accept="image/*" data-photo="${k}" hidden></label>${v ? `<button class="mini" data-pk="${k}" data-pv="">Retirer</button>` : ""}</div>`;
@@ -655,7 +698,19 @@ $("#form").addEventListener("change", e => {
 $("#form").addEventListener("input", e => {
   const t = e.target, v = t.type === "checkbox" ? t.checked : t.value;
   if(t.dataset.k){ S[t.dataset.k] = v; return changed(false); }
-  if(t.dataset.b){ blocOf(t)[t.dataset.b] = v; return changed(false); }
+  if(t.dataset.b){
+    const bloc = blocOf(t);
+    if(bloc.type === "banniere" && t.dataset.b === "visuel"){
+      const ancien = BANNIERES[bloc.visuel];
+      for(const cle of ["intro","texte","sous"]){
+        if(bloc[cle] === (ancien?.[cle] ?? "")) delete bloc[cle];
+      }
+      bloc.visuel = v;
+      return changed(true);
+    }
+    bloc[t.dataset.b] = v;
+    return changed(false);
+  }
 });
 $("#form").addEventListener("click", e => {
   if(e.target.id === "addSlide"){ S.slides.push(nouvelleSlide()); changed(true); const f = $("#form"); f.scrollTop = f.scrollHeight; return; }
@@ -688,7 +743,7 @@ function slideNode(s){
   if(S.format === "banniere" && blocs.length === 1 && blocs[0].type === "banniere"){
     p.className = "page banniere-seule";
     p.style.cssText = `width:${F.w}px;height:${F.h}px;--bg:${T.bg}`;
-    p.innerHTML = imageBanniere(blocs[0].visuel, "banniere-plein-format");
+    p.innerHTML = renduBanniere(blocs[0], "banniere-plein-format");
     w.appendChild(p);
     return w;
   }
@@ -817,7 +872,7 @@ const MM = $("#modModal"); let bqCat = "Tous";
 MM.addEventListener("click", e => {
   if(e.target === MM || e.target.hasAttribute("data-x")){ MM.classList.remove("on"); return; }
   const c = e.target.closest("[data-cat]"); if(c){ bqCat = c.dataset.cat; filtreBanque(); return; }
-  const g = e.target.closest("[data-modele]"); if(g){ MM.classList.remove("on"); recevoir(MODELES[g.dataset.modele], g.dataset.modele.startsWith("banniere-") ? "Bannière ouverte dans un nouveau brouillon" : "Modèle ouvert : remplacez les textes d’exemple"); }
+  const g = e.target.closest("[data-modele]"); if(g){ MM.classList.remove("on"); recevoir(MODELES[g.dataset.modele], g.dataset.modele.startsWith("banniere-") ? "Bannière ouverte : modifiez les textes dans les champs" : "Modèle ouvert : remplacez les textes d’exemple"); }
 });
 $("#bqVierge").addEventListener("click", () => { MM.classList.remove("on"); openDoc(blank()); toast("Page vierge"); });
 $("#bqReprise").addEventListener("click", () => { MM.classList.remove("on"); const d = latestDraft(); if(d) openDoc(d); });
