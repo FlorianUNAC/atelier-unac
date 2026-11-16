@@ -73,6 +73,15 @@
   .imgrid a{display:block;text-decoration:none;color:var(--ui-muted);font-size:12px;text-align:center}
   .imgrid img{width:100%;display:block;border-radius:8px;box-shadow:0 4px 14px rgba(40,0,25,.25);margin-bottom:6px}
   .tabs{display:none}
+  .drop{display:flex;flex-direction:column;align-items:center;gap:4px;border:2px dashed var(--ui-line);border-radius:14px;padding:22px;cursor:pointer;text-align:center;color:var(--ui-muted)}
+  .drop b{color:#7a2a4e;font-size:15px}
+  .drop.over{border-color:#c8487f;background:#fdf3f7}
+  .ires{margin-top:14px;border:1px solid var(--ui-line);border-radius:12px;overflow:hidden}
+  .ires div{display:grid;grid-template-columns:120px 1fr;gap:10px;padding:8px 12px;border-top:1px solid var(--ui-line);font-size:13px}
+  .ires div:first-child{border-top:0}
+  .ires div > span:first-child{color:var(--ui-muted);font-weight:700}
+  .ires .vide{color:#b4552a}
+  .ires pre{white-space:pre-wrap;font:inherit;margin:0}
   @media (max-width:900px){
     .app{display:block;overflow:auto}
     .form{border-right:0;padding-bottom:20px}
@@ -119,6 +128,7 @@
   <h1>Test d'un nouvel hébergement<small>Post Facebook / Instagram · commission hébergement</small></h1>
   <div class="sp"></div>
   <div class="seg" id="vers" title="Version"><button data-v="adherents" class="on">Adhérents</button><button data-v="public">Public</button></div>
+  <button class="btn ghost" id="impBtn" title="Importer le compte rendu du test (PDF, Word, texte)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></svg><span class="lg">Importer un CR</span></button>
   <button class="btn ghost" id="resetBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span class="lg">Recommencer</span></button>
   <button class="btn pdf" id="imgBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Télécharger</button>
 </div>
@@ -127,6 +137,17 @@
   <div class="preview"><div class="pv-meta" id="pvMeta"></div><div id="pages"></div></div>
 </div>
 <div class="toast" id="toast"></div>
+<div class="modal" id="impModal"><div class="mbox" role="dialog" aria-modal="true">
+  <div class="mhead"><h3>Importer le compte rendu du test</h3><button class="mclose" data-x aria-label="Fermer">×</button></div>
+  <div class="mbody" id="impBody">
+    <p class="mintro">Déposez le compte rendu du test (PDF, Word ou texte) ou collez-le ci-dessous. L'outil repère l'escale, l'hôtel, la note et range le texte dans <b>Localisation, Restauration, Chambre, Facilités</b> et <b>Bilan</b> grâce aux titres du document. La mise en page s'ajuste ensuite toute seule. Rien ne quitte l'appareil.</p>
+    <label class="drop" id="drop"><input type="file" id="impFile" accept=".pdf,.docx,.txt,.md,text/plain,application/pdf" hidden><b>Choisir un fichier</b><span>ou le glisser ici · PDF, Word (.docx), texte</span></label>
+    <label class="f" style="margin-top:14px">… ou coller le texte</label>
+    <textarea id="impTxt" rows="7" placeholder="Escale : JNB&#10;Hôtel : …&#10;Note : 4/5&#10;Localisation : …&#10;Restauration : …&#10;Chambre : …&#10;Facilités : …&#10;Bilan : …"></textarea>
+    <div id="impRes"></div>
+  </div>
+  <div class="mfoot"><button class="mbtn" id="impAnalyse">Analyser le texte collé</button><button class="mbtn pri" id="impOk" disabled>Appliquer au visuel</button></div>
+</div></div>
 
 <script src="../commun/escales.js"></script>
 <script>
@@ -162,6 +183,7 @@ const villeAff = () => (S.ville || refVille(S.type, S.code) || S.code || "").tri
 function moisOptions(){
   let o = ""; for(let k = -6; k <= 3; k++){ const d = new Date(now.getFullYear(), now.getMonth()+k, 1); const v = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
     o += `<option value="${v}" ${v===S.mois?"selected":""}>${MOIS[d.getMonth()].replace(/^./, c => c.toUpperCase())} ${d.getFullYear()}</option>`; }
+  if(!o.includes(`value="${S.mois}"`)){ const [y,m] = S.mois.split("-"); o = `<option value="${S.mois}" selected>${MOIS[+m-1].replace(/^./, c => c.toUpperCase())} ${y}</option>` + o; }
   return o;
 }
 function renderForm(){
@@ -234,7 +256,7 @@ function pageHTML(){
 function ajuste(p){
   const c = p.querySelector(".corps"); p.classList.add("mesure");
   const fits = () => { const last = c.lastElementChild; if(!last) return true; return last.getBoundingClientRect().bottom - p.getBoundingClientRect().top <= 1768 - 44 - 12; };
-  let lo = 0.5, hi = 1.15; p.style.setProperty("--k", hi);
+  let lo = 0.5, hi = 1.35; p.style.setProperty("--k", hi);
   if(!fits()){ for(let i = 0; i < 14; i++){ const m = (lo+hi)/2; p.style.setProperty("--k", m); if(fits()) lo = m; else hi = m; } p.style.setProperty("--k", lo); }
   p.classList.remove("mesure"); return +p.style.getPropertyValue("--k");
 }
@@ -256,6 +278,115 @@ window.EXPORT_LARGEUR = 1080;
 window.nomExport = () => `Test-hebergement-${S.type}-${(villeAff() || "escale").replace(/\s+/g,"-")}-${moisLabel(S.mois).replace(/\s+/g,"-")}-${VERSION === "public" ? "public" : "adherents"}`;
 window.titreExport = () => `Test d'un nouvel hébergement · ${villeAff()}`;
 $("#imgBtn").addEventListener("click", () => exportImages());
+
+
+/* ---------- Import d'un compte rendu ---------- */
+const IM = $("#impModal"); let IMP = null;
+const normTxt = s => String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const RUBRIQUES = [
+  ["bilan",  /^(bilan( du test)?|conclusion|synthese|avis (general|global|des delegues)|verdict|recommandations?|en resume)\b/],
+  ["loc",    /^(localisation|emplacement|situation|quartier|acces|transports?|transferts?|environnement|securite|alentours)\b/],
+  ["resto",  /^(restauration|restaurants?|repas|petits?[ -]dejeuners?|room service|bar)\b/],
+  ["chambre",/^(chambres?|literie|hebergement des pnc)\b/],
+  ["fac",    /^(facilites|services|equipements|prestations|loisirs|salle de sport|piscine|wi-?fi|internet|blanchisserie)\b/],
+  ["hotel",  /^(nom de l'?hotel|hotel|etablissement)\b/],
+  ["escale", /^(escale|ville|destination|station)\b/],
+  ["note",   /^(note( globale| des delegues)?|evaluation|appreciation)\b/],
+  ["date",   /^(date( du test)?|mois)\b/]
+];
+const loadedS = {};
+const loadScript = src => loadedS[src] || (loadedS[src] = new Promise((ok, ko) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => ko(new Error("chargement impossible")); document.head.appendChild(s); }));
+async function texteFichier(file){
+  const n = file.name.toLowerCase();
+  if(n.endsWith(".pdf") || file.type === "application/pdf"){
+    await loadScript("../commun/vendor/pdf.min.js"); pdfjsLib.GlobalWorkerOptions.workerSrc = "../commun/vendor/pdf.worker.min.js";
+    const pdf = await pdfjsLib.getDocument({data: new Uint8Array(await file.arrayBuffer())}).promise; let out = "";
+    for(let p = 1; p <= pdf.numPages; p++){
+      const tc = await (await pdf.getPage(p)).getTextContent(); let lastY = null, line = "";
+      tc.items.forEach(it => { const y = it.transform ? it.transform[5] : lastY;
+        if(lastY !== null && Math.abs(y - lastY) > 2 && line.trim()){ out += line + "\n"; line = ""; }
+        line += it.str; if(it.hasEOL){ out += line + "\n"; line = ""; } lastY = y; });
+      out += line + "\n\n";
+    }
+    return out;
+  }
+  if(n.endsWith(".docx")){ await loadScript("../commun/vendor/mammoth.browser.min.js"); return (await mammoth.extractRawText({arrayBuffer: await file.arrayBuffer()})).value; }
+  return await file.text();
+}
+function analyser(text){
+  text = text.replace(/[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}\u{1F3FB}-\u{1F3FF}\u{FE0E}\u{FE0F}\u{200D}\u{20E3}]/gu, "").replace(/ /g, " ");
+  const lignes = text.split(/\r?\n/).map(l => l.replace(/[ \t]+/g, " ").trim());
+  const out = {loc:[], resto:[], chambre:[], fac:[], bilan:[], libre:[]}; let cur = null;
+  const meta = {};
+  lignes.forEach(l => {
+    if(!l){ return; }
+    const nu = l.replace(/^([-•*·▪►>]+|\d+[.)]|[a-z][.)])\s*/i, "");
+    const n = normTxt(nu).replace(/^\W+/, "");
+    let trouve = null;
+    for(const [k, re] of RUBRIQUES){ const m = n.match(re); if(m){
+      const apres = nu.slice(m[0].length);
+      const reste = apres.replace(/^[\s:–—\-.)]+/, "");
+      // un titre : mot-clé seul sur sa ligne (court, sans point final), ou mot-clé suivi de « : » dans les 15 caractères
+      const titre = (nu.length <= 32 && !/[.!?]$/.test(nu)) || /^[^:.]{0,15}:/.test(apres);
+      if(titre){
+        const canon = /^(localisation|restauration|chambres?|facilites|services|equipements|bilan|conclusion|synthese|nom de l'?hotel|hotel|escale|note|date|mois|ville|destination|verdict|recommandations?|avis)/.test(m[0]);
+        trouve = [k, canon ? reste : nu]; break;
+      }
+    } }
+    if(trouve){
+      const [k, reste] = trouve;
+      if(["hotel","escale","note","date"].includes(k)){ if(reste) meta[k] = meta[k] || reste; cur = null; return; }
+      cur = k; if(reste) out[k].push(reste); return;
+    }
+    (cur ? out[cur] : out.libre).push(nu);
+  });
+  // Escale : trigramme ou nom de ville
+  const R = {}; ["LC","MC"].forEach(t => (ESCALES[t]||[]).forEach(z => Object.entries(z.escales).forEach(([c,v]) => { R[c] = R[c] || {v, t}; })));
+  let code = "", ville = "", type = "";
+  const src = (meta.escale || "") + "\n" + text;
+  const mC = src.match(/\b([A-Z]{3})\b/g) || []; code = mC.find(c => R[c]) || "";
+  if(!code){ const nt = normTxt(src); const hit = Object.entries(R).filter(([c,o]) => nt.includes(normTxt(o.v))).sort((a,b) => b[1].v.length - a[1].v.length)[0]; if(hit) code = hit[0]; }
+  if(!code && meta.escale) ville = meta.escale.replace(/\(.*?\)/g, "").trim();
+  if(code) type = R[code].t;
+  const nt = normTxt(text); if(/\bmoyen[ -]courrier\b|\bmc\b/.test(nt)) type = type || "MC"; if(/\blong[ -]courrier\b|\blc\b/.test(nt)) type = type || "LC";
+  // Note sur 5
+  let note = 0; const mn = (meta.note || "").match(/([0-5])([.,]\d)?\s*(\/\s*5|sur 5|etoiles?|★)?/i) || text.match(/\b([0-5])([.,]\d)?\s*(\/\s*5|sur\s*5)\b/i);
+  if(mn) note = Math.round(parseFloat(mn[1] + (mn[2] ? "." + mn[2].slice(1) : "")));
+  else { const st = (meta.note || "").match(/★/g); if(st) note = st.length; }
+  // Mois
+  let mois = ""; const mm = normTxt((meta.date || "") + " " + text).match(/\b(janvier|fevrier|mars|avril|mai|juin|juillet|aout|septembre|octobre|novembre|decembre)\s+(20\d\d)\b/);
+  if(mm){ const i = MOIS.map(normTxt).indexOf(mm[1]); mois = `${mm[2]}-${String(i+1).padStart(2,"0")}`; }
+  const joindre = a => a.join("\n").replace(/\n{2,}/g, "\n").trim();
+  return {type, code, ville, hotel:(meta.hotel || "").replace(/^h[oô]tel\s*:?\s*/i, "").trim(), note, mois,
+    loc:joindre(out.loc), resto:joindre(out.resto), chambre:joindre(out.chambre), fac:joindre(out.fac), bilan:joindre(out.bilan), libre:joindre(out.libre)};
+}
+function montrer(r){
+  IMP = r; const v = r.code ? `${r.code} · ${refVille(r.type || "LC", r.code) || refVille("MC", r.code)}` : (r.ville || "");
+  const L = (n, x) => `<div><span>${n}</span>${x ? `<pre>${esc(x)}</pre>` : `<span class="vide">non trouvé</span>`}</div>`;
+  $("#impRes").innerHTML = `<div class="ires">${L("Escale", v)}${L("Réseau", r.type)}${L("Mois", r.mois ? moisLabel(r.mois) : "")}${L("Hôtel", r.hotel)}${L("Note", r.note ? "★".repeat(r.note) + ` (${r.note}/5)` : "")}
+    ${SECTIONS.map(([k,n]) => L(n, r[k])).join("")}${L("Bilan", r.bilan)}${r.libre ? `<div><span>Non classé</span><pre style="color:#8b6f80">${esc(r.libre)}</pre></div>` : ""}</div>
+    ${r.libre ? `<label class="chk"><input type="checkbox" id="impLibre"> Ajouter le texte non classé au bilan</label>` : ""}
+    <p class="hint">Seuls les éléments trouvés remplacent la saisie actuelle. Les photos sont conservées.</p>`;
+  $("#impOk").disabled = !(r.code || r.ville || r.hotel || r.loc || r.resto || r.chambre || r.fac || r.bilan);
+}
+async function lireFichier(f){ if(!f) return; $("#impRes").innerHTML = `<p class="mintro">Lecture de « ${esc(f.name)} »…</p>`;
+  try{ const t = await texteFichier(f); $("#impTxt").value = t.trim(); montrer(analyser(t)); }catch(e){ $("#impRes").innerHTML = `<p class="mintro" style="color:#a3263b">Fichier illisible : ${esc(e.message)}. Copiez-collez le texte à la place.</p>`; } }
+$("#impBtn").addEventListener("click", () => { IMP = null; $("#impRes").innerHTML = ""; $("#impTxt").value = ""; $("#impOk").disabled = true; IM.classList.add("on"); });
+IM.addEventListener("click", e => { if(e.target === IM || e.target.hasAttribute("data-x")) IM.classList.remove("on"); });
+$("#impFile").addEventListener("change", e => { lireFichier(e.target.files[0]); e.target.value = ""; });
+const dz = $("#drop");
+["dragenter","dragover"].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add("over"); }));
+["dragleave","drop"].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove("over"); }));
+dz.addEventListener("drop", e => lireFichier(e.dataTransfer.files[0]));
+$("#impAnalyse").addEventListener("click", () => { const t = $("#impTxt").value; if(!t.trim()) return toast("Collez d'abord le texte du compte rendu"); montrer(analyser(t)); });
+$("#impOk").addEventListener("click", () => {
+  const r = IMP; if(!r) return;
+  ["type","code","ville","hotel","mois","loc","resto","chambre","fac","bilan"].forEach(k => { if(r[k]) S[k] = r[k]; });
+  if(r.code) S.ville = r.ville || "";
+  if(r.note) S.note = r.note;
+  if(r.libre && $("#impLibre") && $("#impLibre").checked) S.bilan = (S.bilan ? S.bilan + "\n" : "") + r.libre;
+  IM.classList.remove("on"); changed(true); toast("Compte rendu importé : la mise en page s'est ajustée");
+});
 
 renderForm();
 (document.fonts ? document.fonts.ready : Promise.resolve()).then(renderPreview);
