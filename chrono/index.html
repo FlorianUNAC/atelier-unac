@@ -549,13 +549,13 @@ Object.assign(MODELES, {
     {type:"bouton", texte:"Votre cas compte : écrivez-nous", style:"blanc", place:"gauche"}]}]}
 });
 Object.assign(MODELES, {
-  r1jPostV2: {nom:"R1J · Alerte (contre-proposition)", format:"portrait", theme:"nuit", avion:false, logo:"haut", flash:true, slides:[{blocs:[
+  r1jPostV2: {nom:"Alerte avec illustration · R1J", format:"portrait", theme:"nuit", avion:false, logo:"haut", flash:true, slides:[{blocs:[
     {type:"etiquette", texte:"Alerte R1J", style:"rouge"},
     {type:"accroche", texte:"Payé en **J**, placé en **W** ou **Y** ?", taille:"grand"},
     {type:"alerte", titre:"Déclassements sauvages", texte:"Vous êtes nombreux à perdre votre place en J alors que vous aviez **acquitté le tarif J**, parfois à la dernière minute avant l’embarquement."},
     {type:"illustration", image:"declassement-cabine", taille:"petite", fond:"aucun", place:"debord"},
     {type:"bandeau", texte:"Signalez-le sur l’appli UNAC"}]}]},
-  r1jStoryV2: {nom:"R1J · Story (contre-proposition)", format:"story", theme:"framboise", avion:false, logo:"haut", slides:[{blocs:[
+  r1jStoryV2: {nom:"Story avec illustration · R1J", format:"story", theme:"framboise", avion:false, logo:"haut", slides:[{blocs:[
     {type:"etiquette", texte:"Alerte R1J", style:"jaune"},
     {type:"titre", titre:"R1J", sous:"Stop aux déclassements sauvages"},
     {type:"accroche", texte:"Tarif J acquitté, place en W ou Y, parfois **à la dernière minute**.", taille:"petit"},
@@ -564,6 +564,8 @@ Object.assign(MODELES, {
     {type:"bandeau", texte:"Envoyez vos remontées"}]}]}
 });
 const MODELES_INFO = [
+  {k:"r1jPostV2", n:"Alerte avec illustration", cat:"Alerter", obj:"Encadré jaune, illustration en débord bas-droite, bandeau d’action gris. Exemple : déclassements R1J.", pour:["Pratique abusive à signaler","Appel aux remontées","Fil Facebook / Instagram"], eviter:["Story (utiliser le modèle story)","Bonne nouvelle"]},
+  {k:"r1jStoryV2", n:"Story avec illustration", cat:"Mobiliser", obj:"Grand titre, texte, illustration en débord et bandeau d’action, dans les zones sûres d’Instagram. Exemple : R1J.", pour:["Story Instagram / Facebook","Appel à témoignages"], eviter:["Fil Instagram (recadrage)"]},
   {k:"testHeb", lien:"../test-hebergement/", n:"Test d’un nouvel hébergement", cat:"Informer", apercu:"../test-hebergement/apercu.png", obj:"Restituer le test d’un hôtel par la commission hébergement (outil dédié).",
    pour:["Nouvel hôtel testé en escale","Contre-visite après réclamations"], eviter:["Sujet sans lien avec l’hébergement"]},
   {k:"hopRecrutement", n:"HOP! · Recrutement délégué·es", cat:"Mobiliser", hop:1, obj:"Donner envie de rejoindre l’équipe UNAC HOP!.",
@@ -572,8 +574,6 @@ const MODELES_INFO = [
    pour:["Com CAT, CSE, commission rotations","Bilan semestriel","Chiffres effectifs, réserves, absentéisme"], eviter:["Info urgente d’un seul message"]},
   {k:"hopPermanence", n:"HOP! · Permanence avec photo", cat:"Informer", hop:1, obj:"Annoncer une permanence et montrer qui accueille.",
    pour:["Permanence salle PPV","Nouvelle déléguée, nouveau délégué","Réunion d’information"], eviter:["Contenu sans date précise"]},
-  {k:"r1jPostV2", n:"R1J · Alerte, illustration en débord", cat:"Alerter", obj:"Contre-proposition : encadré jaune, illustration en bas à droite, bandeau d’action.", pour:["Fil Facebook / Instagram"], eviter:["Story"]},
-  {k:"r1jStoryV2", n:"R1J · Story, zones sûres", cat:"Mobiliser", obj:"Contre-proposition story : contenu entre les zones masquées par Instagram.", pour:["Story Instagram / Facebook"], eviter:["Fil Instagram"]},
   {k:"r1jAlerte", n:"R1J · Alerte", cat:"Alerter", obj:"Signaler une pratique abusive et dire quoi faire.", pour:["Déclassements R1J","Pratique à faire cesser"], eviter:["Bonne nouvelle"]},
   {k:"r1jTemoignages", n:"R1J · Appel à témoignages", cat:"Mobiliser", obj:"Recueillir des cas précis pour constituer un dossier.", pour:["Dossier à porter à la Direction","Collecte de cas"], eviter:["Simple information"]},
   {k:"r1jSaviez", n:"R1J · Question / réponse", cat:"Informer", obj:"Parler directement au PNC concerné.", pour:["Situation vécue par beaucoup","Rappel d’une démarche"], eviter:["Texte long"]},
