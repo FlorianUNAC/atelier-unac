@@ -171,6 +171,11 @@
   .page:not(.sansavion):not(.titre1) .zone{--pt:400px}
   .page.mesure .zone{justify-content:flex-start}
   .page .zone > *{flex-shrink:0}
+  .page .bloc-banniere{display:block;width:100%;height:auto;max-height:calc(var(--k)*370px);object-fit:contain}
+  .page .banniere-plein-format{display:block;width:100%;height:100%;object-fit:contain}
+  .page.en-banniere .zone{padding:24px 40px;gap:calc(var(--k)*18px)}
+  .page.en-banniere .bloc-banniere{max-height:calc(var(--k)*185px)}
+  .galerie .th[data-modele^="banniere-"]{aspect-ratio:2.4}
   .page.logobas .zone{--pb:70px}
   .page.logobas .zone > .cta:last-child{margin-top:80px}
   .page.logobas .sign{min-height:250px;display:flex;align-items:flex-end;padding-right:290px}
@@ -312,7 +317,7 @@
         <button id="aSave"><div>Enregistrer le brouillon (.json)</div></button>
         <button id="aOpen"><div>Ouvrir un brouillon (.json)</div></button>
         <hr>
-        <button id="aModeles"><div>Banque de visuels…<small>10 modèles selon l’objectif de communication.</small></div></button>
+        <button id="aModeles"><div>Banque de visuels…<small>Modèles selon l’objectif de communication.</small></div></button>
       </div>
     </div>
     <button class="btn pdf" id="imgBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span class="lg">Télécharger les&nbsp;</span>images</button>
@@ -484,7 +489,20 @@ const MODELES_INFO = [
   {k:"flash", n:"Info flash", cat:"Alerter", obj:"Relayer vite une info courte.",
    pour:["Publication des plannings","Changement de dernière minute","Grève, perturbation","Rappel de date limite"], eviter:["Analyse de fond","Sujet non urgent"]}
 ];
-const CATS = ["Tous","Informer","Alerter","Mobiliser","Valoriser","Positionner"];
+const BANNIERES = {
+  "exploitation-mc": {nom:"Bon à savoir · Exploitation MC", largeur:1598, hauteur:640},
+  "bon-a-savoir": {nom:"Bon à savoir", largeur:960, hauteur:409},
+  "exploitation-lc": {nom:"Information utile · Exploitation LC", largeur:1618, hauteur:585},
+  info: {nom:"Info", largeur:960, hauteur:415},
+  "plannings-dda": {nom:"Bon à savoir · Plannings et DDA", largeur:1811, hauteur:640}
+};
+const CATS = ["Tous","Bannières","Informer","Alerter","Mobiliser","Valoriser","Positionner"];
+MODELES_INFO.unshift(...Object.entries(BANNIERES).map(([cle, banniere]) => {
+  const k = "banniere-" + cle;
+  MODELES[k] = {nom:banniere.nom, section:"af", format:"banniere", theme:"nuit", avion:false,
+    slides:[{blocs:[{type:"banniere", visuel:cle}]}]};
+  return {k, n:banniere.nom, cat:"Bannières", obj:"Visuel UNAC prêt à télécharger en format horizontal.", pour:[], eviter:[]};
+}));
 
 "use strict";
 const $ = s => document.querySelector(s);
@@ -497,12 +515,25 @@ const SECTIONS = {af:{nom:"Air France", logo:"logo-unac-blanc.png"}, hop:{nom:"H
 const SECTION_URL = ({hop:"hop", af:"af"})[new URLSearchParams(location.search).get("section")] || null;
 let SECTION_DEF = SECTION_URL || (localStorage.getItem("chrono:section") === "hop" ? "hop" : "af");
 if(SECTION_URL) try{ localStorage.setItem("chrono:section", SECTION_URL); }catch(e){}
-const FORMATS = {carre:{nom:"Carré 1:1", w:1080, h:1080}, portrait:{nom:"Portrait 4:5", w:1080, h:1350}, story:{nom:"Story 9:16", w:1080, h:1920}};
+const FORMATS = {carre:{nom:"Carré 1:1", w:1080, h:1080}, portrait:{nom:"Portrait 4:5", w:1080, h:1350}, story:{nom:"Story 9:16", w:1080, h:1920}, banniere:{nom:"Bannière horizontale", w:1080, h:450}};
 const THEMES = {prune:{nom:"Prune", bg:"#A54067"}, framboise:{nom:"Framboise", bg:"#CF3473"}, bordeaux:{nom:"Bordeaux", bg:"#6E1F44"}, magenta:{nom:"Magenta", bg:"#C2286A"}, nuit:{nom:"Nuit", bg:"#3A1530"}};
 const PICTOS = {"refus-vol":"Refus de vol", telephone:"Téléphone", calendrier:"Planning", pieces:"Rémunération", appli:"Appli", factures:"Documents", lit:"Repos / lit", etranger:"Étranger", fonds:"Santé / fonds", reclamation:"Réclamation", elus:"Élu.es"};
 const AIDE = "<code>**gras**</code> · <code>3^e</code> pour l'exposant · retour à la ligne conservé";
 
+function formatDoc(d){
+  const format = FORMATS[d.format];
+  if(d.format !== "banniere") return format;
+  const bloc = d.slides[0]?.blocs.find(b => b.type === "banniere" && Object.hasOwn(BANNIERES,b.visuel));
+  if(!bloc) return format;
+  const image = BANNIERES[bloc.visuel];
+  return {...format, h:Math.round(format.w * image.hauteur / image.largeur)};
+}
+function imageBanniere(cle, classe){
+  if(!Object.hasOwn(BANNIERES,cle)) return "";
+  return `<img class="${classe}" src="banniere-${cle}.png" alt="${esc(BANNIERES[cle].nom)}">`;
+}
 const TYPES = {
+  banniere:{nom:"Bannière UNAC", champs:[["visuel","Visuel","select",{"":"Choisir une bannière",...Object.fromEntries(Object.entries(BANNIERES).map(([k,b])=>[k,b.nom]))}]]},
   titre:   {nom:"Grand titre (avec écho)", champs:[["titre","Titre","text"],["sous","Sous-titre","text"]]},
   accroche:{nom:"Accroche en italique", champs:[["texte","Texte","area"],["taille","Taille","select",{grand:"Grande",petit:"Moyenne"}]]},
   chiffre: {nom:"Chiffre clé + pastille", champs:[["libelle","Libellé","text","Recettes à"],["valeur","Valeur en gras","text"],["badge","Pastille (ex. +5%, vide = aucune)","text"],["couleur","Couleur de la pastille","select",{vert:"Vert (hausse)",rouge:"Rouge (baisse)",blanc:"Blanche"}]]},
@@ -535,6 +566,7 @@ function qrSVG(url){
 const lignes = t => String(t||"").split("\n").map(x => x.trim()).filter(Boolean);
 function blocHTML(b){
   switch(b.type){
+    case "banniere": return imageBanniere(b.visuel, "bloc-banniere");
     case "titre": return `<div class="gt"><div class="g" aria-hidden="true">${esc(b.titre)}</div><h1>${esc(b.titre)}</h1>${b.sous ? `<p>${riche(b.sous)}</p>` : ""}</div>`;
     case "accroche": return `<p class="acc ${b.taille === "petit" ? "petit" : ""}">${riche(b.texte)}</p>`;
     case "chiffre": return `<div class="fig"><div class="t">${riche(b.libelle)} <b>${riche(b.valeur)}</b></div>${b.badge ? `<div class="badge ${esc(b.couleur||"vert")}"><span>${esc(b.badge)}</span></div>` : ""}</div>`;
@@ -557,7 +589,7 @@ function blocHTML(b){
   }
   return "";
 }
-const blocVide = b => b.type !== "espace" && !TYPES[b.type].champs.some(([k,,ty]) => (ty === "text" || ty === "area" || ty === "picto" || ty === "photo") && String(b[k]||"").trim());
+const blocVide = b => b.type === "banniere" ? !Object.hasOwn(BANNIERES,b.visuel) : b.type !== "espace" && !TYPES[b.type].champs.some(([k,,ty]) => (ty === "text" || ty === "area" || ty === "picto" || ty === "photo") && String(b[k]||"").trim());
 
 /* ---------- État ---------- */
 const DOCS_KEY = "chrono:docs", CUR_KEY = "chrono:current";
@@ -649,20 +681,28 @@ $("#form").addEventListener("click", e => {
 /* ---------- Rendu ---------- */
 function el(html){ const d = document.createElement("div"); d.innerHTML = html.trim(); return d.firstChild; }
 function slideNode(s){
-  const F = FORMATS[S.format], T = THEMES[S.theme];
+  const F = formatDoc(S), T = THEMES[S.theme];
   const blocs = s.blocs.filter(b => !blocVide(b));
   const w = document.createElement("div"); w.className = "pwrap";
   const p = document.createElement("section");
+  if(S.format === "banniere" && blocs.length === 1 && blocs[0].type === "banniere"){
+    p.className = "page banniere-seule";
+    p.style.cssText = `width:${F.w}px;height:${F.h}px;--bg:${T.bg}`;
+    p.innerHTML = imageBanniere(blocs[0].visuel, "banniere-plein-format");
+    w.appendChild(p);
+    return w;
+  }
   const titreEnTete = blocs[0] && blocs[0].type === "titre";
   const finConcl = blocs.length && blocs[blocs.length-1].type === "conclusion";
-  p.className = "page" + (S.avion && !titreEnTete ? "" : " sansavion") + (titreEnTete ? " titre1" : "") + (S.logo === "bas" ? " logobas" : "") + (S.flash ? " flash" : "");
+  p.className = "page" + (S.format === "banniere" ? " en-banniere" : "") + (S.avion && !titreEnTete ? "" : " sansavion") + (titreEnTete ? " titre1" : "") + (S.logo === "bas" ? " logobas" : "") + (S.flash ? " flash" : "");
   p.style.cssText = `width:${F.w}px;height:${F.h}px;--bg:${T.bg}` + (finConcl ? ";--pb:110px" : "") + (titreEnTete ? ";--just:space-between" : "");
-  p.innerHTML = (S.avion && !titreEnTete ? `<img class="avion" src="${IMG}avion-nez.png" alt="">` : "") + `<img class="logo ${S.section === "hop" ? "hop" : ""}" src="${IMG}${(SECTIONS[S.section]||SECTIONS.af).logo}" alt="UNAC">`
+  p.innerHTML = (S.format === "banniere" ? "" : (S.avion && !titreEnTete ? `<img class="avion" src="${IMG}avion-nez.png" alt="">` : "") + `<img class="logo ${S.section === "hop" ? "hop" : ""}" src="${IMG}${(SECTIONS[S.section]||SECTIONS.af).logo}" alt="UNAC">`)
     + `<div class="zone">${blocs.map(blocHTML).join("")}</div>`;
   w.appendChild(p); return w;
 }
 function ajuste(p){
   const z = p.querySelector(".zone");
+  if(!z) return 1;
   // mesure en haut de zone : un contenu centré qui déborde ne serait pas compté par scrollHeight
   p.classList.add("mesure");
   // marge de sécurité : le rendu en image peut faire passer une ligne de plus
@@ -699,12 +739,12 @@ function renderPreviewReel(){
   // une image pas encore chargée a une hauteur nulle : on réajuste son visuel dès qu'elle arrive
   box.querySelectorAll(".page").forEach(pg => pg.querySelectorAll("img").forEach(im => { if(!im.complete) im.addEventListener("load", () => ajuste(pg), {once:true}); }));
   fitPreview();
-  const F = FORMATS[S.format];
+  const F = formatDoc(S);
   $("#pvMeta").textContent = `${S.slides.length} visuel${S.slides.length>1?"s":""} · ${F.nom} (${F.w} × ${F.h})`;
 }
 function fitPreview(){
-  const F = FORMATS[S.format], pv = $("#preview");
-  const k = Math.min(pv.clientWidth - 40, 640, F.w) / F.w;
+  const F = formatDoc(S), pv = $("#preview");
+  const k = Math.max(0, Math.min(pv.clientWidth - 40, 640, F.w)) / F.w;
   document.querySelectorAll("#pages .pwrap").forEach(w => { w.style.width = (F.w*k)+"px"; w.style.height = (F.h*k)+"px"; w.firstChild.style.transform = `scale(${k})`; });
 }
 window.addEventListener("resize", fitPreview);
@@ -715,7 +755,11 @@ function syncTab(){ document.body.classList.toggle("tab-apercu", tab === "apercu
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if(b){ tab = b.dataset.tab; syncTab(); } });
 window.nomExport = () => ("Chrono-" + nomPost(S)).replace(/[^\wÀ-ÿ-]+/g, "-").replace(/-+/g, "-").replace(/-$/, "");
 window.titreExport = () => nomPost(S);
-$("#imgBtn").addEventListener("click", () => { if(enExemple()) return toast("Remplissez d’abord le document : l’aperçu n’est qu’un exemple"); return exportImages(); });
+$("#imgBtn").addEventListener("click", () => {
+  if(enExemple()) return toast("Remplissez d’abord le document : l’aperçu n’est qu’un exemple");
+  if(!$("#preview").clientWidth){ tab = "apercu"; syncTab(); }
+  return exportImages();
+});
 
 /* ---------- Publication, historique ---------- */
 function publier(){
@@ -773,7 +817,7 @@ const MM = $("#modModal"); let bqCat = "Tous";
 MM.addEventListener("click", e => {
   if(e.target === MM || e.target.hasAttribute("data-x")){ MM.classList.remove("on"); return; }
   const c = e.target.closest("[data-cat]"); if(c){ bqCat = c.dataset.cat; filtreBanque(); return; }
-  const g = e.target.closest("[data-modele]"); if(g){ MM.classList.remove("on"); recevoir(MODELES[g.dataset.modele], "Modèle ouvert : remplacez les textes d’exemple"); }
+  const g = e.target.closest("[data-modele]"); if(g){ MM.classList.remove("on"); recevoir(MODELES[g.dataset.modele], g.dataset.modele.startsWith("banniere-") ? "Bannière ouverte dans un nouveau brouillon" : "Modèle ouvert : remplacez les textes d’exemple"); }
 });
 $("#bqVierge").addEventListener("click", () => { MM.classList.remove("on"); openDoc(blank()); toast("Page vierge"); });
 $("#bqReprise").addEventListener("click", () => { MM.classList.remove("on"); const d = latestDraft(); if(d) openDoc(d); });
@@ -804,7 +848,7 @@ function ouvrirBanque(){
     return `<div class="mc" data-c="${m.cat}"><div class="th" data-modele="${m.k}" title="Utiliser ce modèle"></div>
       <div class="hd"><b>${m.n}</b><span class="cat">${m.cat}</span>${m.hop ? `<span class="cat hopt">HOP!</span>` : ""}</div>
       <p class="ob">${m.obj}</p>
-      <div class="chte"><span class="sw" style="background:${T.bg}"></span>${T.nom} · ${FORMATS[M.format].nom}${M.flash ? " · bandeau rayé" : ""}</div>
+      <div class="chte"><span class="sw" style="background:${T.bg}"></span>${M.format === "banniere" ? "Bannière horizontale" : `${T.nom} · ${FORMATS[M.format].nom}${M.flash ? " · bandeau rayé" : ""}`}</div>
       <ul class="ls ok">${m.pour.map(x => `<li>${x}</li>`).join("")}</ul>
       <ul class="ls ko">${m.eviter.map(x => `<li>${x}</li>`).join("")}</ul>
       <button class="use" data-modele="${m.k}">Utiliser ce visuel</button></div>`; }).join("");
