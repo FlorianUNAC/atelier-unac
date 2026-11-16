@@ -13,6 +13,7 @@
 <style>
   @font-face{font-family:"T1";src:url("../commun/polices/x1.woff2") format("woff2");font-weight:400;font-display:block}
   @font-face{font-family:"T1";src:url("../commun/polices/x2.woff2") format("woff2");font-weight:700 800;font-display:block}
+  @font-face{font-family:"Novotype locale";src:local("Novotype Medium"),local("Novotype-Medium"),local("Novotype Regular"),local("Novotype-Regular");font-weight:700}
   :root{--ui-line:#e7dbe2;--ui-muted:#8b6f80;--ui-ink:#2b1225;--mag:#B33868}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
@@ -155,7 +156,8 @@
   .social.couverture .big{transform:translateY(320px)}
   .social.couverture .social-destination{position:absolute;inset:608px 0 0;display:flex;flex-direction:column;
     justify-content:center;padding:120px 61px 70px;background:var(--mag);color:#fff;overflow-wrap:anywhere}
-  .social-destination strong{font-size:86px;line-height:1.06;text-transform:uppercase;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .social-destination strong{font-family:"Novotype locale",Novotype,T1,Inter,system-ui,sans-serif;font-size:86px;line-height:1.06;text-transform:uppercase;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .social-destination img{display:block;width:auto;height:105px;max-width:100%;align-self:flex-start;object-fit:contain;object-position:left center}
   .social-hotel{font-size:40px;margin-top:20px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .social.couverture .avis{left:738px;top:543px;width:281px}
   .social.couverture .note{left:846px;top:646px}
@@ -163,8 +165,12 @@
   .social .social-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;width:100%;max-width:880px;margin-inline:auto}
   .social .social-photos.seule{grid-template-columns:1fr}
   .social .social-photos.dense{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .social .social-position{position:absolute;right:61px;bottom:16px;margin:0;font-size:25px;font-weight:700;color:var(--mag)}
-  .social.couverture .social-position{color:#fff}
+  .social .social-position{position:absolute;right:61px;bottom:14px;display:flex;align-items:center;gap:10px;
+    margin:0;padding:8px 14px;border-radius:999px;background:var(--mag);color:#fff;font-size:20px;line-height:1;font-variant-numeric:tabular-nums}
+  .social.couverture .social-position{background:#fff;color:#8c2853}
+  .social-position .progression{width:54px;height:4px;border-radius:999px;background:color-mix(in srgb,currentColor 36%,transparent);position:relative}
+  .social-position .progression::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--avance);border-radius:inherit;background:currentColor}
+  .social-position strong{font-size:24px}
   .social-photos div{aspect-ratio:1;border-radius:22%;overflow:hidden;background:#949494}
   .social-photos img{display:block;width:100%;height:100%;object-fit:cover}
 
@@ -313,12 +319,15 @@ function identiteVisuel(){
     <img class="t-nouvel" src="img/nouvel.svg" alt="nouvel hébergement">
   `;
 }
+function imageVille(){
+  return !S.ville.trim() && S.code && refVille(S.type, S.code) ? `img/nv/e-${esc(S.code)}.svg` : "";
+}
 function pageHTML(){
   const nom = S.hotel.trim(), secs = SECTIONS.filter(([k]) => S[k].trim());
   return `<section class="page${HOP ? "" : " af"}">
     ${identiteVisuel()}
     ${echo()}
-    <div class="band">${!S.ville.trim() && S.code && refVille(S.type, S.code) ? `<img class="v" src="img/nv/e-${esc(S.code)}.svg" alt="${esc(villeAff())}">` : `<div class="v">${esc(villeAff() || "Escale")}</div>`}${nom ? `<div class="h">${VERSION === "public" ? `<span class="masque"></span>` : esc(nom)}</div>` : ""}</div>
+    <div class="band">${imageVille() ? `<img class="v" src="${imageVille()}" alt="${esc(villeAff())}">` : `<div class="v">${esc(villeAff() || "Escale")}</div>`}${nom ? `<div class="h">${VERSION === "public" ? `<span class="masque"></span>` : esc(nom)}</div>` : ""}</div>
     <img class="avis" src="img/avis.png" alt="">
     ${S.note ? `<div class="note">${[1,2,3,4,5].map(n => STAR(n <= S.note ? "#F2A91D" : "#E3E3E3")).join("")}</div>` : ""}
     <div class="corps">
@@ -354,7 +363,7 @@ function apercuCarrousel(box, exemple){
   const couverture = diapositive("couverture");
   const hotel = VERSION === "adherents" && S.hotel.trim();
   couverture.insertAdjacentHTML("beforeend", `${echo()}
-    <div class="social-destination"><strong>${esc(villeAff() || "Escale")}</strong>
+    <div class="social-destination">${imageVille() ? `<img src="${imageVille()}" alt="${esc(villeAff())}">` : `<strong>${esc(villeAff() || "Escale")}</strong>`}
       ${hotel ? `<div class="social-hotel">${esc(hotel)}</div>` : ""}
     </div>
     <img class="avis" src="img/avis.png" alt="">
@@ -410,7 +419,7 @@ function apercuCarrousel(box, exemple){
   const total = box.children.length;
   for(const [i, w] of Array.from(box.children).entries()){
     const page = w.firstElementChild;
-    page.insertAdjacentHTML("beforeend", `<p class="social-position" aria-label="Carte ${i+1} sur ${total}">${i+1} / ${total}</p>`);
+    page.insertAdjacentHTML("beforeend", `<div class="social-position" role="img" aria-label="Carte ${i+1} sur ${total}"><span class="progression" style="--avance:${100*(i+1)/total}%"></span><span><strong>${i+1}</strong> / ${total}</span></div>`);
     w.style.width = `${1080*sc}px`;
     w.style.height = `${1350*sc}px`;
     page.style.transform = `scale(${sc})`;
