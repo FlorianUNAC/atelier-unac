@@ -102,6 +102,7 @@
   .page{width:1080px;height:1768px;position:relative;overflow:hidden;background:#D5D5D5;color:#222;font-family:"T1",Inter,system-ui,sans-serif;--k:1}
   .page .mois{position:absolute;left:61px;top:76px;font-size:15.5px;letter-spacing:.09em;text-transform:uppercase;line-height:1}
   .page .logo{position:absolute;left:938px;top:41px;width:88px}
+  .page .logo.hop{left:916px;top:34px;width:116px}
   .page .t-test{position:absolute;left:61px;top:139.6px;height:18px}
   .page .t-nouvel{position:absolute;left:61.25px;top:162.83px;height:31.46px}
   .page img.mois{position:absolute;left:61.5px;top:75.85px;height:16.08px}
@@ -135,7 +136,7 @@
 <body>
 <div class="top">
   <a href="../" title="Retour à l'Atelier"><img class="logo" src="../commun/img/logo-unac-blanc.png" alt="UNAC"></a>
-  <h1>Test d'un nouvel hébergement<small>Post Facebook / Instagram · commission hébergement</small></h1>
+  <h1 id="h1">Test d'un nouvel hébergement<small>Post Facebook / Instagram · commission hébergement</small></h1>
   <div class="sp"></div>
   <div class="seg" id="vers" title="Version"><button data-v="adherents" class="on">Adhérents</button><button data-v="public">Public</button></div>
   <button class="btn ghost" id="resetBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span class="lg">Recommencer</span></button>
@@ -150,7 +151,7 @@
   <div class="mhead"><h3>Importer le compte rendu du test</h3><button class="mclose" data-x aria-label="Fermer">×</button></div>
   <div class="mbody" id="impBody">
     <p class="mintro">Déposez le compte rendu du test (PDF, Word ou texte) ou collez-le ci-dessous. L'outil repère l'escale, l'hôtel, la note et range le texte dans <b>Localisation, Restauration, Chambre, Facilités</b> et <b>Bilan</b> grâce aux titres du document. La mise en page s'ajuste ensuite toute seule. Rien ne quitte l'appareil.</p>
-    <p class="mintro" style="margin-top:-6px">📄 Pour un import sans retouche, faites remplir le <a href="formulaire-test-hebergement.pdf" download><b>formulaire PDF du délégué testeur</b></a>.</p>
+    <p class="mintro" style="margin-top:-6px">📄 Pour un import sans retouche, faites remplir le <a href="${FORMULAIRE}" download><b>formulaire PDF du délégué testeur</b></a>.</p>
     <label class="drop" id="drop"><input type="file" id="impFile" accept=".pdf,.docx,.txt,.md,text/plain,application/pdf" hidden><b>Choisir un fichier</b><span>ou le glisser ici · PDF, Word (.docx), texte</span></label>
     <label class="f" style="margin-top:14px">… ou coller le texte</label>
     <textarea id="impTxt" rows="7" placeholder="Escale : JNB&#10;Hôtel : …&#10;Note : 4/5&#10;Localisation : …&#10;Restauration : …&#10;Chambre : …&#10;Facilités : …&#10;Bilan : …"></textarea>
@@ -177,13 +178,17 @@ const IC = {
   fac:`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.3a9.5 9.5 0 0 1 13 0M8.6 15.5a5 5 0 0 1 6.8 0"/><circle cx="12" cy="19" r="1.4" fill="#fff" stroke="none"/></svg>`
 };
 const SECTIONS = [["loc","Localisation","Quartier, distance de l'aéroport, transport, sécurité aux abords…"],["resto","Restauration","Petit-déjeuner, horaires, room service, restaurants autour…"],["chambre","Chambre","Taille, literie, calme, propreté, occultation, climatisation…"],["fac","Facilités","Wifi, salle de sport, piscine, blanchisserie, réception 24h/24…"]];
-const refVille = (t, c) => { for(const z of (ESCALES[t]||[])) if(z.escales[c]) return z.escales[c]; return ""; };
+const HOP = new URLSearchParams(location.search).get("section") === "hop";
+// HOP! : réseau France / Europe, escales cherchées dans tout le référentiel
+const refVille = (t, c) => { for(const tt of (HOP ? ["MC","LC"] : [t])) for(const z of (ESCALES[tt]||[])) if(z.escales[c]) return z.escales[c]; return ""; };
+const RESEAUX = HOP ? ["France","Europe"] : ["LC","MC"];
+const FORMULAIRE = HOP ? "formulaire-test-hebergement-hop.pdf" : "formulaire-test-hebergement.pdf";
 
 /* ---------- État ---------- */
-const KEY = "testheb:courant";
+const KEY = HOP ? "testhebhop:courant" : "testheb:courant";
 let VERSION = "adherents";
 const now = new Date();
-function blank(){ return {type:"LC", mois:`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`, code:"", ville:"", hotel:"", note:0, loc:"", resto:"", chambre:"", fac:"", photos:[], bilan:""}; }
+function blank(){ return {type:RESEAUX[0], mois:`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`, code:"", ville:"", hotel:"", note:0, loc:"", resto:"", chambre:"", fac:"", photos:[], bilan:""}; }
 let S; try{ S = Object.assign(blank(), JSON.parse(localStorage.getItem(KEY) || "{}")); }catch(e){ S = blank(); }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){ toast("Mémoire pleine : retirez une photo"); } }
 let pvT; function changed(form){ save(); if(form) renderForm(); clearTimeout(pvT); pvT = setTimeout(renderPreview, 200); }
@@ -200,11 +205,11 @@ function renderForm(){
   const rv = refVille(S.type, S.code);
   $("#form").innerHTML = `
   <button class="importbtn" id="impBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 18v-6M9 14l3-3 3 3"/></svg><span><b>Importer le compte rendu du test</b><small>Formulaire du délégué testeur, PDF, Word ou texte collé : les rubriques sont remplies automatiquement</small></span></button>
-  <div class="formdl">Pas encore de compte rendu ? Faites remplir le formulaire du délégué testeur. <a href="formulaire-test-hebergement.pdf" download>Télécharger le PDF</a></div>
+  <div class="formdl">Pas encore de compte rendu ? Faites remplir le formulaire du délégué testeur. <a href="${FORMULAIRE}" download>Télécharger le PDF</a></div>
   <div class="card"><h2>Le test</h2>
-    <div class="row"><div><label class="f">Réseau</label><select data-k="type"><option ${S.type==="LC"?"selected":""}>LC</option><option ${S.type==="MC"?"selected":""}>MC</option></select></div>
+    <div class="row"><div><label class="f">Réseau</label><select data-k="type">${RESEAUX.map(r => `<option ${S.type===r?"selected":""}>${r}</option>`).join("")}</select></div>
     <div><label class="f">Mois</label><select data-k="mois">${moisOptions()}</select></div></div>
-    <div class="row"><div><label class="f">Escale (trigramme)</label><input type="text" data-k="code" maxlength="4" value="${esc(S.code)}" placeholder="ex. JNB" autocapitalize="characters"><div class="ville" id="villeRef">${rv ? esc(rv) : (S.code.length >= 3 ? "hors référentiel : saisissez la ville" : "")}</div></div>
+    <div class="row"><div><label class="f">Escale (trigramme)</label><input type="text" data-k="code" maxlength="4" value="${esc(S.code)}" placeholder="${HOP ? "ex. NCE" : "ex. JNB"}" autocapitalize="characters"><div class="ville" id="villeRef">${rv ? esc(rv) : (S.code.length >= 3 ? "hors référentiel : saisissez la ville" : "")}</div></div>
     <div><label class="f">Ville affichée</label><input type="text" data-k="ville" value="${esc(S.ville)}" placeholder="${esc(rv || "Ville")}"></div></div>
     <label class="f">Nom de l'hôtel</label><input type="text" data-k="hotel" value="${esc(S.hotel)}" placeholder="masqué dans la version publique">
     <label class="f">Note donnée par les délégués</label><div class="stars">${[1,2,3,4,5].map(n => `<button data-note="${n}" class="${S.note>=n?"on":""}">★</button>`).join("")}<button data-note="0" title="Aucune note" style="width:auto;padding:0 10px;font-size:12px;color:#8b6f80">aucune</button></div>
@@ -244,6 +249,11 @@ function reduire(f){ return new Promise(ok => { const im = new Image(); im.onloa
 
 /* ---------- Visuel ---------- */
 function echo(){
+  if(HOP){ // logo HOP! et écho de son point d'exclamation (comme le « C » de LC / MC)
+    const H = 50, k = H/199, W = 700*k, x0 = 524*k, we = 176*k, step = we*0.62;
+    const g = [0.34,0.24,0.16,0.1,0.065,0.04].map((o,i) => `<img src="img/hop-excl.png" style="position:absolute;left:${(x0 + step*(i+1)).toFixed(1)}px;top:0;height:${H}px;opacity:${o}" alt="">`).reverse().join("");
+    return `<div class="big" style="width:${(x0 + we + step*6).toFixed(0)}px;top:${238 + 58 - H - 4}px">${g}<img src="img/hop-mag.png" style="position:relative;height:${H}px" alt="HOP!"></div>`;
+  }
   const t = TITRE[S.type], H = 58, W = t.w*H/122, step = W*0.5;
   const ghosts = [0.3,0.22,0.15,0.1,0.065,0.04].map((o,i) => `<img src="${t.src}" style="position:absolute;left:${(step*(i+1)).toFixed(1)}px;top:0;height:${H}px;opacity:${o}" alt="">`).reverse().join("");
   return `<div class="big" style="width:${(W + step*6).toFixed(0)}px">${ghosts}<img src="${t.src}" style="position:relative" alt="${S.type}"></div>`;
@@ -252,7 +262,7 @@ function pageHTML(){
   const nom = S.hotel.trim(), secs = SECTIONS.filter(([k]) => S[k].trim());
   return `<section class="page">
     ${+S.mois.slice(0,4) >= 2025 && +S.mois.slice(0,4) <= 2030 ? `<img class="mois" src="img/nv/m-${S.mois}.svg" alt="${esc(moisLabel(S.mois))}">` : `<div class="mois">${esc(moisLabel(S.mois))}</div>`}
-    <img class="logo" src="img/logo-unac.png" alt="UNAC">
+    <img class="logo${HOP ? " hop" : ""}" src="${HOP ? "../commun/img/logo-unac-hop-couleur.png" : "img/logo-unac.png"}" alt="UNAC">
     <img class="t-test" src="img/test.svg" alt="Test d'un">
     <img class="t-nouvel" src="img/nouvel.svg" alt="nouvel hébergement">
     ${echo()}
@@ -285,7 +295,7 @@ const estVide = () => !(S.code || S.ville || S.hotel || S.note || S.loc || S.res
 function renderPreview(){
   const box = $("#pages"); box.innerHTML = "";
   const vide = estVide(), garde = S;
-  if(vide) S = Object.assign({}, garde, EXEMPLE, {mois:garde.mois, type:garde.type, code:garde.type === "MC" ? "NCE" : "JNB"});
+  if(vide) S = Object.assign({}, garde, EXEMPLE, {mois:garde.mois, type:garde.type, code:HOP ? (garde.type === "Europe" ? "FCO" : "NCE") : (garde.type === "MC" ? "NCE" : "JNB")});
   const w = document.createElement("div"); w.className = "pwrap"; w.innerHTML = pageHTML(); box.appendChild(w);
   S = garde; if(vide) w.firstElementChild.classList.add("exemple");
   const p = w.firstElementChild, pv = box.parentElement;
@@ -300,7 +310,8 @@ window.addEventListener("resize", () => { clearTimeout(pvT); pvT = setTimeout(re
 $("#vers").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if(!b) return; VERSION = b.dataset.v; $("#vers").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); renderPreview(); });
 $("#resetBtn").addEventListener("click", () => { if(!confirm("Effacer ce test et recommencer ?")) return; S = blank(); changed(true); });
 window.EXPORT_LARGEUR = 1080;
-window.nomExport = () => `Test-hebergement-${S.type}-${(villeAff() || "escale").replace(/\s+/g,"-")}-${moisLabel(S.mois).replace(/\s+/g,"-")}-${VERSION === "public" ? "public" : "adherents"}`;
+if(HOP){ $("#h1").firstChild.textContent = "Test d'un nouvel hébergement HOP! "; document.title = "Test d'un nouvel hébergement HOP! · Atelier UNAC"; }
+window.nomExport = () => `Test-hebergement-${HOP ? "HOP-" : ""}${S.type}-${(villeAff() || "escale").replace(/\s+/g,"-")}-${moisLabel(S.mois).replace(/\s+/g,"-")}-${VERSION === "public" ? "public" : "adherents"}`;
 window.titreExport = () => `Test d'un nouvel hébergement · ${villeAff()}`;
 $("#imgBtn").addEventListener("click", () => { if(estVide()) return toast("Remplissez d'abord le test : l'aperçu n'est qu'un exemple"); exportImages(); });
 
@@ -330,7 +341,7 @@ async function champsFormulaire(file){
   const lignes = [`Escale : ${v("escale")} ${v("ville")}`, `Hôtel : ${v("hotel")}`, `Note : ${v("note")}`, `Mois : ${v("mois")}`, v("reseau") === "MC" ? "moyen-courrier" : v("reseau") === "LC" ? "long-courrier" : ""];
   const r = analyser(lignes.join("\n"));
   Object.assign(r, {loc:v("localisation"), resto:v("restauration"), chambre:v("chambre"), fac:v("facilites"), bilan:v("bilan"), libre:""});
-  if(v("reseau")) r.type = ["LC","MC"].includes(v("reseau")) ? v("reseau") : "MC"; // formulaire HOP! : France / Europe
+  if(v("reseau")) r.type = RESEAUX.includes(v("reseau")) ? v("reseau") : (HOP ? (v("reseau") === "LC" ? "Europe" : "France") : "MC"); // formulaire HOP! : France / Europe
   const code = v("escale").toUpperCase().replace(/[^A-Z]/g, "");
   if(code.length === 3){ r.code = code; r.ville = refVille("LC", code) || refVille("MC", code) ? "" : v("ville"); }
   else if(v("ville")){ r.code = ""; r.ville = v("ville"); }
@@ -425,6 +436,7 @@ dz.addEventListener("drop", e => lireFichier(e.dataTransfer.files[0]));
 $("#impAnalyse").addEventListener("click", () => { const t = $("#impTxt").value; if(!t.trim()) return toast("Collez d'abord le texte du compte rendu"); montrer(analyser(t)); });
 $("#impOk").addEventListener("click", () => {
   const r = IMP; if(!r) return;
+  if(HOP && !RESEAUX.includes(r.type)){ const fr = ((ESCALES.MC||[]).find(z => z.zone === "France")||{escales:{}}).escales; r.type = r.code ? (fr[r.code] ? "France" : "Europe") : ""; }
   ["type","code","ville","hotel","mois","loc","resto","chambre","fac","bilan"].forEach(k => { if(r[k]) S[k] = r[k]; });
   if(r.code) S.ville = r.ville || "";
   if(r.note) S.note = r.note;
