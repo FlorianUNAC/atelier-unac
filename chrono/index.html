@@ -160,6 +160,10 @@
   .seg2{display:flex;gap:6px;flex-wrap:wrap}
   .seg2 button{border:1px solid var(--ui-line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;cursor:pointer;color:#7d5a6e;font-size:13px}
   .seg2 button.on{background:#7a2a4e;border-color:#7a2a4e;color:#fff}
+  .illus{display:flex;gap:6px;flex-wrap:wrap}
+  .illus button{width:84px;height:64px;border:1px solid var(--ui-line);border-radius:9px;background:#f6eef2;padding:3px;cursor:pointer}
+  .illus button.on{border-color:#7a2a4e;box-shadow:0 0 0 2px #7a2a4e}
+  .illus img{width:100%;height:100%;object-fit:contain}
   .phf{display:flex;align-items:center;gap:10px}
   .phf img{width:56px;height:56px;border-radius:50%;object-fit:cover}
   .phf label.mini{cursor:pointer}
@@ -298,6 +302,13 @@
   .qrb .qt b{font-size:calc(var(--k)*54px);line-height:1.1;font-weight:700}
   .qrb .qt p{margin:0;font-size:calc(var(--k)*40px);line-height:1.3;opacity:.92}
   .qrb .qt p b{font-size:inherit}
+  .illu{display:flex;justify-content:center}
+  .illu.gauche{justify-content:flex-start}.illu.droite{justify-content:flex-end}
+  .illu img{display:block;width:calc(var(--k)*620px);max-width:100%;height:auto}
+  .illu.petite img{width:calc(var(--k)*430px)}.illu.grande img{width:calc(var(--k)*800px)}
+  .illu.pleine{margin:0 -40px 0 -60px}.illu.pleine img{width:100%}
+  .illu.f-carte img{background:#fff;border-radius:calc(var(--k)*40px);padding:calc(var(--k)*30px) calc(var(--k)*36px);box-shadow:0 18px 40px rgba(40,0,20,.25)}
+  .illu.f-disque img{background:radial-gradient(circle at 50% 55%,rgba(255,255,255,.95) 0 58%,rgba(255,255,255,0) 59%);padding:calc(var(--k)*24px)}
   .por{display:flex;align-items:center;gap:calc(var(--k)*50px)}
   .por .ph{flex:none;width:calc(var(--k)*290px);height:calc(var(--k)*290px);border-radius:50%;padding:calc(var(--k)*10px);background:#fff;box-shadow:0 18px 40px rgba(40,0,20,.25)}
   .por .ph img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
@@ -493,6 +504,40 @@ MODELES.hopComCat = {nom:"HOP! · Com CAT PNC 7 juillet 2026", section:"hop", fo
     {type:"portrait", photo:"../commun/img/hop/laure-desrentes.jpg", role:"Votre déléguée syndicale", nom:"Laure Desrentes", texte:"desrentes@unac.asso.fr"},
     {type:"qr", url:"https://card.pm/unac-cfecgc/laure.desrentes", titre:"Sa carte de visite", texte:"Contact direct, numéro et mail"}]}
 ]};
+
+/* ---------- Déclassements R1J : 5 propositions ---------- */
+Object.assign(MODELES, {
+  r1jAlerte: {nom:"R1J · Alerte déclassements", format:"portrait", theme:"nuit", avion:false, logo:"haut", flash:true, slides:[{blocs:[
+    {type:"etiquette", texte:"Alerte R1J", style:"rouge"},
+    {type:"accroche", texte:"Payé en **J**, placé en **W** ou **Y** ?", taille:"grand"},
+    {type:"illustration", image:"declassement-cabine", taille:"petite", fond:"carte", place:"centre"},
+    {type:"alerte", titre:"Déclassements de dernière minute", texte:"Vous êtes nombreux à être déclassés de la J alors que vous aviez **acquitté le tarif J**, parfois juste avant l’embarquement."},
+    {type:"bouton", texte:"Signalez-le sur l’appli UNAC", style:"jaune", place:"gauche"}]}]},
+  r1jTemoignages: {nom:"R1J · Appel à témoignages", format:"portrait", theme:"framboise", avion:false, logo:"haut", slides:[{blocs:[
+    {type:"etiquette", texte:"Appel à témoignages", style:"jaune"},
+    {type:"titre", titre:"R1J", sous:"Déclassé de la J ? Dites-le nous."},
+    {type:"illustration", image:"declassement-cabine", taille:"moyenne", fond:"aucun", place:"centre"},
+    {type:"etapes", texte:"**Date** et **numéro du vol**\nClasse **payée** et classe **obtenue**\n**Moment** du déclassement", style:"coches"},
+    {type:"bouton", texte:"Je témoigne sur l’appli UNAC", style:"jaune", place:"gauche"}]}]},
+  r1jSaviez: {nom:"R1J · Question / réponse", format:"portrait", theme:"prune", avion:false, logo:"haut", slides:[{blocs:[
+    {type:"etiquette", texte:"R1J", style:"blanc"},
+    {type:"question", question:"Vous avez payé votre R1J en J… et vous voyagez en W ou en Y ?", reponse:"Vous n’êtes pas seul·e. L’UNAC **constitue un dossier** pour faire **cesser cette pratique** auprès de la Direction : faites-nous remonter votre cas."},
+    {type:"illustration", image:"declassement-cabine", taille:"moyenne", fond:"aucun", place:"centre"}]}]},
+  r1jStory: {nom:"R1J · Story Instagram", format:"story", theme:"magenta", avion:false, logo:"haut", slides:[{blocs:[
+    {type:"etiquette", texte:"Story · R1J", style:"jaune"},
+    {type:"titre", titre:"R1J", sous:"Stop aux déclassements sauvages"},
+    {type:"illustration", image:"declassement-cabine", taille:"grande", fond:"carte", place:"centre"},
+    {type:"accroche", texte:"Tarif J acquitté, place en W ou Y, parfois **à la dernière minute** avant l’embarquement.", taille:"petit"},
+    {type:"texte", texte:"Nous préparons un dossier pour la Direction. **Chaque témoignage compte.**", taille:"normal"},
+    {type:"bouton", texte:"Envoyez vos remontées", style:"jaune", place:"centre"},
+    {type:"signature", texte:"Tous les jours, l’UNAC défend les PNC"}]}]},
+  r1jDossier: {nom:"R1J · Ce que fait l’UNAC", format:"portrait", theme:"bordeaux", avion:false, logo:"haut", slides:[{blocs:[
+    {type:"etiquette", texte:"R1J · déclassements", style:"contour"},
+    {type:"accroche", texte:"De votre signalement **à la Direction**", taille:"grand"},
+    {type:"etapes", texte:"**Vous nous signalez** votre déclassement J → W ou Y\n**Nous rassemblons** les cas dans un dossier\n**Nous le portons** devant la Direction pour faire cesser cette pratique", style:"relies"},
+    {type:"illustration", image:"declassement-cabine", taille:"moyenne", fond:"carte", place:"centre"},
+    {type:"bouton", texte:"Votre cas compte : écrivez-nous", style:"blanc", place:"gauche"}]}]}
+});
 const MODELES_INFO = [
   {k:"testHeb", lien:"../test-hebergement/", n:"Test d’un nouvel hébergement", cat:"Informer", apercu:"../test-hebergement/apercu.png", obj:"Restituer le test d’un hôtel par la commission hébergement (outil dédié).",
    pour:["Nouvel hôtel testé en escale","Contre-visite après réclamations"], eviter:["Sujet sans lien avec l’hébergement"]},
@@ -502,6 +547,11 @@ const MODELES_INFO = [
    pour:["Com CAT, CSE, commission rotations","Bilan semestriel","Chiffres effectifs, réserves, absentéisme"], eviter:["Info urgente d’un seul message"]},
   {k:"hopPermanence", n:"HOP! · Permanence avec photo", cat:"Informer", hop:1, obj:"Annoncer une permanence et montrer qui accueille.",
    pour:["Permanence salle PPV","Nouvelle déléguée, nouveau délégué","Réunion d’information"], eviter:["Contenu sans date précise"]},
+  {k:"r1jAlerte", n:"R1J · Alerte", cat:"Alerter", obj:"Signaler une pratique abusive et dire quoi faire.", pour:["Déclassements R1J","Pratique à faire cesser"], eviter:["Bonne nouvelle"]},
+  {k:"r1jTemoignages", n:"R1J · Appel à témoignages", cat:"Mobiliser", obj:"Recueillir des cas précis pour constituer un dossier.", pour:["Dossier à porter à la Direction","Collecte de cas"], eviter:["Simple information"]},
+  {k:"r1jSaviez", n:"R1J · Question / réponse", cat:"Informer", obj:"Parler directement au PNC concerné.", pour:["Situation vécue par beaucoup","Rappel d’une démarche"], eviter:["Texte long"]},
+  {k:"r1jStory", n:"R1J · Story Instagram", cat:"Mobiliser", obj:"La version story 9:16 du sujet, lisible en 3 secondes.", pour:["Story Instagram / Facebook"], eviter:["Fil Instagram (recadrage)"]},
+  {k:"r1jDossier", n:"R1J · Ce que fait l’UNAC", cat:"Positionner", obj:"Montrer le parcours d’un signalement jusqu’à la Direction.", pour:["Expliquer l’action syndicale","Rassurer, engager"], eviter:["Annonce urgente"]},
   {k:"victoire", n:"Victoire / acquis", cat:"Valoriser", obj:"Faire savoir un résultat obtenu par l’UNAC.",
    pour:["Procédure améliorée","Réponse favorable de la Direction","Accord ou avenant obtenu","Litige gagné"], eviter:["Négociation encore en cours","Sujet qui divise les PNC"]},
   {k:"chiffres", n:"Décryptage chiffré", cat:"Informer", obj:"Mettre des chiffres en perspective et donner la lecture UNAC.",
@@ -599,6 +649,7 @@ const TYPES = {
   avantapres:{nom:"Avant / Après", champs:[["l1","Étiquette gauche","text","Avant"],["t1","Texte gauche","area"],["l2","Étiquette droite","text","Maintenant"],["t2","Texte droite","area"]]},
   etapes:  {nom:"Liste d'étapes", champs:[["texte","Étapes (une par ligne)","area"],["style","Repères","select",{numeros:"Numéros 1, 2, 3",relies:"Numéros reliés",coches:"Coches vertes ✓",fleches:"Flèches →"}]]},
   citation:{nom:"Citation / prise de position", champs:[["texte","Citation","area"],["auteur","Auteur","text","La section UNAC Air France"]]},
+  illustration:{nom:"Illustration", champs:[["image","Illustration","image"],["taille","Taille","select",{moyenne:"Moyenne",grande:"Grande",petite:"Petite",pleine:"Pleine largeur"}],["fond","Fond","select",{aucun:"Sans fond",carte:"Carte blanche arrondie",disque:"Disque clair"}],["place","Position","select",{centre:"Centrée",gauche:"À gauche",droite:"À droite"}]]},
   portrait:{nom:"Portrait (photo ronde + nom)", champs:[["photo","Photo","photo"],["role","Fonction (au-dessus du nom)","text","Votre déléguée syndicale"],["nom","Prénom Nom","text"],["texte","Phrase (en italique)","text","à votre écoute"]]},
   qr:      {nom:"QR code + texte", champs:[["url","Lien du QR code (https://…)","text"],["titre","Titre à côté","text"],["texte","Texte à côté","area"]]},
   bouton:  {nom:"Bouton d'appel à l'action", champs:[["texte","Texte du bouton","text"],["style","Couleur","select",{blanc:"Blanc",jaune:"Jaune"}],["place","Position","select",{gauche:"À gauche",centre:"Centré"}]]},
@@ -619,6 +670,9 @@ function imagePicto(valeur){
   const src = pictoImporte(valeur) ? valeur : Object.hasOwn(PICTOS,valeur) ? `${IMG}pictos/${valeur}.png` : "";
   return src ? `<img src="${esc(src)}" alt="">` : "";
 }
+// Banque d'illustrations UNAC (fond transparent) ; une illustration importée est gardée telle quelle
+const ILLUS = {"declassement-cabine":"Passagère et hôtesse en cabine"};
+const illuSrc = v => !v ? "" : /^data:image\//.test(v) ? v : (ILLUS[v] ? `${IMG}illustrations/${v}.png` : "");
 function blocHTML(b){
   switch(b.type){
     case "banniere": return renduBanniere(b, "bloc-banniere");
@@ -638,13 +692,14 @@ function blocHTML(b){
     case "avantapres": return `<div class="ap"><div class="av"><div class="lb">${esc(b.l1)}</div><p>${riche(b.t1)}</p></div><div class="apr"><div class="lb">${esc(b.l2)}</div><p>${riche(b.t2)}</p></div></div>`;
     case "etapes": { const st = b.style || "numeros"; return `<ol class="eta ${st}">${lignes(b.texte).map((l,i) => `<li><span>${st === "coches" ? "✓" : st === "fleches" ? FLECHE_SVG : i+1}</span><div>${riche(l)}</div></li>`).join("")}</ol>`; }
     case "citation": return `<div class="cit"><p>${riche(b.texte)}</p>${b.auteur ? `<div class="au">${esc(b.auteur)}</div>` : ""}</div>`;
+    case "illustration": { const src = illuSrc(b.image); return src ? `<div class="illu ${esc(b.taille||"moyenne")} f-${esc(b.fond||"aucun")} ${esc(b.place||"centre")}"><img src="${esc(src)}" alt=""></div>` : ""; }
     case "portrait": return `<div class="por">${b.photo ? `<div class="ph"><img src="${esc(b.photo)}" alt=""></div>` : ""}<div class="pt">${b.role ? `<span class="ro">${esc(b.role)}</span>` : ""}${b.nom ? `<b>${esc(b.nom)}</b>` : ""}${b.texte ? `<i>${riche(b.texte)}</i>` : ""}</div></div>`;
     case "qr": return `<div class="qrb">${qrSVG(b.url)}<div class="qt">${b.titre ? `<b>${riche(b.titre)}</b>` : ""}${b.texte ? `<p>${riche(b.texte)}</p>` : ""}</div></div>`;
     case "bouton": return `<div class="cta ${b.style === "jaune" ? "jaune" : ""} ${b.place === "centre" ? "centre" : ""}">${esc(b.texte)}${FLECHE_SVG}</div>`;
   }
   return "";
 }
-const blocVide = b => b.type === "banniere" ? !Object.hasOwn(BANNIERES,b.visuel) : b.type !== "espace" && !TYPES[b.type].champs.some(([k,,ty]) => (ty === "text" || ty === "area" || ty === "picto" || ty === "photo") && String(b[k]||"").trim());
+const blocVide = b => b.type === "banniere" ? !Object.hasOwn(BANNIERES,b.visuel) : b.type !== "espace" && !TYPES[b.type].champs.some(([k,,ty]) => (ty === "text" || ty === "area" || ty === "picto" || ty === "photo" || ty === "image") && String(b[k]||"").trim());
 
 /* ---------- État ---------- */
 const DOCS_KEY = "chrono:docs", CUR_KEY = "chrono:current";
@@ -667,6 +722,8 @@ function champ(b, [k, lab, ty, def]){
   const v = b[k] ?? (b.type === "banniere" ? BANNIERES[b.visuel]?.[k] : "") ?? "";
   if(ty === "area") return `<label class="f">${lab}</label><textarea data-b="${k}" rows="${Math.min(8, Math.max(2, String(v).split("\n").length + 1))}">${esc(v)}</textarea>`;
   if(ty === "select") return `<label class="f">${lab}</label><select data-b="${k}">${Object.entries(def).map(([o,l]) => `<option value="${o}" ${o===v?"selected":""}>${l}</option>`).join("")}</select>`;
+  if(ty === "image") return `<label class="f">${lab}</label><div class="illus">${Object.entries(ILLUS).map(([k2,l]) => `<button data-pk="${k}" data-pv="${k2}" title="${esc(l)}" class="${v===k2?"on":""}"><img src="${IMG}illustrations/${k2}.png" alt=""></button>`).join("")}${/^data:image\//.test(v||"") ? `<button class="on" data-pk="${k}" data-pv="${esc(v)}"><img src="${esc(v)}" alt=""></button>` : ""}</div>
+    <div class="phf" style="margin-top:6px"><label class="mini">Importer une illustration<input type="file" accept="image/png,image/webp,image/jpeg" data-image="${k}" hidden></label>${v ? `<button class="mini" data-pk="${k}" data-pv="">Retirer</button>` : ""}</div><p class="hint">PNG sans fond conseillé, dans le style des illustrations UNAC.</p>`;
   if(ty === "photo") return `<label class="f">${lab}</label><div class="phf">${v ? `<img src="${esc(v)}" alt="">` : ""}<label class="mini">${v ? "Changer la photo" : "Choisir une photo"}<input type="file" accept="image/*" data-photo="${k}" hidden></label>${v ? `<button class="mini" data-pk="${k}" data-pv="">Retirer</button>` : ""}</div>`;
   if(ty === "picto") return `<label class="f">${lab}</label><div class="pictos"><button data-pk="${k}" data-pv="" class="${!v?"on":""}">aucun</button>${Object.entries(PICTOS).map(([p,l]) => `<button data-pk="${k}" data-pv="${p}" title="${l}" class="${v===p?"on":""}" style="background-image:url(${IMG}pictos/${p}.png)"></button>`).join("")}</div>
     <div class="picto-import">${pictoImporte(v) ? imagePicto(v) : ""}<label class="mini">
@@ -747,6 +804,14 @@ $("#form").addEventListener("change", e => {
   im.onload = () => { const n = 640, c = document.createElement("canvas"), sz = Math.min(im.width, im.height); c.width = c.height = n;
     c.getContext("2d").drawImage(im, (im.width - sz)/2, (im.height - sz)/2, sz, sz, 0, 0, n, n);
     b[k] = c.toDataURL("image/jpeg", .85); URL.revokeObjectURL(im.src); changed(true); };
+  im.src = URL.createObjectURL(f);
+});
+$("#form").addEventListener("change", e => {
+  const t = e.target; if(!t.dataset.image || !t.files[0]) return;
+  const f = t.files[0], b = blocOf(t), k = t.dataset.image, im = new Image();
+  im.onload = () => { const sc = Math.min(1, 1000 / Math.max(im.width, im.height)), c = document.createElement("canvas"); c.width = Math.round(im.width*sc); c.height = Math.round(im.height*sc);
+    c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+    b[k] = c.toDataURL(/png|webp/i.test(f.type) ? "image/png" : "image/jpeg", .88); URL.revokeObjectURL(im.src); changed(true); };
   im.src = URL.createObjectURL(f);
 });
 $("#form").addEventListener("input", e => {
