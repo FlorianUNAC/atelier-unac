@@ -8,6 +8,17 @@
   src: url("../commun/polices/x2.woff2") format("woff2");
   font-weight: 700;
 }
+/* Novotype is supplied by the operating system. No font file is served. */
+@font-face {
+  font-family: "Novotype locale";
+  src: local("Novotype Regular"), local("Novotype-Regular");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Novotype locale";
+  src: local("Novotype Medium"), local("Novotype-Medium");
+  font-weight: 700;
+}
 :root {
   --bordeaux: #a83362;
   --encre: #27171f;
@@ -55,6 +66,7 @@ button[type="button"] { background: #fff; color: #7b2449; }
   text-transform: uppercase;
   letter-spacing: .035em;
 }
+.entete strong, .pied address { font-family: "Novotype locale", T1, system-ui, sans-serif; }
 .entete img { width: 8.2cqw; height: auto; }
 .pagination { flex: 1; width: 100%; border-spacing: 0; }
 .lettre { vertical-align: top; padding: 5.5cqw 7.1cqw 4.5cqw; font-size: max(10px, 1.75cqw); line-height: 1.4; }
