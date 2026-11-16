@@ -304,14 +304,13 @@
   .qrb .qt p b{font-size:inherit}
   .illu{display:flex;justify-content:center}
   /* illustration en débord bas-droite et bandeau gris d'action : hors du flux, posés sur la page */
-  .page .zone > .illu.debord{position:absolute;right:-24px;bottom:-6px;z-index:2;display:block;pointer-events:none}
-  .illu.debord img{width:660px;max-width:none}.illu.debord.petite img{width:580px}.illu.debord.grande img{width:780px}.illu.debord.pleine img{width:900px}
+  .page .zone > .illu.debord{position:absolute;right:-150px;bottom:-140px;z-index:2;display:block;pointer-events:none}
+  .illu.debord img{width:860px;max-width:none}.illu.debord.petite img{width:740px}.illu.debord.grande img{width:980px}.illu.debord.pleine img{width:1100px}
   .page .zone > .bandeau-bas{position:absolute;left:0;bottom:var(--bb,44px);width:74%;z-index:1;background:#EBEBEB;color:#2B1225;display:flex;align-items:center;gap:18px;padding:34px 30px 34px 60px;font-size:37px;white-space:nowrap;font-weight:700;line-height:1.15}
   .bandeau-bas span{flex:none}.bandeau-bas svg{width:40px;height:40px;flex:none}
   .page.story .zone > .bandeau-bas{--bb:270px}
   .page.story .logo{top:250px}
-  .page.story .zone > .illu.debord{bottom:236px}
-  .page.story .zone > .bandeau-bas{--bb:300px}
+  .page.story .zone > .bandeau-bas{--bb:300px;font-size:33px;padding-left:50px}
   .page.story .zone{--pt:560px;--pb:270px}
   .illu.gauche{justify-content:flex-start}.illu.droite{justify-content:flex-end}
   .illu img{display:block;width:calc(var(--k)*620px);max-width:100%;height:auto}
