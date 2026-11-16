@@ -103,6 +103,7 @@ const effacerDessin = document.querySelector("#effacer-dessin");
 const epaisseur = 5;
 let pointeurActif = null;
 let dernierPoint;
+let finCourbe;
 let limites;
 
 function effacerTrace() {
@@ -113,18 +114,24 @@ function effacerTrace() {
   effacerDessin.disabled = true;
 }
 
-function tracerPoint(event) {
+function tracerPoint(event, terminer = false) {
   const cadre = zoneDessin.getBoundingClientRect();
   const x = Math.max(0, Math.min(zoneDessin.width, (event.clientX - cadre.left) * zoneDessin.width / cadre.width));
   const y = Math.max(0, Math.min(zoneDessin.height, (event.clientY - cadre.top) * zoneDessin.height / cadre.height));
   trace.beginPath();
   if (dernierPoint) {
-    trace.moveTo(dernierPoint.x, dernierPoint.y);
-    trace.lineTo(x, y);
+    const fin = terminer ? {x, y} : {
+      x: (dernierPoint.x + x) / 2,
+      y: (dernierPoint.y + y) / 2
+    };
+    trace.moveTo(finCourbe.x, finCourbe.y);
+    trace.quadraticCurveTo(dernierPoint.x, dernierPoint.y, fin.x, fin.y);
     trace.stroke();
+    finCourbe = fin;
   } else {
     trace.arc(x, y, epaisseur / 2, 0, Math.PI * 2);
     trace.fill();
+    finCourbe = {x, y};
   }
   dernierPoint = {x, y};
   limites = limites ? {
@@ -150,7 +157,7 @@ zoneDessin.addEventListener("pointermove", event => {
   if (event.pointerId === pointeurActif) tracerPoint(event);
 });
 zoneDessin.addEventListener("pointerup", event => {
-  if (event.pointerId === pointeurActif) tracerPoint(event);
+  if (event.pointerId === pointeurActif) tracerPoint(event, true);
 });
 zoneDessin.addEventListener("lostpointercapture", event => {
   if (event.pointerId === pointeurActif) pointeurActif = null;
