@@ -85,6 +85,13 @@
   /* Fenêtres (historique, images) */
   .modal{position:fixed;inset:0;background:rgba(30,6,20,.55);display:none;align-items:center;justify-content:center;z-index:80;padding:16px}
   .modal.on{display:flex}
+  .galerie{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+  .galerie button{border:1px solid var(--ui-line);background:#fff;border-radius:12px;padding:8px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:8px}
+  .galerie button:hover{border-color:#c8487f;box-shadow:0 6px 18px rgba(120,20,70,.15)}
+  .galerie .th{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px;background:#f3e8ee;display:flex;align-items:center;justify-content:center}
+  .galerie .th .pwrap{margin:0;position:relative;flex:none}
+  .galerie button > b{font-size:14px;color:var(--ui-ink)}
+  .galerie button > small{font-size:12px;color:var(--ui-muted);line-height:1.35}
   .mbox{background:#fff;border-radius:16px;width:min(860px,100%);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.35)}
   .mhead{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--ui-line)}
   .mhead h3{font-size:16px}
@@ -137,6 +144,7 @@
   .page.sansavion .zone{--pt:300px}
   .page:not(.sansavion):not(.titre1) .zone{--pt:400px}
   .page.mesure .zone{justify-content:flex-start}
+  .page .zone > *{flex-shrink:0}
   .page.logobas .zone{--pb:70px}
   .page.logobas .sign{min-height:250px;display:flex;align-items:flex-end;padding-right:290px}
   .page.titre1 .zone{--pt:40px}
@@ -168,6 +176,61 @@
   .concl p{margin:0;font-size:calc(var(--k)*56px);line-height:1.38;font-weight:700}
   .sign{margin:0;font-size:calc(var(--k)*52px);font-weight:700;padding-right:300px}
   .esp{height:calc(var(--k)*40px)}
+
+  /* ===== Blocs ajoutés : étiquette, alerte, question, date, avant/après, étapes, citation, bouton ===== */
+  .etq{align-self:flex-start;display:inline-flex;align-items:center;gap:calc(var(--k)*16px);border-radius:999px;padding:calc(var(--k)*16px) calc(var(--k)*34px);font-size:calc(var(--k)*34px);font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1}
+  .etq.blanc{background:#fff;color:var(--bg)}.etq.jaune{background:#FFD23F;color:#3A1530}.etq.rouge{background:#E63B2E;color:#fff}.etq.contour{border:calc(var(--k)*4px) solid #fff;color:#fff}
+  .etq i{font-style:normal;width:calc(var(--k)*18px);height:calc(var(--k)*18px);border-radius:50%;background:currentColor;animation:none}
+  .alr{display:flex;gap:calc(var(--k)*40px);align-items:flex-start;background:#FFD23F;color:#2B1225;border-radius:calc(var(--k)*34px);padding:calc(var(--k)*46px) calc(var(--k)*54px);margin:0 -40px 0 -60px;box-shadow:0 18px 40px rgba(0,0,0,.22)}
+  .alr svg{flex:none;width:calc(var(--k)*130px);height:calc(var(--k)*130px)}
+  .alr h3{margin:0 0 calc(var(--k)*10px);font-size:calc(var(--k)*50px);line-height:1.1;font-weight:700}
+  .alr p{margin:0;font-size:calc(var(--k)*42px);line-height:1.3}
+  .alr b{font-weight:700}
+  .qr .q{margin:0;font-size:calc(var(--k)*64px);line-height:1.15;font-weight:700}
+  .qr .q::before{content:"?";display:inline-flex;align-items:center;justify-content:center;width:calc(var(--k)*92px);height:calc(var(--k)*92px);border-radius:50%;background:#fff;color:var(--bg);font-size:calc(var(--k)*64px);margin-right:calc(var(--k)*26px);vertical-align:calc(var(--k)*-8px)}
+  .qr .r{margin:calc(var(--k)*44px) -40px 0 -60px;background:#fff;color:#2B2B30;border-radius:calc(var(--k)*38px);padding:calc(var(--k)*50px) calc(var(--k)*60px);font-size:calc(var(--k)*44px);line-height:1.35;box-shadow:0 18px 40px rgba(40,0,20,.18);position:relative}
+  .qr .r::before{content:"";position:absolute;left:calc(var(--k)*80px);top:calc(var(--k)*-26px);border:calc(var(--k)*28px) solid transparent;border-top:0;border-bottom-color:#fff}
+  .qr .r b{font-weight:700;color:var(--bg)}
+  .dat{display:flex;align-items:center;gap:calc(var(--k)*56px)}
+  .dat .cal{flex:none;width:calc(var(--k)*300px);background:#fff;color:var(--bg);border-radius:calc(var(--k)*38px);overflow:hidden;text-align:center;box-shadow:0 18px 40px rgba(40,0,20,.25)}
+  .dat .cal .j{background:#2B1225;color:#fff;font-size:calc(var(--k)*40px);font-weight:700;letter-spacing:.12em;padding:calc(var(--k)*16px) 0;text-transform:uppercase}
+  .dat .cal .n{font-size:calc(var(--k)*150px);font-weight:700;line-height:1;padding-top:calc(var(--k)*20px)}
+  .dat .cal .m{font-size:calc(var(--k)*42px);font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding-bottom:calc(var(--k)*24px)}
+  .dat .inf{flex:1;display:flex;flex-direction:column;gap:calc(var(--k)*20px)}
+  .dat .inf div{font-size:calc(var(--k)*46px);line-height:1.25;display:flex;gap:calc(var(--k)*22px);align-items:baseline}
+  .dat .inf div::before{content:"";flex:none;width:calc(var(--k)*20px);height:calc(var(--k)*20px);border-radius:50%;background:#FFD23F;transform:translateY(calc(var(--k)*-6px))}
+  .dat .inf b{font-weight:700}
+  .ap{display:flex;gap:calc(var(--k)*30px);margin:0 -40px 0 -60px;align-items:stretch}
+  .ap > div{flex:1;border-radius:calc(var(--k)*38px);padding:calc(var(--k)*44px) calc(var(--k)*46px);display:flex;flex-direction:column;gap:calc(var(--k)*20px)}
+  .ap .av{background:rgba(0,0,0,.22);color:rgba(255,255,255,.88)}
+  .ap .apr{background:#fff;color:#2B2B30;box-shadow:0 18px 40px rgba(40,0,20,.2)}
+  .ap .lb{font-size:calc(var(--k)*34px);font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:calc(var(--k)*14px)}
+  .ap .av .lb::before{content:"✕";display:inline-flex;align-items:center;justify-content:center;width:calc(var(--k)*54px);height:calc(var(--k)*54px);border-radius:50%;background:#D43B2E;color:#fff;font-size:calc(var(--k)*30px)}
+  .ap .apr .lb{color:var(--bg)}
+  .ap .apr .lb::before{content:"✓";display:inline-flex;align-items:center;justify-content:center;width:calc(var(--k)*54px);height:calc(var(--k)*54px);border-radius:50%;background:#3E8C2A;color:#fff;font-size:calc(var(--k)*32px)}
+  .ap p{margin:0;font-size:calc(var(--k)*42px);line-height:1.3}
+  .ap .av p{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.45);text-decoration-thickness:calc(var(--k)*3px)}
+  .ap b{font-weight:700}
+  .eta{display:flex;flex-direction:column;gap:calc(var(--k)*30px);margin:0;padding:0;list-style:none}
+  .eta li{display:flex;align-items:center;gap:calc(var(--k)*36px);font-size:calc(var(--k)*46px);line-height:1.25}
+  .eta li > span{flex:none;width:calc(var(--k)*96px);height:calc(var(--k)*96px);border-radius:50%;background:#fff;color:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:calc(var(--k)*50px)}
+  .eta.coches li > span{background:#3E8C2A;color:#fff}
+  .eta.fleches li > span{background:transparent;border:calc(var(--k)*5px) solid #fff;color:#fff}
+  .eta b{font-weight:700}
+  .eta.relies li{position:relative}
+  .eta.relies li:not(:last-child)::after{content:"";position:absolute;left:calc(var(--k)*46px);top:calc(var(--k)*96px);height:calc(var(--k)*30px);width:calc(var(--k)*4px);background:rgba(255,255,255,.55)}
+  .cit{position:relative;padding-top:calc(var(--k)*150px)}
+  .cit::before{content:"“";position:absolute;left:calc(var(--k)*-14px);top:calc(var(--k)*-60px);font-size:calc(var(--k)*360px);line-height:1;font-weight:700;color:rgba(255,255,255,.28);font-family:Georgia,serif}
+  .cit p{margin:0;font-size:calc(var(--k)*62px);line-height:1.22;font-weight:700}
+  .cit p b{color:#FFD23F}
+  .cit .au{margin-top:calc(var(--k)*40px);display:flex;align-items:center;gap:calc(var(--k)*22px);font-size:calc(var(--k)*36px);font-weight:700;letter-spacing:.04em;opacity:.9}
+  .cit .au::before{content:"";width:calc(var(--k)*70px);height:calc(var(--k)*5px);background:#fff}
+  .cta{align-self:flex-start;display:inline-flex;align-items:center;gap:calc(var(--k)*24px);background:#fff;color:var(--bg);border-radius:999px;padding:calc(var(--k)*30px) calc(var(--k)*54px);font-size:calc(var(--k)*44px);font-weight:700;box-shadow:0 14px 34px rgba(0,0,0,.25)}
+  .cta.jaune{background:#FFD23F;color:#2B1225}
+  .cta.centre{align-self:center}
+  .cta svg{width:calc(var(--k)*44px);height:calc(var(--k)*44px)}
+  .page.flash::after{content:"";position:absolute;left:0;right:0;top:0;height:28px;background:repeating-linear-gradient(-45deg,#FFD23F 0 34px,#2B1225 34px 68px)}
+  .page.flash.logobas::after{top:auto;bottom:0}
 
   .pwrap{margin:0 auto 22px}
   @media screen and (max-width:900px){
@@ -204,8 +267,7 @@
         <button id="aSave"><div>Enregistrer le brouillon (.json)</div></button>
         <button id="aOpen"><div>Ouvrir un brouillon (.json)</div></button>
         <hr>
-        <button data-modele="chiffres"><div>Modèle « chiffres clés »<small>Résultats T3, pastilles, bandeau de conclusion.</small></div></button>
-        <button data-modele="victoire"><div>Modèle « victoire UNAC »<small>Grand titre, pictos, carte blanche, signature.</small></div></button>
+        <button id="aModeles"><div>Partir d’un modèle…<small>10 modèles selon l’objectif de communication.</small></div></button>
       </div>
     </div>
     <button class="btn pdf" id="imgBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span class="lg">Télécharger les&nbsp;</span>images</button>
@@ -219,6 +281,10 @@
 <input type="file" id="fileJson" accept="application/json,.json" hidden>
 <div class="toast" id="toast"></div>
 
+<div class="modal" id="modModal"><div class="mbox" role="dialog" aria-modal="true">
+  <div class="mhead"><h3>Choisir un modèle</h3><button class="mclose" data-x aria-label="Fermer">×</button></div>
+  <div class="mbody"><div class="galerie" id="galerie"></div></div>
+</div></div>
 <div class="modal" id="histModal"><div class="mbox" role="dialog" aria-modal="true">
   <div class="mhead"><h3>Historique des posts</h3><button class="mclose" data-x aria-label="Fermer">×</button></div>
   <div class="mbody" id="hBody"></div>
@@ -240,8 +306,59 @@ const MODELES = {
     {type:"picto", picto:"refus-vol", texte:"Si vous refusez un vol,\n**vous n'avez plus à monter au terrain pointer**"},
     {type:"picto", picto:"telephone", texte:"Désormais, vous pouvez **appeler** le cadre de permanence pour activer le MCPT4 **jusqu’à J-2 18h**"},
     {type:"carte", p1:"calendrier", t1:"**Pas de déstabilisation**\ndu planning", p2:"pieces", t2:"**Pas de retrait**\nde trentième"},
-    {type:"signature", texte:"Tous les jours, l’UNAC défend les PNC"}]}]}
+    {type:"signature", texte:"Tous les jours, l’UNAC défend les PNC"}]}]},
+  alerte: {nom:"Alerte · fatigue", format:"portrait", theme:"nuit", avion:false, logo:"haut", flash:true, slides:[{blocs:[
+    {type:"etiquette", texte:"Alerte", style:"rouge"},
+    {type:"accroche", texte:"Rotations à rallonge, nuits écourtées…", taille:"grand"},
+    {type:"alerte", titre:"Fatigué·e ? Ne prenez aucun risque.", texte:"La sécurité des vols passe avant tout. **Si vous ne vous sentez pas en état de voler, déclarez-vous inapte** : c’est votre responsabilité de PNC."},
+    {type:"texte", texte:"Une pression, un refus, une remarque déplacée ? **Ne restez pas seul·e : prévenez immédiatement vos délégués UNAC.**", taille:"normal"},
+    {type:"bouton", texte:"Contactez-nous sur l’appli UNAC", style:"jaune", place:"gauche"}]}]},
+  saviez: {nom:"Le saviez-vous · hébergement", format:"carre", theme:"prune", avion:false, logo:"haut", slides:[{blocs:[
+    {type:"etiquette", texte:"Le saviez-vous ?", style:"blanc"},
+    {type:"question", question:"Chambre bruyante, hôtel non conforme en escale : à qui le signaler ?", reponse:"À la **commission hébergement UNAC**. Chaque signalement envoyé depuis l’appli est étudié et **remonté à la Direction** lors des commissions."},
+    {type:"signature", texte:"L’UNAC, à vos côtés à chaque escale"}]}]},
+  mobilisation: {nom:"Mobilisation · story", format:"story", theme:"magenta", avion:false, logo:"haut", slides:[{blocs:[
+    {type:"etiquette", texte:"Mobilisation", style:"jaune"},
+    {type:"titre", titre:"TOUS", sous:"concernés, tous mobilisés"},
+    {type:"accroche", texte:"Nos temps de repos ne sont pas une variable d’ajustement.", taille:"grand"},
+    {type:"etapes", texte:"**Informez-vous** sur le projet de la Direction\n**Parlez-en** à vos collègues en vol\n**Signez** la pétition UNAC\n**Rejoignez-nous** à la Cité PN", style:"coches"},
+    {type:"bouton", texte:"Je signe la pétition", style:"jaune", place:"centre"},
+    {type:"signature", texte:"Ensemble, on est plus forts"}]}]},
+  evenement: {nom:"Permanence · Cité PN", format:"portrait", theme:"bordeaux", avion:true, logo:"haut", slides:[{blocs:[
+    {type:"etiquette", texte:"Permanence", style:"contour"},
+    {type:"accroche", texte:"Vos délégués UNAC vous reçoivent", taille:"grand"},
+    {type:"date", jour:"Jeu", num:"26", mois:"Nov", infos:"**9h – 17h**, sans rendez-vous\n**Cité PN**, local UNAC\nPlanning, rémunération, hébergement : **toutes vos questions**"},
+    {type:"bouton", texte:"Passez nous voir !", style:"blanc", place:"gauche"}]}]},
+  avantapres: {nom:"Avant / Après · MCPT4", format:"carre", theme:"prune", avion:false, logo:"bas", slides:[{blocs:[
+    {type:"titre", titre:"MCPT4", sous:"Ce qui change grâce à l’UNAC"},
+    {type:"avantapres", l1:"Avant", t1:"Refus de vol = **monter au terrain** pour pointer", l2:"Maintenant", t2:"Un **simple appel** au cadre de permanence, **jusqu’à J-2 18h**"},
+    {type:"signature", texte:"Tous les jours, l’UNAC défend les PNC"}]}]},
+  tuto: {nom:"Mode d’emploi · signalement", format:"portrait", theme:"framboise", avion:false, logo:"haut", slides:[{blocs:[
+    {type:"etiquette", texte:"Mode d’emploi", style:"blanc"},
+    {type:"accroche", texte:"Signaler un problème d’hébergement en **3 étapes**", taille:"grand"},
+    {type:"etapes", texte:"Ouvrez l’**appli UNAC**, rubrique hébergement\nIndiquez l’**escale**, l’hôtel et la date\nDécrivez le problème, **ajoutez une photo**", style:"relies"},
+    {type:"picto", picto:"appli", texte:"Vos délégués traitent le signalement et vous **tiennent informé·e**"},
+    {type:"bouton", texte:"J’ouvre l’appli UNAC", style:"blanc", place:"gauche"}]}]},
+  citation: {nom:"Prise de position", format:"carre", theme:"nuit", avion:false, logo:"haut", slides:[{blocs:[
+    {type:"citation", texte:"Les PNC ont déjà beaucoup donné. **Nous ne signerons pas** un accord qui dégrade leurs conditions de travail.", auteur:"La section UNAC Air France"}]}]},
+  flash: {nom:"Info flash · plannings", format:"carre", theme:"magenta", avion:false, logo:"haut", flash:true, slides:[{blocs:[
+    {type:"etiquette", texte:"Info flash", style:"jaune"},
+    {type:"accroche", texte:"Plannings de décembre publiés", taille:"grand"},
+    {type:"picto", picto:"calendrier", texte:"**Vérifiez dès maintenant** vos jours OFF, vos réserves et vos rotations"},
+    {type:"bouton", texte:"Une anomalie ? Écrivez-nous", style:"blanc", place:"gauche"}]}]}
 };
+const MODELES_INFO = [
+  ["victoire","Victoire / acquis","Valoriser un résultat obtenu par l’UNAC."],
+  ["chiffres","Décryptage chiffré","Mettre des chiffres en perspective et donner l’analyse UNAC."],
+  ["alerte","Alerte / vigilance","Mettre en garde, bandeau rayé, encadré jaune."],
+  ["saviez","Le saviez-vous ?","Rappeler un droit ou un service, question / réponse."],
+  ["mobilisation","Mobilisation","Appeler à agir : étapes cochées et bouton (format story)."],
+  ["evenement","Événement / permanence","Annoncer une date, une heure, un lieu."],
+  ["avantapres","Avant / Après","Montrer concrètement ce qui change."],
+  ["tuto","Mode d’emploi","Expliquer une démarche en étapes numérotées."],
+  ["citation","Prise de position","Une citation forte, sobre, sur fond sombre."],
+  ["flash","Info flash","Une info courte et urgente à relayer vite."]
+];
 
 "use strict";
 const $ = s => document.querySelector(s);
@@ -251,7 +368,7 @@ const riche = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\^(\w+
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("on"), 2600); }
 const IMG = "../commun/img/";
 const FORMATS = {carre:{nom:"Carré 1:1", w:1080, h:1080}, portrait:{nom:"Portrait 4:5", w:1080, h:1350}, story:{nom:"Story 9:16", w:1080, h:1920}};
-const THEMES = {prune:{nom:"Prune", bg:"#A54067"}, framboise:{nom:"Framboise", bg:"#CF3473"}, bordeaux:{nom:"Bordeaux", bg:"#6E1F44"}};
+const THEMES = {prune:{nom:"Prune", bg:"#A54067"}, framboise:{nom:"Framboise", bg:"#CF3473"}, bordeaux:{nom:"Bordeaux", bg:"#6E1F44"}, magenta:{nom:"Magenta", bg:"#C2286A"}, nuit:{nom:"Nuit", bg:"#3A1530"}};
 const PICTOS = {"refus-vol":"Refus de vol", telephone:"Téléphone", calendrier:"Planning", pieces:"Rémunération", appli:"Appli", factures:"Documents", lit:"Repos / lit", etranger:"Étranger", fonds:"Santé / fonds", reclamation:"Réclamation", elus:"Élu.es"};
 const AIDE = "<code>**gras**</code> · <code>3^e</code> pour l'exposant · retour à la ligne conservé";
 
@@ -264,8 +381,19 @@ const TYPES = {
   carte:   {nom:"Carte blanche (2 points)", champs:[["p1","Point 1 : picto","picto"],["t1","Point 1 : texte","area"],["p2","Point 2 : picto","picto"],["t2","Point 2 : texte","area"]]},
   conclusion:{nom:"Bandeau de conclusion (gris)", champs:[["texte","Texte","area"]]},
   signature:{nom:"Signature en bas", champs:[["texte","Texte","text","Tous les jours, l'UNAC défend les PNC"]]},
+  etiquette:{nom:"Étiquette (ALERTE, INFO FLASH…)", champs:[["texte","Texte","text","Info flash"],["style","Couleur","select",{blanc:"Blanche",jaune:"Jaune",rouge:"Rouge",contour:"Contour blanc"}]]},
+  alerte:  {nom:"Encadré d'alerte (jaune)", champs:[["titre","Titre","text","Attention"],["texte","Texte","area"]]},
+  question:{nom:"Question / réponse (Le saviez-vous ?)", champs:[["question","Question","area"],["reponse","Réponse (bulle blanche)","area"]]},
+  date:    {nom:"Date d'événement + infos", champs:[["jour","Jour (ex. JEU)","text"],["num","Numéro du jour","text"],["mois","Mois (ex. NOV)","text"],["infos","Infos (une par ligne : heure, lieu…)","area"]]},
+  avantapres:{nom:"Avant / Après", champs:[["l1","Étiquette gauche","text","Avant"],["t1","Texte gauche","area"],["l2","Étiquette droite","text","Maintenant"],["t2","Texte droite","area"]]},
+  etapes:  {nom:"Liste d'étapes", champs:[["texte","Étapes (une par ligne)","area"],["style","Repères","select",{numeros:"Numéros 1, 2, 3",relies:"Numéros reliés",coches:"Coches vertes ✓",fleches:"Flèches →"}]]},
+  citation:{nom:"Citation / prise de position", champs:[["texte","Citation","area"],["auteur","Auteur","text","La section UNAC Air France"]]},
+  bouton:  {nom:"Bouton d'appel à l'action", champs:[["texte","Texte du bouton","text"],["style","Couleur","select",{blanc:"Blanc",jaune:"Jaune"}],["place","Position","select",{gauche:"À gauche",centre:"Centré"}]]},
   espace:  {nom:"Espace", champs:[]}
 };
+const ALERTE_SVG = `<svg viewBox="0 0 100 100"><path d="M50 6 96 90H4Z" fill="#2B1225"/><path d="M50 22 83 82H17Z" fill="#FFD23F"/><rect x="45" y="40" width="10" height="24" rx="4" fill="#2B1225"/><circle cx="50" cy="72" r="5.5" fill="#2B1225"/></svg>`;
+const FLECHE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>`;
+const lignes = t => String(t||"").split("\n").map(x => x.trim()).filter(Boolean);
 function blocHTML(b){
   switch(b.type){
     case "titre": return `<div class="gt"><div class="g" aria-hidden="true">${esc(b.titre)}</div><h1>${esc(b.titre)}</h1>${b.sous ? `<p>${riche(b.sous)}</p>` : ""}</div>`;
@@ -277,6 +405,14 @@ function blocHTML(b){
     case "conclusion": return `<div class="concl"><p>${riche(b.texte)}</p></div>`;
     case "signature": return `<p class="sign">${riche(b.texte)}</p>`;
     case "espace": return `<div class="esp"></div>`;
+    case "etiquette": return `<div class="etq ${esc(b.style||"blanc")}">${b.style === "rouge" || b.style === "jaune" ? "<i></i>" : ""}${esc(b.texte)}</div>`;
+    case "alerte": return `<div class="alr">${ALERTE_SVG}<div>${b.titre ? `<h3>${riche(b.titre)}</h3>` : ""}<p>${riche(b.texte)}</p></div></div>`;
+    case "question": return `<div class="qr"><p class="q">${riche(b.question)}</p>${(b.reponse||"").trim() ? `<div class="r">${riche(b.reponse)}</div>` : ""}</div>`;
+    case "date": return `<div class="dat"><div class="cal"><div class="j">${esc(b.jour)}</div><div class="n">${esc(b.num)}</div><div class="m">${esc(b.mois)}</div></div><div class="inf">${lignes(b.infos).map(l => `<div><span>${riche(l)}</span></div>`).join("")}</div></div>`;
+    case "avantapres": return `<div class="ap"><div class="av"><div class="lb">${esc(b.l1)}</div><p>${riche(b.t1)}</p></div><div class="apr"><div class="lb">${esc(b.l2)}</div><p>${riche(b.t2)}</p></div></div>`;
+    case "etapes": { const st = b.style || "numeros"; return `<ol class="eta ${st}">${lignes(b.texte).map((l,i) => `<li><span>${st === "coches" ? "✓" : st === "fleches" ? FLECHE_SVG : i+1}</span><div>${riche(l)}</div></li>`).join("")}</ol>`; }
+    case "citation": return `<div class="cit"><p>${riche(b.texte)}</p>${b.auteur ? `<div class="au">${esc(b.auteur)}</div>` : ""}</div>`;
+    case "bouton": return `<div class="cta ${b.style === "jaune" ? "jaune" : ""} ${b.place === "centre" ? "centre" : ""}">${esc(b.texte)}${FLECHE_SVG}</div>`;
   }
   return "";
 }
@@ -315,7 +451,8 @@ function renderForm(){
     <label class="f">Format</label><div class="seg2">${Object.entries(FORMATS).map(([k,o]) => `<button data-set="format" data-v="${k}" class="${S.format===k?"on":""}">${o.nom}</button>`).join("")}</div>
     <label class="f">Couleur de fond</label><div class="seg2">${Object.entries(THEMES).map(([k,o]) => `<button data-set="theme" data-v="${k}" class="${S.theme===k?"on":""}"><span class="sw" style="background:${o.bg}"></span>${o.nom}</button>`).join("")}</div>
     <label class="f">Logo UNAC</label><div class="seg2"><button data-set="logo" data-v="haut" class="${S.logo==="haut"?"on":""}">En haut à droite</button><button data-set="logo" data-v="bas" class="${S.logo==="bas"?"on":""}">En bas à droite</button></div>
-    <label class="chk" style="margin-top:10px"><input type="checkbox" data-k="avion" ${S.avion?"checked":""}> Nez d'avion en haut à gauche</label></div>`;
+    <label class="chk" style="margin-top:10px"><input type="checkbox" data-k="avion" ${S.avion?"checked":""}> Nez d'avion en haut à gauche</label>
+    <label class="chk"><input type="checkbox" data-k="flash" ${S.flash?"checked":""}> Bandeau rayé « urgence » (jaune et noir)</label></div>`;
   S.slides.forEach((s, si) => {
     h += `<div class="card slide-card" data-s="${s.id}"><div class="sh"><b>${S.slides.length > 1 ? `Visuel ${si+1} / ${S.slides.length}` : "Contenu du visuel"}</b>${si>0?`<button class="mini" data-a="sup">↑</button>`:""}${si<S.slides.length-1?`<button class="mini" data-a="sdown">↓</button>`:""}${S.slides.length>1?`<button class="mini danger" data-a="sdel">Supprimer</button>`:""}</div>`;
     s.blocs.forEach((b, bi) => {
@@ -367,7 +504,7 @@ function slideNode(s){
   const p = document.createElement("section");
   const titreEnTete = blocs[0] && blocs[0].type === "titre";
   const finConcl = blocs.length && blocs[blocs.length-1].type === "conclusion";
-  p.className = "page" + (S.avion && !titreEnTete ? "" : " sansavion") + (titreEnTete ? " titre1" : "") + (S.logo === "bas" ? " logobas" : "");
+  p.className = "page" + (S.avion && !titreEnTete ? "" : " sansavion") + (titreEnTete ? " titre1" : "") + (S.logo === "bas" ? " logobas" : "") + (S.flash ? " flash" : "");
   p.style.cssText = `width:${F.w}px;height:${F.h}px;--bg:${T.bg}` + (finConcl ? ";--pb:110px" : "") + (titreEnTete ? ";--just:space-between" : "");
   p.innerHTML = (S.avion && !titreEnTete ? `<img class="avion" src="${IMG}avion-nez.png" alt="">` : "") + `<img class="logo" src="${IMG}logo-unac-blanc.png" alt="UNAC">`
     + `<div class="zone">${blocs.map(blocHTML).join("")}</div>`;
@@ -467,7 +604,24 @@ $("#aShare").addEventListener("click", async () => { menu.classList.remove("open
 $("#aSave").addEventListener("click", () => { menu.classList.remove("open"); const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(exportable(), null, 1)], {type:"application/json"})); a.download = window.nomExport() + ".json"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); });
 $("#aOpen").addEventListener("click", () => { menu.classList.remove("open"); $("#fileJson").click(); });
 $("#fileJson").addEventListener("change", async e => { const f = e.target.files[0]; e.target.value = ""; if(!f) return; try{ recevoir(JSON.parse(await f.text())); }catch(err){ toast("Fichier illisible"); } });
-document.querySelectorAll("[data-modele]").forEach(b => b.addEventListener("click", () => { menu.classList.remove("open"); recevoir(MODELES[b.dataset.modele], "Modèle ouvert dans un nouveau brouillon"); }));
+const MM = $("#modModal");
+MM.addEventListener("click", e => { if(e.target === MM || e.target.hasAttribute("data-x")) MM.classList.remove("on"); const g = e.target.closest("[data-modele]"); if(g){ MM.classList.remove("on"); recevoir(MODELES[g.dataset.modele], "Modèle ouvert dans un nouveau brouillon"); } });
+function apercuModele(cle){
+  const garde = S; S = Object.assign(blank(), JSON.parse(JSON.stringify(MODELES[cle])));
+  const w = slideNode(S.slides[0]); S = garde; return w;
+}
+$("#aModeles").addEventListener("click", () => {
+  menu.classList.remove("open");
+  const g = $("#galerie"); g.innerHTML = MODELES_INFO.map(([k,n,d]) => `<button data-modele="${k}"><div class="th"></div><b>${n}</b><small>${d}</small></button>`).join("");
+  MM.classList.add("on");
+  g.querySelectorAll("[data-modele]").forEach(b => {
+    const th = b.querySelector(".th"), w = apercuModele(b.dataset.modele), pg = w.firstChild;
+    th.appendChild(w); const W = parseFloat(pg.style.width), H = parseFloat(pg.style.height), sc = th.clientWidth / Math.max(W, H);
+    w.style.cssText = `width:${W*sc}px;height:${H*sc}px`;
+    const fit = () => { pg.style.transform = "none"; ajuste(pg); pg.style.transform = `scale(${sc})`; }; fit();
+    pg.querySelectorAll("img").forEach(im => { if(!im.complete) im.addEventListener("load", fit, {once:true}); });
+  });
+});
 
 /* ---------- Démarrage ---------- */
 (async function(){
