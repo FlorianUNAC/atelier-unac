@@ -152,7 +152,12 @@
     // Type probable
     let lc = 0, mc = 0;
     list.forEach(e => { const r = R.codes[e.code]; if(!r) return; if(r.types.has("LC") && !r.types.has("MC")) lc++; if(r.types.has("MC") && !r.types.has("LC")) mc++; });
-    const guess = lc === mc ? type : (lc > mc ? "LC" : "MC");
+    let guess = lc === mc ? type : (lc > mc ? "LC" : "MC");
+    if(window.TYPES_SECTION && window.TYPES_SECTION[0] === "FR"){ // HOP! : France ou Europe selon les escales
+      const fr = new Set(Object.keys(((ESCALES.FR||[])[0]||{}).escales || {})); let nf = 0, ne = 0;
+      list.forEach(e => { if(!R.codes[e.code]) return; if(fr.has(e.code)) nf++; else ne++; });
+      guess = nf === ne ? type : (nf > ne ? "FR" : "EU");
+    }
     return {list, preambule: pre.join("\n").trim(), guess, R};
   }
 
@@ -227,7 +232,7 @@
     body.innerHTML = `
       <div class="mbar">
         <div><b>${result.list.length} escale${result.list.length>1?"s":""}</b> détectée${result.list.length>1?"s":""} dans « ${esc(result.source)} »</div>
-        <label>Compte rendu : <select id="impType"><option value="LC" ${t==="LC"?"selected":""}>LC</option><option value="MC" ${t==="MC"?"selected":""}>MC</option></select></label>
+        <label>Compte rendu : <select id="impType">${(window.TYPES_SECTION || ["LC","MC"]).map(x => `<option value="${x}" ${t===x?"selected":""}>${(window.TNOM||{})[x]||x}</option>`).join("")}</select></label>
       </div>
       ${nbExist ? `<div class="mbar"><span>${nbExist} escale${nbExist>1?"s ont":" a"} déjà un texte dans le CR ${t}.</span><label>Dans ce cas : <select id="impMode"><option value="append">ajouter à la suite</option><option value="replace">remplacer</option></select></label></div>` : ""}
       ${result.preambule ? `<div class="pre"><label class="chk"><input type="checkbox" id="impPre"> Utiliser le début des notes (avant la 1re escale) pour « À noter »</label><textarea id="impPreTx" rows="3">${esc(result.preambule)}</textarea></div>` : ""}

@@ -144,6 +144,10 @@
   .hd .t2{position:absolute;left:49px;top:125px;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;opacity:.55}
   .hd .big{position:absolute;left:48px;top:143px;height:38px;display:flex;align-items:flex-start}
   .hd .big img{height:38px;display:block}
+  .hd .logo.hop{height:84px;top:24px}
+  .hd .plane.hop{left:560px;top:62px;width:280px}
+  .hd .big.hopbig{position:absolute;top:146px;height:34px}
+  .hd .big.hopbig img{height:34px}
   .hd .big .gh{display:block;overflow:hidden;height:38px;flex:none}
   .hd .lbl{position:absolute;left:36px;bottom:0;font-size:9.5px;color:rgba(255,255,255,.8);letter-spacing:.06em;background:rgba(255,255,255,.19);border-radius:8px 8px 0 0;padding:6px 12px 4px;line-height:1.1}
   .band{flex:none;background:rgba(255,255,255,.19);margin-top:0;text-align:justify;hyphens:auto;-webkit-hyphens:auto;padding:14px 48px;min-height:70px;font-size:10.5px;line-height:1.45;white-space:pre-wrap}
@@ -375,7 +379,19 @@ function refFor(type){
 }
 
 /* ---------------- État ---------------- */
-let type = localStorage.getItem("crheb:type") || "LC";
+/* ---- Section : Air France (LC / MC) ou HOP! (France / Europe) ---- */
+const HOP = new URLSearchParams(location.search).get("section") === "hop";
+const T1 = HOP ? "FR" : "LC", T2 = HOP ? "EU" : "MC";
+const TNOM = {LC:"LC", MC:"MC", FR:"France", EU:"Europe"}, TLONG = {LC:"long-courrier", MC:"moyen-courrier", FR:"France", EU:"Europe"};
+window.TNOM = TNOM; window.TYPES_SECTION = [T1, T2];
+const PFX = HOP ? "crhebhop:" : "crheb:";
+if(HOP){ const mc = ESCALES.MC || []; ESCALES.FR = mc.filter(z => z.zone === "France"); ESCALES.EU = mc.filter(z => z.zone !== "France"); }
+let type = localStorage.getItem(PFX + "type"); if(![T1, T2].includes(type)) type = T1;
+if(HOP){
+  document.getElementById("seg").innerHTML = `<button data-t="FR">France</button><button data-t="EU">Europe</button>`;
+  const h1 = document.querySelector(".top h1"); if(h1 && h1.firstChild) h1.firstChild.textContent = h1.firstChild.textContent.replace("hébergement", "hébergement HOP!");
+  document.title = document.title.replace("hébergement", "hébergement HOP!");
+}
 let S = null;
 let defaultVisuelOk = false;
 
@@ -385,7 +401,7 @@ function blank(t){
     zones:(ESCALES[t]||[]).map(z => ({id:uid(), nom:z.zone, open:false, escales:[]})) };
 }
 /* Plusieurs comptes rendus mémorisés sur l'appareil : brouillons et publiés */
-const DOCS_KEY = "crheb:docs", CUR_KEY = "crheb:current";
+const DOCS_KEY = PFX + "docs", CUR_KEY = PFX + "current";
 let DOCS = {};
 const escVide = e => !((e.texte||"").trim() || (e.hotel||"").trim());
 const villeDe = e => (e.ville||"").trim() || ((refFor(type)[e.code]||{}).ville) || e.code;
@@ -428,7 +444,7 @@ function loadDocs(){
   });
 }
 function persist(){
-  try{ localStorage.setItem(DOCS_KEY, JSON.stringify(DOCS)); if(S) localStorage.setItem(CUR_KEY, S.id); localStorage.setItem("crheb:type", type); }
+  try{ localStorage.setItem(DOCS_KEY, JSON.stringify(DOCS)); if(S) localStorage.setItem(CUR_KEY, S.id); localStorage.setItem(PFX + "type", type); }
   catch(e){ toast("Mémoire de l'appareil pleine : supprimez d'anciens CR (Historique) ou le visuel"); }
 }
 function latestDraft(t){ return Object.values(DOCS).filter(d => d.type === t && d.statut === "brouillon").sort((a,b) => b.maj - a.maj)[0]; }
@@ -488,7 +504,7 @@ function renderForm(){
   h += `
   <button class="importbtn" id="impOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 18v-6M9 14l3-3 3 3"/></svg><span><b>Importer des notes de délégué</b><small>PDF, Word ou texte collé : les escales sont extraites automatiquement</small></span></button>
   <div class="card">
-    <h2>Commission hébergement ${type === "LC" ? "long-courrier" : "moyen-courrier"} <span class="st ${ro?"pub":""}">${ro ? "Publié" : "Brouillon"}</span></h2>
+    <h2>Commission hébergement ${HOP ? "UNAC HOP! · " : ""}${TLONG[type]} <span class="st ${ro?"pub":""}">${ro ? "Publié" : "Brouillon"}</span></h2>
     <div class="row2">
       <div><label class="f">Mois</label><select id="fMois">${moisOptions(S.mois)}</select></div>
       <div><label class="f">Ordre des escales</label><select id="fTri"><option value="alpha" ${S.tri==="alpha"?"selected":""}>Alphabétique</option><option value="saisie" ${S.tri==="saisie"?"selected":""}>Ordre de saisie</option></select></div>
@@ -668,7 +684,21 @@ function moisLabel(m){ const [y,mm] = m.split("-"); return MOIS[+mm-1]+" "+y; }
 
 // « HÉBERGEMENT » en Novotype Medium, converti en tracé vectoriel (la police n'est pas publiée)
 const HEB_SVG = `<svg class="t1svg" viewBox="130 0 8329 738" aria-label="Hébergement"><path fill="#fff" d="M737 725H611V449H256V725H130V75H256V336H611V75H737Z M1259 738Q1120 738 1053.5 684.0Q987 630 987 504V75H1176L1208 0H1343L1291 75H1460V193H1113V335H1434V453H1113V507Q1113 571 1148.0 594.5Q1183 618 1264 618Q1370 618 1460 603V719Q1357 738 1259 738Z M2207 527Q2207 572 2195.5 607.5Q2184 643 2155.5 673.5Q2127 704 2073.0 721.0Q2019 738 1941 738Q1821 738 1690 706V75H1950Q2060 75 2113.5 122.5Q2167 170 2167 248Q2167 331 2114 371Q2207 413 2207 527ZM1816 339H2011Q2034 305 2034 256Q2034 187 1947 187H1816ZM2080 531Q2080 492 2055.0 469.5Q2030 447 1979 447H1816V614Q1877 627 1948 627Q2080 627 2080 531Z M2890 719Q2787 738 2689 738Q2550 738 2483.5 684.0Q2417 630 2417 504V75H2890V193H2543V335H2864V453H2543V507Q2543 571 2578.0 594.5Q2613 618 2694 618Q2800 618 2890 603Z M3424 392Q3489 353 3489 286Q3489 189 3369 189H3246V392ZM3682 725H3528L3346 503H3246V725H3120V75H3357Q3481 75 3550.0 131.5Q3619 188 3619 286Q3619 430 3490 497Z M4419 355Q4425 412 4425.5 467.0Q4426 522 4408.0 571.0Q4390 620 4360.0 657.0Q4330 694 4276.0 716.0Q4222 738 4150 738Q3992 738 3899.5 648.5Q3807 559 3807 409Q3807 250 3905.5 156.0Q4004 62 4175 62Q4264 62 4357 82V199Q4259 183 4184 183Q4069 183 4004.5 241.5Q3940 300 3940 409Q3940 510 3995.5 564.0Q4051 618 4140 618Q4217 618 4259.5 581.5Q4302 545 4300 470H4115V355Z M5105 719Q5002 738 4904 738Q4765 738 4698.5 684.0Q4632 630 4632 504V75H5105V193H4758V335H5079V453H4758V507Q4758 571 4793.0 594.5Q4828 618 4909 618Q5015 618 5105 603Z M6055 725H5931V255Q5926 261 5916.5 271.0Q5907 281 5902 287L5694 517L5488 290Q5483 284 5473.5 274.0Q5464 264 5459 258V725H5335V75H5386Q5428 75 5462.5 98.0Q5497 121 5546 175L5695 342L5844 175Q5893 121 5927.5 98.0Q5962 75 6004 75H6055Z M6778 719Q6675 738 6577 738Q6438 738 6371.5 684.0Q6305 630 6305 504V75H6778V193H6431V335H6752V453H6431V507Q6431 571 6466.0 594.5Q6501 618 6582 618Q6688 618 6778 603Z M7685 725H7635Q7575 725 7515.5 688.0Q7456 651 7405.5 591.5Q7355 532 7310.5 470.0Q7266 408 7217.5 345.0Q7169 282 7133 251V725H7008V75H7059Q7109 75 7163.5 114.0Q7218 153 7269.0 215.5Q7320 278 7367.5 343.0Q7415 408 7467.5 473.0Q7520 538 7560 569V75H7685Z M8459 188H8225V725H8099V188H7865V75H8459Z"/></svg>`;
+// En-tête HOP! : logo HOP! en blanc + écho du point d'exclamation, avion HOP!, logo UNAC HOP!
+function headerHOP(){
+  const H = 34, k = H/171, W = 600*k, x0 = 449*k, we = 151*k, step = we*0.6;
+  const g = [0.3,0.18,0.11,0.065,0.035].map((o,i) => `<img src="../commun/img/hop-blanc-excl.png" style="position:absolute;left:${(x0 + step*(i+1)).toFixed(1)}px;top:0;height:${H}px;opacity:${o}" alt="">`).reverse().join("");
+  return `<div class="hd">
+    <img class="logo hop" src="../commun/img/logo-unac-hop-blanc.png" alt="UNAC HOP!">
+    <img class="plane hop" src="../commun/img/avion-hop.png" alt="">
+    <div class="t1">${HEB_SVG}</div>
+    <div class="t2">${esc(moisLabel(S.mois))} · ${esc(TNOM[type])}</div>
+    <div class="big hopbig" style="width:${(x0 + we + step*5).toFixed(0)}px">${g}<img src="../commun/img/hop-blanc.png" style="position:relative;height:${H}px" alt="HOP!"></div>
+    ${S.aNoter.trim() ? `<div class="lbl">À noter</div>` : ""}
+  </div>${S.aNoter.trim() ? `<div class="band">${esc(S.aNoter.trim())}</div>` : ""}`;
+}
 function headerHTML(){
+  if(HOP) return headerHOP();
   const t = TITRE[type], H = 38, k = H/122;
   const cw = (t.w - t.cs)*k, off = t.cs*k, step = cw*0.9;
   let ghosts = "";
@@ -788,7 +818,7 @@ function buildPages(container){
   const pages = container.querySelectorAll(".page");
   pages.forEach((p,i) => {
     const f = p.querySelector(".foot").children;
-    f[0].textContent = `UNAC · Commission hébergement ${type} · ${moisLabel(S.mois)}` + (VERSION === "adherents" ? " · Réservé aux adhérents, ne pas diffuser" : "");
+    f[0].textContent = `${HOP ? "UNAC HOP!" : "UNAC"} · Commission hébergement ${TNOM[type]} · ${moisLabel(S.mois)}` + (VERSION === "adherents" ? " · Réservé aux adhérents, ne pas diffuser" : "");
     f[1].textContent = pages.length > 1 ? `${i+1} / ${pages.length}` : "";
   });
   return pages.length;
@@ -852,7 +882,7 @@ $("#pdfBtn").addEventListener("click", async () => { if(enExemple()) return toas
   if(document.fonts && document.fonts.ready) await document.fonts.ready;
   await Promise.all([...document.querySelectorAll("#pages img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
   const old = document.title;
-  document.title = `CR hébergement ${type} - ${moisLabel(S.mois)}` + (VERSION === "public" ? " - public" : " - adhérents");
+  document.title = `CR hébergement ${HOP ? "HOP! " : ""}${TNOM[type]} - ${moisLabel(S.mois)}` + (VERSION === "public" ? " - public" : " - adhérents");
   document.body.classList.add("tab-apercu");
   setTimeout(() => { window.print(); setTimeout(() => { document.title = old; syncTab(); }, 500); }, 60);
 });
@@ -948,7 +978,7 @@ $("#fileImg").addEventListener("change", ev => {
 // Fusion d'un brouillon reçu (lien ou fichier)
 function incoming(o){
   if(!o || !o.zones){ toast("Brouillon non reconnu"); return; }
-  const t = o.type === "MC" ? "MC" : "LC";
+  const t = o.type === T2 ? T2 : T1;
   ensureDraft(t);
   const mine = S.zones.reduce((a,z) => a + z.escales.filter(e => e.code && !escVide(e)).length, 0);
   let mode = "replace";
@@ -980,7 +1010,7 @@ function incoming(o){
 /* ---------------- Exemple ---------------- */
 function demo(t){
   const s = blank(t);
-  s.aNoter = t === "LC"
+  s.aNoter = HOP ? "Retour de la commission du mois : un changement d'hôtel validé, une escale placée sous surveillance.\nMerci de faire remonter vos constats via l'appli UNAC, avec photos si possible." : t === "LC"
     ? "Retour de la commission du mois : 3 changements d'hôtels validés, 2 escales placées sous surveillance renforcée (JNB, LOS).\nMerci de faire remonter vos constats via l'appli UNAC, avec photos si possible."
     : "Commission MC du mois : rénovation en cours à MXP, transferts rallongés à LHR pendant les travaux du terminal.\nPensez à signaler tout problème de chambre via l'appli UNAC.";
   const T = {
@@ -994,7 +1024,7 @@ function demo(t){
           "Europe du Sud": {MXP:"Rénovation en cours : chambres provisoires aux étages 2 et 3.",LIS:"RAS.",ATH:"RAS.",MAD:"Petit-déjeuner servi dès 4h30."},
           "Europe centrale et de l'Est": {PRG:"RAS.",WAW:"Nouvel hôtel en centre-ville, retours positifs."},
           "Afrique du Nord et Méditerranée": {ALG:"RAS.",CMN:"Transfert avec escorte maintenu."} }
-  }[t];
+  }[t === "LC" ? "LC" : "MC"];
   const N = ["Exemple Centre","Exemple Aéroport","Exemple Plaza","Exemple Marina","Exemple Gare","Exemple Parc"];
   let i = 0;
   s.zones.forEach(z => { const m = T[z.nom]||{}; z.escales = Object.entries(m).map(([c,x]) => { i++; return {id:uid(),code:c,texte:x,hotel:N[i%N.length],etoiles:String(3+i%3),echeance:`202${7+i%2}-${String(1+(i*5)%12).padStart(2,"0")}-30`.replace(/-02-30$/,"-02-28"),ville:""}; }); });
@@ -1025,8 +1055,8 @@ function demo(t){
 <script src="import.js"></script>
 <script src="historique.js"></script>
 <script>
-  window.nomExport = () => `CR-hebergement-${type}-${moisLabel(S.mois).replace(/\s+/g, "-")}-${VERSION === "public" ? "public" : "adherents"}`;
-  window.titreExport = () => `CR hébergement ${type} · ${moisLabel(S.mois)}`;
+  window.nomExport = () => `CR-hebergement-${HOP ? "HOP-" : ""}${TNOM[type]}-${moisLabel(S.mois).replace(/\s+/g, "-")}-${VERSION === "public" ? "public" : "adherents"}`;
+  window.titreExport = () => `CR hébergement ${HOP ? "HOP! " : ""}${TNOM[type]} · ${moisLabel(S.mois)}`;
 </script>
 <script src="../commun/export-images.js"></script>
 </body>

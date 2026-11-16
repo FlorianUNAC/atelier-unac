@@ -105,6 +105,7 @@
         return B.mois.localeCompare(A.mois) || A.type.localeCompare(B.type) || (B.publieLe||0) - (A.publieLe||0);
       });
     }
+    list = list.filter(r => (window.TYPES_SECTION || ["LC","MC"]).includes((r.d || r.x).type)); // Air France / HOP! séparés
     if(filtre !== "tous") list = list.filter(r => (r.d || r.x).type === filtre);
     return list;
   }
@@ -117,7 +118,7 @@
       <button data-tab="brouillons" class="${onglet==="brouillons"?"on":""}">Brouillons (${nbB})</button>
       <button data-tab="publies" class="${onglet==="publies"?"on":""}">Publiés (${pubIds.size})</button>
       <span class="gap"></span>
-      <span class="flt htabs" style="margin:0">${["tous","LC","MC"].map(f => `<button data-f="${f}" class="${filtre===f?"on":""}">${f==="tous"?"Tous":f}</button>`).join("")}</span>
+      <span class="flt htabs" style="margin:0">${["tous", ...(window.TYPES_SECTION || ["LC","MC"])].map(f => `<button data-f="${f}" class="${filtre===f?"on":""}">${f==="tous"?"Tous":(window.TNOM||{})[f]||f}</button>`).join("")}</span>
     </div><div class="hlist">`;
     if(!list.length) h += `<div class="hempty">${onglet === "brouillons" ? "Aucun brouillon." : "Aucun compte rendu publié pour le moment."}</div>`;
     list.forEach(r => {
@@ -137,7 +138,7 @@
           (r.d && r.src === "local" ? `<button class="mini danger" data-a="del">Supprimer</button>` : "");
       }
       h += `<div class="hrow ${isCur?"cur":""}" data-id="${esc(o.id)}" data-src="${r.src}">
-        <div class="tb ${o.type==="MC"?"mc":""}">${esc(o.type)}</div>
+        <div class="tb ${o.type==="MC"||o.type==="EU"?"mc":""}">${esc(((window.TNOM||{})[o.type]||o.type).slice(0,2).toUpperCase())}</div>
         <div class="hi"><b>${esc(cap(moisLabel(o.mois)))}${tags}</b><span>${info}</span></div>
         <div class="ha">${acts}</div></div>`;
     });
