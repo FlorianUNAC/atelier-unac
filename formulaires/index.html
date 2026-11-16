@@ -59,7 +59,11 @@ const FORMULAIRES = {
      desc:"Escale, hôtel, note, localisation, restauration, chambre, facilités, bilan. S’importe tel quel dans l’outil « Test d’un nouvel hébergement ».",
      tags:["Commission hébergement","LC / MC"]}
   ],
-  hop: []
+  hop: [
+    {titre:"Retour du délégué testeur · test d’un nouvel hébergement", fichier:"../test-hebergement/formulaire-test-hebergement-hop.pdf",
+     desc:"Version UNAC HOP! : réseau France ou Europe, escale, hôtel, note, localisation, restauration, chambre, facilités, bilan.",
+     tags:["Commission hébergement","France / Europe"]}
+  ]
 };
 const SECTIONS = {af:{nom:"Air France", logo:"logo-unac-blanc.png"}, hop:{nom:"HOP!", logo:"logo-unac-hop-blanc.png"}};
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));

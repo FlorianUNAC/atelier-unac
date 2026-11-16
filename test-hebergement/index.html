@@ -310,7 +310,7 @@ async function champsFormulaire(file){
   const lignes = [`Escale : ${v("escale")} ${v("ville")}`, `Hôtel : ${v("hotel")}`, `Note : ${v("note")}`, `Mois : ${v("mois")}`, v("reseau") === "MC" ? "moyen-courrier" : v("reseau") === "LC" ? "long-courrier" : ""];
   const r = analyser(lignes.join("\n"));
   Object.assign(r, {loc:v("localisation"), resto:v("restauration"), chambre:v("chambre"), fac:v("facilites"), bilan:v("bilan"), libre:""});
-  if(v("reseau")) r.type = v("reseau");
+  if(v("reseau")) r.type = ["LC","MC"].includes(v("reseau")) ? v("reseau") : "MC"; // formulaire HOP! : France / Europe
   const code = v("escale").toUpperCase().replace(/[^A-Z]/g, "");
   if(code.length === 3){ r.code = code; r.ville = refVille("LC", code) || refVille("MC", code) ? "" : v("ville"); }
   else if(v("ville")){ r.code = ""; r.ville = v("ville"); }
