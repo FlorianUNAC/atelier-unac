@@ -7,6 +7,12 @@ const champs = Object.fromEntries(
 const papier = document.querySelector(".papier");
 const filigrane = papier.querySelector(".filigrane");
 const infoExemple = document.querySelector("#info-exemple");
+const fichierSignature = document.querySelector("#fichier-signature");
+const imageSignature = document.querySelector("#image-signature");
+const retirerSignature = document.querySelector("#retirer-signature");
+const erreurSignature = document.querySelector("#erreur-signature");
+let urlSignature;
+let selectionSignature = 0;
 const boutonImprimer = editeur.querySelector('[type="submit"]');
 const exemple = {
   destinataire: "Lorem ipsum",
@@ -26,7 +32,7 @@ function actualiser() {
   const valeurs = Object.fromEntries(
     Object.entries(champs).map(([nom, champ]) => [nom, champ.value.trim()])
   );
-  const enExemple = !Object.entries(valeurs).some(([nom, valeur]) =>
+  const enExemple = !urlSignature && !Object.entries(valeurs).some(([nom, valeur]) =>
     nom === "lieu" ? valeur !== lieuInitial : Boolean(valeur)
   );
   papier.classList.toggle("en-exemple", enExemple);
@@ -46,6 +52,48 @@ function actualiser() {
     apercu.hidden = !valeur;
   }
 }
+
+function afficherSignature(url) {
+  if (urlSignature) URL.revokeObjectURL(urlSignature);
+  urlSignature = url;
+  imageSignature.hidden = !url;
+  retirerSignature.hidden = !url;
+  if (url) imageSignature.src = url;
+  else imageSignature.removeAttribute("src");
+  actualiser();
+}
+
+fichierSignature.addEventListener("change", async () => {
+  const fichier = fichierSignature.files[0];
+  if (!fichier) return;
+  erreurSignature.hidden = true;
+  const selection = ++selectionSignature;
+  const formats = ["image/png", "image/jpeg", "image/webp"];
+  const url = formats.includes(fichier.type) ? URL.createObjectURL(fichier) : null;
+  try {
+    if (!url) throw new Error("Format non pris en charge");
+    const image = new Image();
+    image.src = url;
+    await image.decode();
+  } catch {
+    if (url) URL.revokeObjectURL(url);
+    if (selection !== selectionSignature) return;
+    fichierSignature.value = "";
+    erreurSignature.textContent = "Image illisible. Choisissez un fichier PNG, JPEG ou WebP.";
+    erreurSignature.hidden = false;
+    return;
+  }
+  if (selection === selectionSignature) afficherSignature(url);
+  else URL.revokeObjectURL(url);
+});
+
+retirerSignature.addEventListener("click", () => {
+  selectionSignature++;
+  fichierSignature.value = "";
+  erreurSignature.hidden = true;
+  afficherSignature();
+  fichierSignature.focus();
+});
 
 async function imprimer(vierge) {
   if (document.documentElement.classList.contains("verrou")) return;

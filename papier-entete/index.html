@@ -7,8 +7,8 @@
 <title>Papier à en-tête UNAC · Atelier UNAC</title>
 <link rel="icon" href="../commun/icons-atelier/favicon.png">
 <script src="../commun/acces.js"></script>
-<link rel="stylesheet" href="papier.css?v=apercu-exemple">
-<script src="papier.js?v=exemple-lorem" defer></script>
+<link rel="stylesheet" href="papier.css?v=signature">
+<script src="papier.js?v=signature" defer></script>
 </head>
 <body>
 <main class="atelier">
@@ -28,7 +28,12 @@
       <label>Corps du courrier<textarea data-champ="courrier" rows="9"></textarea></label>
       <label>Nom du signataire<input data-champ="signataire" maxlength="160"></label>
       <label>Fonction du signataire<input data-champ="mandat" maxlength="160"></label>
+      <label for="fichier-signature">Signature manuscrite</label>
+      <input id="fichier-signature" type="file" accept="image/png,image/jpeg,image/webp" aria-describedby="aide-signature">
+      <p id="aide-signature">PNG, JPEG ou WebP. L’image reste dans votre navigateur.</p>
+      <p id="erreur-signature" role="status" hidden></p>
       <div class="actions">
+        <button type="button" id="retirer-signature" hidden>Retirer la signature</button>
         <button type="submit" disabled>Imprimer le courrier</button>
         <button type="button" id="modele-vierge">Imprimer le modèle vierge</button>
       </div>
@@ -55,6 +60,7 @@
             <div class="signature">
               <strong data-apercu="signataire" hidden></strong>
               <em data-apercu="mandat" hidden></em>
+              <img id="image-signature" alt="Signature manuscrite" hidden>
             </div>
           </td></tr></tbody>
           <tfoot aria-hidden="true"><tr><td></td></tr></tfoot>
