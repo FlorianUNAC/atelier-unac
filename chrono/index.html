@@ -183,7 +183,7 @@
   .acc sup{font-size:.55em}
   .fig{display:flex;align-items:center;gap:calc(var(--k)*44px);margin:0}
   .fig .t{font-size:calc(var(--k)*84px);line-height:1.08}
-  .fig .t b{font-weight:700}
+  .fig .t b{font-weight:700;white-space:nowrap}
   .badge{flex:none;width:calc(var(--k)*160px);height:calc(var(--k)*160px);border-radius:50%;background:rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center}
   .badge span{width:84%;height:84%;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:calc(var(--k)*48px);letter-spacing:-.01em}
   .badge.vert span{background:#3E8C2A}.badge.rouge span{background:#D43B2E}.badge.blanc span{background:#fff;color:var(--bg)}
@@ -251,6 +251,13 @@
   .cit p b{color:#FFD23F}
   .cit .au{margin-top:calc(var(--k)*40px);display:flex;align-items:center;gap:calc(var(--k)*22px);font-size:calc(var(--k)*36px);font-weight:700;letter-spacing:.04em;opacity:.9}
   .cit .au::before{content:"";width:calc(var(--k)*70px);height:calc(var(--k)*5px);background:#fff}
+  .qrb{display:flex;align-items:center;gap:calc(var(--k)*50px)}
+  .qrb .qrc{flex:none;width:calc(var(--k)*270px);height:calc(var(--k)*270px);background:#fff;border-radius:calc(var(--k)*30px);padding:calc(var(--k)*14px);box-shadow:0 18px 40px rgba(40,0,20,.25)}
+  .qrb .qrc svg{width:100%;height:100%;display:block}
+  .qrb .qt{display:flex;flex-direction:column;gap:calc(var(--k)*12px)}
+  .qrb .qt b{font-size:calc(var(--k)*54px);line-height:1.1;font-weight:700}
+  .qrb .qt p{margin:0;font-size:calc(var(--k)*40px);line-height:1.3;opacity:.92}
+  .qrb .qt p b{font-size:inherit}
   .por{display:flex;align-items:center;gap:calc(var(--k)*50px)}
   .por .ph{flex:none;width:calc(var(--k)*290px);height:calc(var(--k)*290px);border-radius:50%;padding:calc(var(--k)*10px);background:#fff;box-shadow:0 18px 40px rgba(40,0,20,.25)}
   .por .ph img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
@@ -326,6 +333,7 @@
   <div class="mfoot"><button class="mbtn" id="hNew">+ Nouveau post</button><button class="mbtn pri" data-x>Fermer</button></div>
 </div></div>
 
+<script src="../commun/vendor/qrcode.js"></script>
 <script>
 const MODELES = {
   chiffres: {nom:"Résultats T3 · MNL", format:"portrait", theme:"prune", avion:true, logo:"haut", slides:[{blocs:[
@@ -395,9 +403,58 @@ Object.assign(MODELES, {
     {type:"portrait", photo:"../commun/img/hop/laure-desrentes.jpg", role:"Votre déléguée syndicale", nom:"Laure Desrentes", texte:"à votre écoute"},
     {type:"bouton", texte:"Venez nous rencontrer", style:"blanc", place:"gauche"}]}]}
 });
+MODELES.hopComCat = {nom:"HOP! · Com CAT PNC 7 juillet 2026", section:"hop", format:"portrait", theme:"framboise", avion:false, logo:"haut", slides:[
+  {blocs:[
+    {type:"etiquette", texte:"Compte rendu", style:"blanc"},
+    {type:"titre", titre:"COM CAT", sous:"PNC · Commission du 7 juillet 2026"},
+    {type:"accroche", texte:"Effectifs, réserves, fatigue : **ce qu’il faut retenir.**", taille:"grand"},
+    {type:"bouton", texte:"Faites défiler", style:"jaune", place:"gauche"}]},
+  {blocs:[
+    {type:"etiquette", texte:"Effectifs", style:"jaune"},
+    {type:"chiffre", libelle:"Janvier :", valeur:"616 PNC", badge:"", couleur:"blanc"},
+    {type:"chiffre", libelle:"Juin :", valeur:"619 PNC", badge:"", couleur:"blanc"},
+    {type:"texte", texte:"Effectifs à l’équilibre, mais **les CDD explosent : 2 en janvier, 48 en juin**, soit **87 contrats temporaires** en cours.", taille:"normal"},
+    {type:"conclusion", texte:"HOP! n’est pas une compagnie saisonnière. Votre OSR veille à ce que la précarité n’augmente pas."}]},
+  {blocs:[
+    {type:"etiquette", texte:"Mouvements", style:"blanc"},
+    {type:"chiffre", libelle:"CDI HST :", valeur:"265 → 233", badge:"−32", couleur:"rouge"},
+    {type:"texte", texte:"Baisse expliquée par le **départ de nos collègues vers Air France**.\nEntrées CDD / alternants : **97** · sorties : **76**, dont **5 licenciements**.", taille:"normal"},
+    {type:"chiffre", libelle:"Absentéisme :", valeur:"11,4 % → 8,4 %", badge:"−3", couleur:"vert"},
+    {type:"texte", texte:"**−3 points**, principalement grâce à la baisse des arrêts maladie.", taille:"normal"}]},
+  {blocs:[
+    {type:"etiquette", texte:"Heures de vol", style:"blanc"},
+    {type:"etapes", texte:"**≤ 64 UHV** : 171 CDC · 132 HST (dont 41 TAM)\n**64 à 72 UHV** : 70 CDC · 145 HST (dont 3 TAM)\n**+ 78 UHV** : 30 CDC · 44 HST", style:"fleches"},
+    {type:"chiffre", libelle:"6 ON :", valeur:"15 → 4", badge:"−11", couleur:"vert"},
+    {type:"texte", texte:"En baisse **grâce à vos remontées.** DDA OFF : **87,3 % accordés** en mai (ponts).", taille:"normal"}]},
+  {blocs:[
+    {type:"etiquette", texte:"Réserves", style:"rouge"},
+    {type:"chiffre", libelle:"RPL programmées :", valeur:"325 → 702", badge:"×2", couleur:"rouge"},
+    {type:"chiffre", libelle:"RPL déclenchées :", valeur:"216 → 452", badge:"×2", couleur:"rouge"},
+    {type:"chiffre", libelle:"RC déclenchées :", valeur:"57 → 76", badge:"+19", couleur:"rouge"},
+    {type:"chiffre", libelle:"RPC déclenchées :", valeur:"343 → 244", badge:"−99", couleur:"vert"},
+    {type:"conclusion", texte:"Toujours trop de RPL, liées à la reprise des vols AF. Selon la Direction, un RPL isolé est presque sûr d’être déclenché : à vos hôtels."}]},
+  {blocs:[
+    {type:"etiquette", texte:"Risque fatigue", style:"rouge"},
+    {type:"accroche", texte:"**+10 % de REF** chez les PNC : 103 REF entre avril et mai, surtout sur les **levés tôt et les 3/3.**", taille:"petit"},
+    {type:"texte", texte:"**L’UNAC demande à la Direction :**", taille:"normal"},
+    {type:"etapes", texte:"D’**alléger les rotations longues** (3-4 jours) avec des vols courts\nDe **mieux quantifier les réserves** selon la saison et les vols AF\nDe **trouver des solutions** aux réserves et RPL qui pèsent sur la vie de famille\nD’obtenir d’AF des **lignes régulières**", style:"relies"}]},
+  {blocs:[
+    {type:"etiquette", texte:"Emploi", style:"jaune"},
+    {type:"texte", texte:"La population PN **vieillit** malgré l’arrivée d’alternants et de CDD. **Dans moins de 10 ans, beaucoup de départs** : il faut continuer à **titulariser** et à **nommer de jeunes chefs de cabine.**", taille:"normal"},
+    {type:"citation", texte:"Sinon, il faudra se poser la question : **y a-t-il un projet de dissolution ou d’absorption de HOP! ?**", auteur:"La section UNAC HOP!"},
+    {type:"bouton", texte:"Protégeons nos emplois", style:"jaune", place:"gauche"}]},
+  {blocs:[
+    {type:"etiquette", texte:"Adhésion", style:"jaune"},
+    {type:"accroche", texte:"**Fédérez ! Faites adhérer.** Réussir ensemble.", taille:"grand"},
+    {type:"qr", url:"https://qrco.de/bg6w4W", titre:"Adhérer à l’UNAC", texte:"Scannez pour **rejoindre** la section HOP!"},
+    {type:"portrait", photo:"../commun/img/hop/laure-desrentes.jpg", role:"Votre déléguée syndicale", nom:"Laure Desrentes", texte:"desrentes@unac.asso.fr"},
+    {type:"qr", url:"https://card.pm/unac-cfecgc/laure.desrentes", titre:"Sa carte de visite", texte:"Contact direct, numéro et mail"}]}
+]};
 const MODELES_INFO = [
   {k:"hopRecrutement", n:"HOP! · Recrutement délégué·es", cat:"Mobiliser", hop:1, obj:"Donner envie de rejoindre l’équipe UNAC HOP!.",
    pour:["Postes de délégué·es à pourvoir","Préparation des élections","Campagne d’adhésion"], eviter:["Information pratique","Sujet Air France"]},
+  {k:"hopComCat", n:"HOP! · Compte rendu de commission (carrousel)", cat:"Informer", hop:1, obj:"Restituer une commission en plusieurs visuels : chiffres, demandes UNAC, contact.",
+   pour:["Com CAT, CSE, commission rotations","Bilan semestriel","Chiffres effectifs, réserves, absentéisme"], eviter:["Info urgente d’un seul message"]},
   {k:"hopPermanence", n:"HOP! · Permanence avec photo", cat:"Informer", hop:1, obj:"Annoncer une permanence et montrer qui accueille.",
    pour:["Permanence salle PPV","Nouvelle déléguée, nouveau délégué","Réunion d’information"], eviter:["Contenu sans date précise"]},
   {k:"victoire", n:"Victoire / acquis", cat:"Valoriser", obj:"Faire savoir un résultat obtenu par l’UNAC.",
@@ -456,11 +513,19 @@ const TYPES = {
   etapes:  {nom:"Liste d'étapes", champs:[["texte","Étapes (une par ligne)","area"],["style","Repères","select",{numeros:"Numéros 1, 2, 3",relies:"Numéros reliés",coches:"Coches vertes ✓",fleches:"Flèches →"}]]},
   citation:{nom:"Citation / prise de position", champs:[["texte","Citation","area"],["auteur","Auteur","text","La section UNAC Air France"]]},
   portrait:{nom:"Portrait (photo ronde + nom)", champs:[["photo","Photo","photo"],["role","Fonction (au-dessus du nom)","text","Votre déléguée syndicale"],["nom","Prénom Nom","text"],["texte","Phrase (en italique)","text","à votre écoute"]]},
+  qr:      {nom:"QR code + texte", champs:[["url","Lien du QR code (https://…)","text"],["titre","Titre à côté","text"],["texte","Texte à côté","area"]]},
   bouton:  {nom:"Bouton d'appel à l'action", champs:[["texte","Texte du bouton","text"],["style","Couleur","select",{blanc:"Blanc",jaune:"Jaune"}],["place","Position","select",{gauche:"À gauche",centre:"Centré"}]]},
   espace:  {nom:"Espace", champs:[]}
 };
 const ALERTE_SVG = `<svg viewBox="0 0 100 100"><path d="M50 6 96 90H4Z" fill="#2B1225"/><path d="M50 22 83 82H17Z" fill="#FFD23F"/><rect x="45" y="40" width="10" height="24" rx="4" fill="#2B1225"/><circle cx="50" cy="72" r="5.5" fill="#2B1225"/></svg>`;
 const FLECHE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>`;
+function qrSVG(url){
+  url = String(url||"").trim(); if(!url || !window.qrcode) return "";
+  try{ const q = qrcode(0, "M"); q.addData(url); q.make(); const n = q.getModuleCount(); let d = "";
+    for(let r = 0; r < n; r++) for(let c = 0; c < n; c++) if(q.isDark(r, c)) d += `M${c} ${r}h1v1h-1z`;
+    return `<div class="qrc"><svg viewBox="-2 -2 ${n+4} ${n+4}" shape-rendering="crispEdges"><rect x="-2" y="-2" width="${n+4}" height="${n+4}" fill="#fff"/><path d="${d}" fill="#2B1225"/></svg></div>`;
+  }catch(e){ return ""; }
+}
 const lignes = t => String(t||"").split("\n").map(x => x.trim()).filter(Boolean);
 function blocHTML(b){
   switch(b.type){
@@ -481,6 +546,7 @@ function blocHTML(b){
     case "etapes": { const st = b.style || "numeros"; return `<ol class="eta ${st}">${lignes(b.texte).map((l,i) => `<li><span>${st === "coches" ? "✓" : st === "fleches" ? FLECHE_SVG : i+1}</span><div>${riche(l)}</div></li>`).join("")}</ol>`; }
     case "citation": return `<div class="cit"><p>${riche(b.texte)}</p>${b.auteur ? `<div class="au">${esc(b.auteur)}</div>` : ""}</div>`;
     case "portrait": return `<div class="por">${b.photo ? `<div class="ph"><img src="${esc(b.photo)}" alt=""></div>` : ""}<div class="pt">${b.role ? `<span class="ro">${esc(b.role)}</span>` : ""}${b.nom ? `<b>${esc(b.nom)}</b>` : ""}${b.texte ? `<i>${riche(b.texte)}</i>` : ""}</div></div>`;
+    case "qr": return `<div class="qrb">${qrSVG(b.url)}<div class="qt">${b.titre ? `<b>${riche(b.titre)}</b>` : ""}${b.texte ? `<p>${riche(b.texte)}</p>` : ""}</div></div>`;
     case "bouton": return `<div class="cta ${b.style === "jaune" ? "jaune" : ""} ${b.place === "centre" ? "centre" : ""}">${esc(b.texte)}${FLECHE_SVG}</div>`;
   }
   return "";
