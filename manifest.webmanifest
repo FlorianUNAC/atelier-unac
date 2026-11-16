@@ -1,0 +1,13 @@
+{
+  "name": "Atelier UNAC",
+  "short_name": "Atelier UNAC",
+  "start_url": "/atelier-unac/",
+  "scope": "/atelier-unac/",
+  "display": "standalone",
+  "background_color": "#4f1530",
+  "theme_color": "#5b1a3a",
+  "icons": [
+    {"src": "commun/icons-atelier/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "commun/icons-atelier/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
