@@ -75,7 +75,9 @@
   .confirmation-export .mfoot{flex-wrap:wrap;justify-content:flex-end}
   .confirmation-export .mfoot button:first-child{margin-right:auto}
   .confirmation-export ul{margin:0 0 12px;padding-left:20px;line-height:1.55}
-  .confirmation-export .mintro:last-child{margin-bottom:0}
+  .rappel-surete{padding:12px 14px;border-left:4px solid var(--mag);border-radius:6px;background:#f8eef3;line-height:1.45}
+  .rappel-surete h4{margin-bottom:6px;color:#78234a;font-size:14px}
+  .rappel-surete p+p{margin-top:7px}
   .mintro{font-size:13.5px;color:#5d4252;line-height:1.45;margin-bottom:14px}
   .imgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
   .imgrid a{display:block;text-decoration:none;color:var(--ui-muted);font-size:12px;text-align:center}
@@ -222,7 +224,11 @@
         <li><strong>Adhérents</strong> · Le nom de l’hôtel est visible.</li>
         <li><strong>Public</strong> · Le nom de l’hôtel est masqué dans le bandeau ou sur la couverture.</li>
       </ul>
-      <p class="mintro">Pour une diffusion publique, vérifiez aussi que les photos et les commentaires ne permettent pas d’identifier l’hôtel.</p>
+      <aside class="rappel-surete" aria-labelledby="titreRappelSurete">
+        <h4 id="titreRappelSurete">Rappel de sûreté</h4>
+        <p>Vérifiez que le texte et les photos sont adaptés au public choisi. Pour une diffusion publique, retirez les éléments qui identifient l’hôtel ou révèlent les habitudes de l’équipage.</p>
+        <p>Vérifiez notamment les noms, logos, façades et vues reconnaissables, ainsi que les adresses, plans, horaires ou trajets de transfert de l’équipage.</p>
+      </aside>
     </div>
     <div class="mfoot">
       <button class="mbtn" value="annuler" autofocus>Annuler</button>
