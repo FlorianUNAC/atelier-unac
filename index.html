@@ -58,6 +58,7 @@
   .tile .ic{width:46px;height:46px;border-radius:12px;background:#fff;display:grid;place-items:center;flex:none}
   .tile .ic svg{width:26px;height:26px}
   .tile b{font-size:18px;letter-spacing:.01em}
+  .maj-outil{display:inline-block;width:9px;height:9px;margin-right:8px;vertical-align:.14em;border-radius:50%;background:#58aaff}
   .tile span{font-size:13.5px;opacity:.85;line-height:1.45}
   .tile .tags{display:flex;gap:6px;margin-top:auto;flex-wrap:wrap}
   .tile .tags i{font-style:normal;font-size:11px;font-weight:700;letter-spacing:.06em;background:rgba(255,255,255,.2);border-radius:6px;padding:3px 8px}
@@ -117,7 +118,7 @@
       <div class="tags"><i>Facebook</i><i>Instagram</i></div>
       <span class="go">→</span>
     </a>
-    <a class="tile" href="test-hebergement/">
+    <a class="tile" href="test-hebergement/" data-version="carrousel-ville-pastille">
       <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19v-8.5A1.5 1.5 0 0 1 4.5 9h15a1.5 1.5 0 0 1 1.5 1.5V19M3 15h18M5.5 9V6.5A1.5 1.5 0 0 1 7 5h10a1.5 1.5 0 0 1 1.5 1.5V9"/></svg></div>
       <b>Test d’un nouvel hébergement</b>
       <span>Post de la commission : escale, hôtel, note, localisation, restauration, chambre, facilités, 6 photos et bilan. Version adhérents ou publique.</span>
@@ -226,5 +227,24 @@
     <div><b>Un doute, une question ?</b><span>Tchat appli UNAC · 24h/24, 7j/7</span></div>
   </footer>
 </div>
+<script>
+  // Modifier data-version quand une nouvelle version d’un outil est publiée.
+  for(const tuile of document.querySelectorAll(".tile[data-version][href]")){
+    const cle = "atelier:version-vue:" + tuile.getAttribute("href");
+    const version = tuile.dataset.version;
+    try{ if(localStorage.getItem(cle) === version) continue; }catch(e){}
+    const point = document.createElement("span");
+    point.className = "maj-outil";
+    point.setAttribute("role", "img");
+    point.setAttribute("aria-label", "Mis à jour");
+    tuile.querySelector("b").prepend(point);
+    const marquerVue = () => {
+      try{ localStorage.setItem(cle, version); }catch(e){}
+      point.remove();
+    };
+    tuile.addEventListener("click", marquerVue, {once:true});
+    tuile.addEventListener("auxclick", e => { if(e.button === 1) marquerVue(); });
+  }
+</script>
 </body>
 </html>
