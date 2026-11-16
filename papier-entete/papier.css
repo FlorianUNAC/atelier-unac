@@ -81,6 +81,27 @@ button[type="button"] { background: #fff; color: #7b2449; }
   margin: 1.5cqw auto 0;
 }
 
+#dessin-signature {
+  width: min(540px, calc(100% - 24px));
+  border: 1px solid #b49da7;
+  border-radius: 16px;
+  padding: 20px;
+  background: #fff;
+  color: var(--encre);
+}
+#dessin-signature::backdrop { background: rgba(39, 23, 31, .66); }
+#dessin-signature h2 { margin: 0; }
+#dessin-signature canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 14px;
+  outline: 1px solid #b49da7;
+  border-radius: 6px;
+  cursor: crosshair;
+  touch-action: none;
+}
+
 @media screen {
   .pagination, .pagination tbody, .pagination tbody tr, .lettre { display: block; }
   .pagination thead, .pagination tfoot { display: none; }
@@ -92,7 +113,7 @@ button[type="button"] { background: #fff; color: #7b2449; }
   @page { size: A4; margin: 0; }
   body { background: #fff; color: #141414; }
   .atelier, .espace, .apercu, .papier { display: block; margin: 0; padding: 0; }
-  .retour, h1, .editeur, .apercu h2, #info-exemple, .filigrane:not([hidden]) { display: none; }
+  .retour, h1, .editeur, .apercu h2, #info-exemple, #dessin-signature, .filigrane:not([hidden]) { display: none; }
   .papier { container-type: normal; aspect-ratio: auto; }
   .entete, .pied {
     position: fixed;

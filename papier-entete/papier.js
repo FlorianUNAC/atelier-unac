@@ -54,7 +54,7 @@ function actualiser() {
 }
 
 function afficherSignature(url) {
-  if (urlSignature) URL.revokeObjectURL(urlSignature);
+  if (urlSignature?.startsWith("blob:")) URL.revokeObjectURL(urlSignature);
   urlSignature = url;
   imageSignature.hidden = !url;
   retirerSignature.hidden = !url;
@@ -93,6 +93,89 @@ retirerSignature.addEventListener("click", () => {
   erreurSignature.hidden = true;
   afficherSignature();
   fichierSignature.focus();
+});
+
+const dialogueDessin = document.querySelector("#dessin-signature");
+const zoneDessin = dialogueDessin.querySelector("canvas");
+const trace = zoneDessin.getContext("2d");
+const validerDessin = document.querySelector("#valider-dessin");
+const effacerDessin = document.querySelector("#effacer-dessin");
+const epaisseur = 5;
+let pointeurActif = null;
+let dernierPoint;
+let limites;
+
+function effacerTrace() {
+  trace.clearRect(0, 0, zoneDessin.width, zoneDessin.height);
+  pointeurActif = null;
+  limites = null;
+  validerDessin.disabled = true;
+  effacerDessin.disabled = true;
+}
+
+function tracerPoint(event) {
+  const cadre = zoneDessin.getBoundingClientRect();
+  const x = Math.max(0, Math.min(zoneDessin.width, (event.clientX - cadre.left) * zoneDessin.width / cadre.width));
+  const y = Math.max(0, Math.min(zoneDessin.height, (event.clientY - cadre.top) * zoneDessin.height / cadre.height));
+  trace.beginPath();
+  if (dernierPoint) {
+    trace.moveTo(dernierPoint.x, dernierPoint.y);
+    trace.lineTo(x, y);
+    trace.stroke();
+  } else {
+    trace.arc(x, y, epaisseur / 2, 0, Math.PI * 2);
+    trace.fill();
+  }
+  dernierPoint = {x, y};
+  limites = limites ? {
+    gauche: Math.min(limites.gauche, x), droite: Math.max(limites.droite, x),
+    haut: Math.min(limites.haut, y), bas: Math.max(limites.bas, y)
+  } : {gauche: x, droite: x, haut: y, bas: y};
+  validerDessin.disabled = false;
+  effacerDessin.disabled = false;
+}
+
+trace.lineWidth = epaisseur;
+trace.lineCap = "round";
+trace.strokeStyle = trace.fillStyle = "#201823";
+
+zoneDessin.addEventListener("pointerdown", event => {
+  if (pointeurActif !== null || event.button !== 0) return;
+  pointeurActif = event.pointerId;
+  dernierPoint = null;
+  zoneDessin.setPointerCapture(event.pointerId);
+  tracerPoint(event);
+});
+zoneDessin.addEventListener("pointermove", event => {
+  if (event.pointerId === pointeurActif) tracerPoint(event);
+});
+zoneDessin.addEventListener("pointerup", event => {
+  if (event.pointerId === pointeurActif) tracerPoint(event);
+});
+zoneDessin.addEventListener("lostpointercapture", event => {
+  if (event.pointerId === pointeurActif) pointeurActif = null;
+});
+
+document.querySelector("#dessiner-signature").addEventListener("click", () => {
+  effacerTrace();
+  dialogueDessin.showModal();
+});
+document.querySelector("#annuler-dessin").addEventListener("click", () => dialogueDessin.close());
+effacerDessin.addEventListener("click", effacerTrace);
+validerDessin.addEventListener("click", () => {
+  if (!limites) return;
+  const marge = 12;
+  const x = Math.max(0, Math.floor(limites.gauche) - marge);
+  const y = Math.max(0, Math.floor(limites.haut) - marge);
+  const sortie = document.createElement("canvas");
+  sortie.width = Math.min(zoneDessin.width, Math.ceil(limites.droite) + marge) - x;
+  sortie.height = Math.min(zoneDessin.height, Math.ceil(limites.bas) + marge) - y;
+  sortie.getContext("2d").drawImage(zoneDessin, x, y, sortie.width, sortie.height, 0, 0, sortie.width, sortie.height);
+  selectionSignature++;
+  fichierSignature.value = "";
+  erreurSignature.hidden = true;
+  afficherSignature(sortie.toDataURL("image/png"));
+  dialogueDessin.close();
 });
 
 async function imprimer(vierge) {

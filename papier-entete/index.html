@@ -7,8 +7,8 @@
 <title>Papier à en-tête UNAC · Atelier UNAC</title>
 <link rel="icon" href="../commun/icons-atelier/favicon.png">
 <script src="../commun/acces.js"></script>
-<link rel="stylesheet" href="papier.css?v=import-courrier">
-<script src="papier.js?v=import-courrier" defer></script>
+<link rel="stylesheet" href="papier.css?v=signature-dessinee">
+<script src="papier.js?v=signature-dessinee" defer></script>
 <script src="import-courrier.js" defer></script>
 </head>
 <body>
@@ -41,6 +41,7 @@
       <p id="aide-signature">PNG, JPEG ou WebP. L’image reste dans votre navigateur.</p>
       <p id="erreur-signature" role="status" hidden></p>
       <div class="actions">
+        <button type="button" id="dessiner-signature">Dessiner ma signature</button>
         <button type="button" id="retirer-signature" hidden>Retirer la signature</button>
         <button type="submit" disabled>Imprimer le courrier</button>
         <button type="button" id="modele-vierge">Imprimer le modèle vierge</button>
@@ -80,5 +81,15 @@
     </section>
   </div>
 </main>
+<dialog id="dessin-signature" aria-labelledby="titre-dessin">
+  <h2 id="titre-dessin">Dessiner ma signature</h2>
+  <p id="aide-dessin">Signez avec la souris, le doigt ou un stylet.</p>
+  <canvas width="900" height="300" aria-label="Zone de dessin de la signature" aria-describedby="aide-dessin"></canvas>
+  <div class="actions">
+    <button type="button" id="valider-dessin" disabled>Insérer la signature</button>
+    <button type="button" id="effacer-dessin" disabled>Effacer le dessin</button>
+    <button type="button" id="annuler-dessin">Annuler</button>
+  </div>
+</dialog>
 </body>
 </html>
