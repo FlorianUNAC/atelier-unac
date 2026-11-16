@@ -100,6 +100,7 @@
   .mc .hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .mc .hd > b{font-size:15px;color:var(--ui-ink)}
   .mc .cat{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:3px 8px;background:var(--rosepale);color:#a01a55}
+  .mc .cat.hopt{background:#2b1225;color:#fff}
   .mc .ob{font-size:12.5px;color:var(--ui-ink);line-height:1.35;margin:0}
   .mc .chte{font-size:11.5px;color:var(--ui-muted)}
   .mc .chte .sw{width:10px;height:10px}
@@ -151,6 +152,9 @@
   .seg2{display:flex;gap:6px;flex-wrap:wrap}
   .seg2 button{border:1px solid var(--ui-line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;cursor:pointer;color:#7d5a6e;font-size:13px}
   .seg2 button.on{background:#7a2a4e;border-color:#7a2a4e;color:#fff}
+  .phf{display:flex;align-items:center;gap:10px}
+  .phf img{width:56px;height:56px;border-radius:50%;object-fit:cover}
+  .phf label.mini{cursor:pointer}
   .sw{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
 
   /* ===== LE VISUEL (1080 × 1080 / 1350 / 1920) ===== */
@@ -159,12 +163,15 @@
   .page .avion{position:absolute;left:0;top:170px;width:350px;pointer-events:none}
   .page .logo{position:absolute;right:120px;top:90px;width:190px}
   .page.logobas .logo{top:auto;bottom:70px;width:200px}
+  .page .logo.hop{width:215px;top:80px}
+  .page.logobas .logo.hop{top:auto;bottom:60px;width:225px}
   .page .zone{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:var(--just,center);padding:var(--pt,420px) 140px var(--pb,110px) 160px;gap:calc(var(--k)*54px)}
   .page.sansavion .zone{--pt:300px}
   .page:not(.sansavion):not(.titre1) .zone{--pt:400px}
   .page.mesure .zone{justify-content:flex-start}
   .page .zone > *{flex-shrink:0}
   .page.logobas .zone{--pb:70px}
+  .page.logobas .zone > .cta:last-child{margin-top:80px}
   .page.logobas .sign{min-height:250px;display:flex;align-items:flex-end;padding-right:290px}
   .page.titre1 .zone{--pt:40px}
   .gt{position:relative;text-align:center;margin:0 -100px 0 -120px;overflow:hidden;padding-top:calc(var(--k)*26px)}
@@ -244,6 +251,13 @@
   .cit p b{color:#FFD23F}
   .cit .au{margin-top:calc(var(--k)*40px);display:flex;align-items:center;gap:calc(var(--k)*22px);font-size:calc(var(--k)*36px);font-weight:700;letter-spacing:.04em;opacity:.9}
   .cit .au::before{content:"";width:calc(var(--k)*70px);height:calc(var(--k)*5px);background:#fff}
+  .por{display:flex;align-items:center;gap:calc(var(--k)*50px)}
+  .por .ph{flex:none;width:calc(var(--k)*290px);height:calc(var(--k)*290px);border-radius:50%;padding:calc(var(--k)*10px);background:#fff;box-shadow:0 18px 40px rgba(40,0,20,.25)}
+  .por .ph img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+  .por .pt{display:flex;flex-direction:column;gap:calc(var(--k)*8px)}
+  .por .ro{font-size:calc(var(--k)*34px);font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.85}
+  .por b{font-size:calc(var(--k)*62px);line-height:1.05;font-weight:700}
+  .por i{font-size:calc(var(--k)*44px);font-style:italic;opacity:.9}
   .cta{align-self:flex-start;display:inline-flex;align-items:center;gap:calc(var(--k)*24px);background:#fff;color:var(--bg);border-radius:999px;padding:calc(var(--k)*30px) calc(var(--k)*54px);font-size:calc(var(--k)*44px);font-weight:700;box-shadow:0 14px 34px rgba(0,0,0,.25)}
   .cta.jaune{background:#FFD23F;color:#2B1225}
   .cta.centre{align-self:center}
@@ -368,7 +382,24 @@ const MODELES = {
     {type:"picto", picto:"calendrier", texte:"**Vérifiez dès maintenant** vos jours OFF, vos réserves et vos rotations"},
     {type:"bouton", texte:"Une anomalie ? Écrivez-nous", style:"blanc", place:"gauche"}]}]}
 };
+Object.assign(MODELES, {
+  hopRecrutement: {nom:"HOP! · Postes à pourvoir", section:"hop", format:"portrait", theme:"framboise", avion:false, logo:"bas", slides:[{blocs:[
+    {type:"titre", titre:"TA PLACE", sous:"est ici. Maintenant."},
+    {type:"accroche", texte:"Tu en as marre de subir ? **Viens agir.**", taille:"grand"},
+    {type:"etapes", texte:"**Défendre** tes collègues\n**Faire bouger** les choses\n**Ne plus laisser** les autres décider à ta place", style:"coches"},
+    {type:"conclusion", texte:"Postes de délégué·es à pourvoir : c’est avant les élections 2027 que ça se joue."},
+    {type:"bouton", texte:"Viens en salle PPV", style:"jaune", place:"gauche"}]}]},
+  hopPermanence: {nom:"HOP! · Permanence salle PPV", section:"hop", format:"portrait", theme:"bordeaux", avion:false, logo:"haut", slides:[{blocs:[
+    {type:"etiquette", texte:"Permanence UNAC", style:"contour"},
+    {type:"date", jour:"Mer", num:"2", mois:"Sept", infos:"**12h15 – 18h00**\n**Salle PPV**, CDG\nConseil, défense de vos droits, réponses à vos questions"},
+    {type:"portrait", photo:"../commun/img/hop/laure-desrentes.jpg", role:"Votre déléguée syndicale", nom:"Laure Desrentes", texte:"à votre écoute"},
+    {type:"bouton", texte:"Venez nous rencontrer", style:"blanc", place:"gauche"}]}]}
+});
 const MODELES_INFO = [
+  {k:"hopRecrutement", n:"HOP! · Recrutement délégué·es", cat:"Mobiliser", hop:1, obj:"Donner envie de rejoindre l’équipe UNAC HOP!.",
+   pour:["Postes de délégué·es à pourvoir","Préparation des élections","Campagne d’adhésion"], eviter:["Information pratique","Sujet Air France"]},
+  {k:"hopPermanence", n:"HOP! · Permanence avec photo", cat:"Informer", hop:1, obj:"Annoncer une permanence et montrer qui accueille.",
+   pour:["Permanence salle PPV","Nouvelle déléguée, nouveau délégué","Réunion d’information"], eviter:["Contenu sans date précise"]},
   {k:"victoire", n:"Victoire / acquis", cat:"Valoriser", obj:"Faire savoir un résultat obtenu par l’UNAC.",
    pour:["Procédure améliorée","Réponse favorable de la Direction","Accord ou avenant obtenu","Litige gagné"], eviter:["Négociation encore en cours","Sujet qui divise les PNC"]},
   {k:"chiffres", n:"Décryptage chiffré", cat:"Informer", obj:"Mettre des chiffres en perspective et donner la lecture UNAC.",
@@ -399,6 +430,10 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;
 const riche = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\^(\w+)/g, "<sup>$1</sup>").replace(/\n/g, "<br>");
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("on"), 2600); }
 const IMG = "../commun/img/";
+const SECTIONS = {af:{nom:"Air France", logo:"logo-unac-blanc.png"}, hop:{nom:"HOP!", logo:"logo-unac-hop-blanc.png"}};
+const SECTION_URL = new URLSearchParams(location.search).get("section") === "hop" ? "hop" : null;
+let SECTION_DEF = SECTION_URL || (localStorage.getItem("chrono:section") === "hop" ? "hop" : "af");
+if(SECTION_URL) try{ localStorage.setItem("chrono:section", SECTION_URL); }catch(e){}
 const FORMATS = {carre:{nom:"Carré 1:1", w:1080, h:1080}, portrait:{nom:"Portrait 4:5", w:1080, h:1350}, story:{nom:"Story 9:16", w:1080, h:1920}};
 const THEMES = {prune:{nom:"Prune", bg:"#A54067"}, framboise:{nom:"Framboise", bg:"#CF3473"}, bordeaux:{nom:"Bordeaux", bg:"#6E1F44"}, magenta:{nom:"Magenta", bg:"#C2286A"}, nuit:{nom:"Nuit", bg:"#3A1530"}};
 const PICTOS = {"refus-vol":"Refus de vol", telephone:"Téléphone", calendrier:"Planning", pieces:"Rémunération", appli:"Appli", factures:"Documents", lit:"Repos / lit", etranger:"Étranger", fonds:"Santé / fonds", reclamation:"Réclamation", elus:"Élu.es"};
@@ -420,6 +455,7 @@ const TYPES = {
   avantapres:{nom:"Avant / Après", champs:[["l1","Étiquette gauche","text","Avant"],["t1","Texte gauche","area"],["l2","Étiquette droite","text","Maintenant"],["t2","Texte droite","area"]]},
   etapes:  {nom:"Liste d'étapes", champs:[["texte","Étapes (une par ligne)","area"],["style","Repères","select",{numeros:"Numéros 1, 2, 3",relies:"Numéros reliés",coches:"Coches vertes ✓",fleches:"Flèches →"}]]},
   citation:{nom:"Citation / prise de position", champs:[["texte","Citation","area"],["auteur","Auteur","text","La section UNAC Air France"]]},
+  portrait:{nom:"Portrait (photo ronde + nom)", champs:[["photo","Photo","photo"],["role","Fonction (au-dessus du nom)","text","Votre déléguée syndicale"],["nom","Prénom Nom","text"],["texte","Phrase (en italique)","text","à votre écoute"]]},
   bouton:  {nom:"Bouton d'appel à l'action", champs:[["texte","Texte du bouton","text"],["style","Couleur","select",{blanc:"Blanc",jaune:"Jaune"}],["place","Position","select",{gauche:"À gauche",centre:"Centré"}]]},
   espace:  {nom:"Espace", champs:[]}
 };
@@ -444,18 +480,19 @@ function blocHTML(b){
     case "avantapres": return `<div class="ap"><div class="av"><div class="lb">${esc(b.l1)}</div><p>${riche(b.t1)}</p></div><div class="apr"><div class="lb">${esc(b.l2)}</div><p>${riche(b.t2)}</p></div></div>`;
     case "etapes": { const st = b.style || "numeros"; return `<ol class="eta ${st}">${lignes(b.texte).map((l,i) => `<li><span>${st === "coches" ? "✓" : st === "fleches" ? FLECHE_SVG : i+1}</span><div>${riche(l)}</div></li>`).join("")}</ol>`; }
     case "citation": return `<div class="cit"><p>${riche(b.texte)}</p>${b.auteur ? `<div class="au">${esc(b.auteur)}</div>` : ""}</div>`;
+    case "portrait": return `<div class="por">${b.photo ? `<div class="ph"><img src="${esc(b.photo)}" alt=""></div>` : ""}<div class="pt">${b.role ? `<span class="ro">${esc(b.role)}</span>` : ""}${b.nom ? `<b>${esc(b.nom)}</b>` : ""}${b.texte ? `<i>${riche(b.texte)}</i>` : ""}</div></div>`;
     case "bouton": return `<div class="cta ${b.style === "jaune" ? "jaune" : ""} ${b.place === "centre" ? "centre" : ""}">${esc(b.texte)}${FLECHE_SVG}</div>`;
   }
   return "";
 }
-const blocVide = b => b.type !== "espace" && !TYPES[b.type].champs.some(([k,,ty]) => (ty === "text" || ty === "area" || ty === "picto") && String(b[k]||"").trim());
+const blocVide = b => b.type !== "espace" && !TYPES[b.type].champs.some(([k,,ty]) => (ty === "text" || ty === "area" || ty === "picto" || ty === "photo") && String(b[k]||"").trim());
 
 /* ---------- État ---------- */
 const DOCS_KEY = "chrono:docs", CUR_KEY = "chrono:current";
 let DOCS = {}, S = null;
 function nouveauBloc(type){ const b = {id:uid(), type}; TYPES[type].champs.forEach(([k,,ty,def]) => { b[k] = ty === "select" ? Object.keys(def)[0] : (typeof def === "string" ? def : ""); }); return b; }
 function nouvelleSlide(){ return {id:uid(), blocs:[nouveauBloc("accroche"), nouveauBloc("texte")]}; }
-function blank(){ return {v:1, id:uid(), statut:"brouillon", cree:Date.now(), maj:Date.now(), nom:"", format:"carre", theme:"prune", avion:true, logo:"haut", slides:[nouvelleSlide()]}; }
+function blank(){ return {v:1, id:uid(), statut:"brouillon", cree:Date.now(), maj:Date.now(), nom:"", format:"carre", theme:"prune", avion:true, logo:"haut", section:SECTION_DEF, slides:[nouvelleSlide()]}; }
 function hasContent(d){ return d.slides.some(s => s.blocs.some(b => !blocVide(b))); }
 function persist(){ try{ localStorage.setItem(DOCS_KEY, JSON.stringify(DOCS)); localStorage.setItem(CUR_KEY, S.id); }catch(e){ toast("Mémoire de l'appareil pleine"); } }
 let saveT = null;
@@ -471,6 +508,7 @@ function champ(b, [k, lab, ty, def]){
   const v = b[k] ?? "";
   if(ty === "area") return `<label class="f">${lab}</label><textarea data-b="${k}" rows="${Math.min(8, Math.max(2, String(v).split("\n").length + 1))}">${esc(v)}</textarea>`;
   if(ty === "select") return `<label class="f">${lab}</label><select data-b="${k}">${Object.entries(def).map(([o,l]) => `<option value="${o}" ${o===v?"selected":""}>${l}</option>`).join("")}</select>`;
+  if(ty === "photo") return `<label class="f">${lab}</label><div class="phf">${v ? `<img src="${esc(v)}" alt="">` : ""}<label class="mini">${v ? "Changer la photo" : "Choisir une photo"}<input type="file" accept="image/*" data-photo="${k}" hidden></label>${v ? `<button class="mini" data-pk="${k}" data-pv="">Retirer</button>` : ""}</div>`;
   if(ty === "picto") return `<label class="f">${lab}</label><div class="pictos"><button data-pk="${k}" data-pv="" class="${!v?"on":""}">aucun</button>${Object.entries(PICTOS).map(([p,l]) => `<button data-pk="${k}" data-pv="${p}" title="${l}" class="${v===p?"on":""}" style="background-image:url(${IMG}pictos/${p}.png)"></button>`).join("")}</div>`;
   return `<label class="f">${lab}</label><input type="text" data-b="${k}" value="${esc(v)}">`;
 }
@@ -480,6 +518,7 @@ function renderForm(){
   let h = ro ? `<div class="card robanner"><b>Post publié le ${dt(S.publieLe||S.maj)}</b><span>Consultation seule.</span><button class="mini" id="roCopy">Créer un brouillon à partir de celui-ci</button></div>` : "";
   h += `<div class="card"><h2>Réglages <span class="st ${ro?"pub":""}">${ro?"Publié":"Brouillon"}</span></h2>
     <label class="f">Nom du post (pour l'historique)</label><input type="text" data-k="nom" value="${esc(S.nom)}" placeholder="ex. Résultats T3 / MNL">
+    <label class="f">Section (logo)</label><div class="seg2">${Object.entries(SECTIONS).map(([k,o]) => `<button data-set="section" data-v="${k}" class="${(S.section||"af")===k?"on":""}">UNAC ${o.nom}</button>`).join("")}</div>
     <label class="f">Format</label><div class="seg2">${Object.entries(FORMATS).map(([k,o]) => `<button data-set="format" data-v="${k}" class="${S.format===k?"on":""}">${o.nom}</button>`).join("")}</div>
     <label class="f">Couleur de fond</label><div class="seg2">${Object.entries(THEMES).map(([k,o]) => `<button data-set="theme" data-v="${k}" class="${S.theme===k?"on":""}"><span class="sw" style="background:${o.bg}"></span>${o.nom}</button>`).join("")}</div>
     <label class="f">Logo UNAC</label><div class="seg2"><button data-set="logo" data-v="haut" class="${S.logo==="haut"?"on":""}">En haut à droite</button><button data-set="logo" data-v="bas" class="${S.logo==="bas"?"on":""}">En bas à droite</button></div>
@@ -501,6 +540,14 @@ function renderForm(){
 }
 const slideOf = el => S.slides.find(s => s.id === el.closest("[data-s]").dataset.s);
 const blocOf = el => slideOf(el).blocs.find(x => x.id === el.closest("[data-b-id]").dataset.bId);
+$("#form").addEventListener("change", e => {
+  const t = e.target; if(!t.dataset.photo || !t.files[0]) return;
+  const f = t.files[0], b = blocOf(t), k = t.dataset.photo, im = new Image();
+  im.onload = () => { const n = 640, c = document.createElement("canvas"), sz = Math.min(im.width, im.height); c.width = c.height = n;
+    c.getContext("2d").drawImage(im, (im.width - sz)/2, (im.height - sz)/2, sz, sz, 0, 0, n, n);
+    b[k] = c.toDataURL("image/jpeg", .85); URL.revokeObjectURL(im.src); changed(true); };
+  im.src = URL.createObjectURL(f);
+});
 $("#form").addEventListener("input", e => {
   const t = e.target, v = t.type === "checkbox" ? t.checked : t.value;
   if(t.dataset.k){ S[t.dataset.k] = v; return changed(false); }
@@ -510,7 +557,7 @@ $("#form").addEventListener("click", e => {
   if(e.target.id === "addSlide"){ S.slides.push(nouvelleSlide()); changed(true); const f = $("#form"); f.scrollTop = f.scrollHeight; return; }
   if(e.target.id === "pubBtn") return publier();
   if(e.target.id === "roCopy") return copyToDraft(S);
-  const st = e.target.closest("[data-set]"); if(st){ S[st.dataset.set] = st.dataset.v; return changed(true); }
+  const st = e.target.closest("[data-set]"); if(st){ S[st.dataset.set] = st.dataset.v; if(st.dataset.set === "section"){ SECTION_DEF = st.dataset.v; try{ localStorage.setItem("chrono:section", SECTION_DEF); }catch(_){} } return changed(true); }
   const pk = e.target.closest("[data-pk]"); if(pk){ blocOf(pk)[pk.dataset.pk] = pk.dataset.pv; return changed(true); }
   const b = e.target.closest("[data-a]"); if(!b) return;
   const s = slideOf(b), si = S.slides.indexOf(s), a = b.dataset.a;
@@ -538,7 +585,7 @@ function slideNode(s){
   const finConcl = blocs.length && blocs[blocs.length-1].type === "conclusion";
   p.className = "page" + (S.avion && !titreEnTete ? "" : " sansavion") + (titreEnTete ? " titre1" : "") + (S.logo === "bas" ? " logobas" : "") + (S.flash ? " flash" : "");
   p.style.cssText = `width:${F.w}px;height:${F.h}px;--bg:${T.bg}` + (finConcl ? ";--pb:110px" : "") + (titreEnTete ? ";--just:space-between" : "");
-  p.innerHTML = (S.avion && !titreEnTete ? `<img class="avion" src="${IMG}avion-nez.png" alt="">` : "") + `<img class="logo" src="${IMG}logo-unac-blanc.png" alt="UNAC">`
+  p.innerHTML = (S.avion && !titreEnTete ? `<img class="avion" src="${IMG}avion-nez.png" alt="">` : "") + `<img class="logo ${S.section === "hop" ? "hop" : ""}" src="${IMG}${(SECTIONS[S.section]||SECTIONS.af).logo}" alt="UNAC">`
     + `<div class="zone">${blocs.map(blocHTML).join("")}</div>`;
   w.appendChild(p); return w;
 }
@@ -629,6 +676,7 @@ async function inflate(s){ let b = s.replace(/-/g,"+").replace(/_/g,"/"); while(
 function recevoir(o, msg){
   if(!o || !Array.isArray(o.slides)) return toast("Brouillon non reconnu");
   const d = Object.assign(blank(), JSON.parse(JSON.stringify(o)), {id:uid(), statut:"brouillon", cree:Date.now(), maj:Date.now()});
+  if(!o.section) d.section = SECTION_DEF;
   d.slides.forEach(s => { s.id = uid(); s.blocs.forEach(b => b.id = uid()); }); openDoc(d); toast(msg || "Post ouvert dans un nouveau brouillon");
 }
 $("#aPublish").addEventListener("click", () => { menu.classList.remove("open"); publier(); });
@@ -657,9 +705,10 @@ function ouvrirBanque(){
   const d = latestDraft(); $("#bqReprise").hidden = !(d && hasContent(d));
   $("#bqCats").innerHTML = CATS.map(c => `<button data-cat="${c}">${c}</button>`).join("");
   const g = $("#galerie");
-  g.innerHTML = MODELES_INFO.map(m => { const M = MODELES[m.k], T = THEMES[M.theme];
+  const ordre = MODELES_INFO.slice().sort((a,b) => (SECTION_DEF === "hop" ? (b.hop?1:0) - (a.hop?1:0) : (a.hop?1:0) - (b.hop?1:0)));
+  g.innerHTML = ordre.map(m => { const M = MODELES[m.k], T = THEMES[M.theme];
     return `<div class="mc" data-c="${m.cat}"><div class="th" data-modele="${m.k}" title="Utiliser ce modèle"></div>
-      <div class="hd"><b>${m.n}</b><span class="cat">${m.cat}</span></div>
+      <div class="hd"><b>${m.n}</b><span class="cat">${m.cat}</span>${m.hop ? `<span class="cat hopt">HOP!</span>` : ""}</div>
       <p class="ob">${m.obj}</p>
       <div class="chte"><span class="sw" style="background:${T.bg}"></span>${T.nom} · ${FORMATS[M.format].nom}${M.flash ? " · bandeau rayé" : ""}</div>
       <ul class="ls ok">${m.pour.map(x => `<li>${x}</li>`).join("")}</ul>
