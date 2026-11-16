@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Créations en validation · Atelier UNAC</title>
+<link rel="icon" href="commun/icons-atelier/favicon.png">
+<script src="commun/acces.js"></script>
+<script src="commun/acces-dev.js"></script>
+<style>
+  @font-face {font-family:T1;src:url("commun/polices/x1.woff2") format("woff2");font-weight:400}
+  @font-face {font-family:T1;src:url("commun/polices/x2.woff2") format("woff2");font-weight:700}
+  body {margin:0;min-height:100vh;color:#fff;font-family:T1,system-ui,sans-serif;background:#4f1a30 url("commun/img/fond-hebergement.jpg") center/cover fixed}
+  main {max-width:640px;margin:auto;padding:36px 20px}
+  html.verrou main, html.verrou-dev main {visibility:hidden}
+  a {color:inherit}
+  h1 {margin:24px 0 8px}
+  .attente {padding:18px;border:1px solid #ffffff55;border-radius:12px;background:#ffffff19;line-height:1.5}
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const verrou = document.querySelector("#verrouDev");
+    if (!verrou) return;
+    verrou.querySelector("h2").textContent = "Créations en validation";
+    verrou.querySelector("p").textContent = "Saisissez le code développeur pour ouvrir cet espace.";
+    verrou.querySelector("a").href = "./";
+  });
+</script>
+</head>
+<body>
+<main>
+  <a href="./">← Retour à l’Atelier</a>
+  <h1>Créations en validation</h1>
+  <p class="attente">Aucune création en attente. Le circuit de validation sera activé ultérieurement.</p>
+</main>
+</body>
+</html>
