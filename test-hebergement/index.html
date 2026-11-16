@@ -95,7 +95,9 @@
   .page .mois{position:absolute;left:61px;top:76px;font-size:15.5px;letter-spacing:.09em;text-transform:uppercase;line-height:1}
   .page .logo{position:absolute;left:938px;top:41px;width:88px}
   .page .t-test{position:absolute;left:61px;top:139.6px;height:18px}
-  .page .t-nouvel{position:absolute;left:62px;top:168.4px;height:20px}
+  .page .t-nouvel{position:absolute;left:61.25px;top:162.83px;height:31.46px}
+  .page img.mois{position:absolute;left:61.5px;top:75.85px;height:16.08px}
+  .page .band img.v{display:block;height:31.90px;margin:-3.27px 0 0 -.5px;max-width:none}
   .page .big{position:absolute;left:63px;top:238px;height:58px;display:flex;align-items:flex-start}
   .page .big img{height:58px;display:block}
   .page .big .gh{display:block;overflow:hidden;height:58px;flex:none}
@@ -232,18 +234,19 @@ function reduire(f){ return new Promise(ok => { const im = new Image(); im.onloa
 
 /* ---------- Visuel ---------- */
 function echo(){
-  const t = TITRE[S.type], H = 58, k = H/122, cw = (t.w - t.cs)*k, off = t.cs*k, step = cw*0.9;
-  return `<div class="big"><img src="${t.src}" alt="${S.type}">${[0.34,0.24,0.16,0.1,0.06,0.035].map(o => `<span class="gh" style="width:${cw.toFixed(1)}px;margin-left:${(-(cw-step)).toFixed(1)}px;opacity:${o}"><img src="${t.src}" style="margin-left:${(-off).toFixed(1)}px" alt=""></span>`).join("")}</div>`;
+  const t = TITRE[S.type], H = 58, W = t.w*H/122, step = W*0.5;
+  const ghosts = [0.3,0.22,0.15,0.1,0.065,0.04].map((o,i) => `<img src="${t.src}" style="position:absolute;left:${(step*(i+1)).toFixed(1)}px;top:0;height:${H}px;opacity:${o}" alt="">`).reverse().join("");
+  return `<div class="big" style="width:${(W + step*6).toFixed(0)}px">${ghosts}<img src="${t.src}" style="position:relative" alt="${S.type}"></div>`;
 }
 function pageHTML(){
   const nom = S.hotel.trim(), secs = SECTIONS.filter(([k]) => S[k].trim());
   return `<section class="page">
-    <div class="mois">${esc(moisLabel(S.mois))}</div>
+    ${+S.mois.slice(0,4) >= 2025 && +S.mois.slice(0,4) <= 2030 ? `<img class="mois" src="img/nv/m-${S.mois}.svg" alt="${esc(moisLabel(S.mois))}">` : `<div class="mois">${esc(moisLabel(S.mois))}</div>`}
     <img class="logo" src="img/logo-unac.png" alt="UNAC">
     <img class="t-test" src="img/test.svg" alt="Test d'un">
     <img class="t-nouvel" src="img/nouvel.svg" alt="nouvel hébergement">
     ${echo()}
-    <div class="band"><div class="v">${esc(villeAff() || "Escale")}</div>${nom ? `<div class="h">${VERSION === "public" ? `<span class="masque"></span>` : esc(nom)}</div>` : ""}</div>
+    <div class="band">${!S.ville.trim() && S.code && refVille(S.type, S.code) ? `<img class="v" src="img/nv/e-${esc(S.code)}.svg" alt="${esc(villeAff())}">` : `<div class="v">${esc(villeAff() || "Escale")}</div>`}${nom ? `<div class="h">${VERSION === "public" ? `<span class="masque"></span>` : esc(nom)}</div>` : ""}</div>
     <img class="avis" src="img/avis.png" alt="">
     ${S.note ? `<div class="note">${[1,2,3,4,5].map(n => STAR(n <= S.note ? "#F2A91D" : "#E3E3E3")).join("")}</div>` : ""}
     <div class="corps">
