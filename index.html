@@ -38,6 +38,9 @@
   .section-en-pause .tile{background:rgba(255,255,255,.09)}
   .section-en-pause .tile[aria-disabled="true"]:hover{transform:none}
   .section-en-pause .go{display:none}
+  .acces-dev-hop{display:grid;place-items:center;width:34px;height:34px;color:#fff;border:1px solid #ffffff55;border-radius:9px;background:#ffffff19}
+  .acces-dev-hop:hover,.acces-dev-hop:focus-visible{background:#ffffff33}
+  .acces-dev-hop svg{width:17px;height:17px}
   .etat-section{margin:0 0 16px 2px;color:#fff;font-weight:700;font-size:14px}
   .cies{display:flex;gap:8px;margin:0 0 26px}
   .cies a{color:#fff;text-decoration:none;font-weight:700;font-size:14px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:8px 16px}
@@ -152,8 +155,8 @@
   </div>
   </section>
 
-  <section class="cie section-en-pause" id="hop" aria-labelledby="titre-hop" aria-describedby="etat-hop">
-  <h2 id="titre-hop"><img class="derive" src="commun/img/avion-hop.png" alt=""><img class="hoplogo" src="commun/img/hop-blanc.png" alt="HOP!"></h2>
+  <section class="cie section-en-pause" id="hop" aria-label="HOP!" aria-describedby="etat-hop">
+  <h2><img class="derive" src="commun/img/avion-hop.png" alt=""><img class="hoplogo" src="commun/img/hop-blanc.png" alt="HOP!"><a class="acces-dev-hop" href="hop-developpeur.html" aria-label="Ouvrir l’espace développeur HOP!" title="Espace développeur HOP!"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></svg></a></h2>
   <p class="etat-section" id="etat-hop">En cours de développement. Les outils HOP! sont temporairement indisponibles depuis l’accueil.</p>
   <div class="grid">
     <a class="tile" role="link" aria-disabled="true" data-href="chrono/?section=hop">
