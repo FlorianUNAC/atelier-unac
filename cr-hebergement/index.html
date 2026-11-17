@@ -344,6 +344,7 @@
       </div>
     </div>
     <div class="vers" id="vers" title="Version du document"><button data-v="adherents" class="on">Adhérents</button><button data-v="public">Public</button></div>
+    <button class="btn ghost" id="mailBtn" title="Envoyer le PDF par e-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg><span class="lg">E-mail</span></button>
     <button class="btn ghost" id="imgBtn" title="Une image par page, pour Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-8 9"/></svg><span class="lg">Images</span></button>
     <button class="btn pdf" id="pdfBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span class="lg">Télécharger le&nbsp;</span>PDF</button>
   </div>
@@ -956,6 +957,7 @@ function resetCR(){
 $("#aReset").addEventListener("click", resetCR);
 $("#histBtn").addEventListener("click", () => openHistory());
 $("#imgBtn").addEventListener("click", () => { if(enExemple()) return toast("Remplissez d’abord le document : l’aperçu n’est qu’un exemple"); return exportImages(); });
+$("#mailBtn").addEventListener("click", () => { if(enExemple()) return toast("Remplissez d’abord le document : l’aperçu n’est qu’un exemple"); return envoyerMail(); });
 $("#aPublish").addEventListener("click", () => { menu.classList.remove("open"); publishCR(); });
 $("#resetBtn").addEventListener("click", resetCR);
 $("#aDemo").addEventListener("click", () => {
@@ -1060,5 +1062,6 @@ function demo(t){
   window.titreExport = () => `CR hébergement ${HOP ? "HOP!" : TNOM[type]} · ${moisLabel(S.mois)}`;
 </script>
 <script src="../commun/export-images.js"></script>
+<script src="../commun/envoi-mail.js"></script>
 </body>
 </html>
