@@ -122,6 +122,14 @@
   .pictos{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
   .pictos button{width:46px;height:46px;border:1.5px solid var(--ui-line);border-radius:10px;background:#fff center/34px no-repeat;cursor:pointer;font-size:10px;color:var(--ui-muted)}
   .pictos button.on{border-color:#B33868;box-shadow:0 0 0 2px rgba(179,56,104,.2)}
+  .page .hlr{color:#B33866;font-weight:700}
+  .page .tg{font-size:1.22em;line-height:1.3}
+  .page .tp{font-size:.86em}
+  .page.just .p,.page.just .note{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+  .tbar{display:flex;gap:4px;flex-wrap:wrap;margin:2px 0 4px}
+  .tbar button{min-width:30px;height:28px;border:1px solid var(--ui-line);background:#fff;border-radius:7px;cursor:pointer;font-size:13px;padding:0 7px;color:#4a2a3a}
+  .tbar button:hover{border-color:#c8487f;color:#B33866}
+  .tbar .sep{width:1px;background:var(--ui-line);margin:3px 3px}
   .fmt{font-size:11px;color:var(--ui-muted);margin-top:4px;line-height:1.4}
   .fmt code{background:#f1e8ed;border-radius:4px;padding:0 4px;color:#7a2a4e}
 
@@ -329,7 +337,14 @@ const MOIS = ["janvier","février","mars","avril","mai","juin","juillet","août"
 const $ = s => document.querySelector(s);
 const uid = () => Math.random().toString(36).slice(2,9);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const gras = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+/* Mise en forme en ligne : **gras** · *italique* · __souligné__ · ==rose== · {+plus grand+} · {-plus petit-} */
+const gras = s => esc(s)
+  .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
+  .replace(/(^|[^*\w])\*(?!\s)([^*\n]+?)\*(?![*\w])/g, "$1<i>$2</i>")
+  .replace(/__(.+?)__/g, "<u>$1</u>")
+  .replace(/==(.+?)==/g, '<span class="hlr">$1</span>')
+  .replace(/\{\+(.+?)\+\}/g, '<span class="tg">$1</span>')
+  .replace(/\{-(.+?)-\}/g, '<span class="tp">$1</span>');
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const moisLabel = m => { const [y,mm] = m.split("-"); return MOIS[+mm-1] + " " + y; };
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("on"), 2600); }
@@ -356,9 +371,9 @@ const rows = t => String(t||"").split("\n").map(l => l.trim()).filter(Boolean).m
 
 /* ---------- Types de blocs ---------- */
 const TYPES = {
-  texte:   {nom:"Texte", champs:[["texte","Texte","area"]], aide:"<code>- </code> puce · <code>1) </code> étape numérotée · <code>&gt; </code> note grise · <code>**gras**</code>"},
+  texte:   {nom:"Texte", champs:[["texte","Texte","area"]], aide:"<code>- </code> puce · <code>1) </code> étape numérotée · <code>&gt; </code> note grise · barre d'outils : gras, italique, souligné, rose, taille"},
   enbref:  {nom:"En bref (liste à cocher)", champs:[["titreA","Titre","text","En"],["titreB","Suite en couleur","text","bref"],["texte","Une ligne par point","area"]], aide:"Une ligne par point, ex. <code>**Un coup dur ?** pensez au Fonds social</code>"},
-  encadre: {nom:"Encadré", champs:[["style","Style","select",{clair:"Rose clair",fonce:"Rose foncé",alerte:"Prune (attention)",contour:"Clair avec contour"}],["titre","Titre (facultatif)","text"],["texte","Texte","area"]], aide:"<code>- </code> puce · <code>1) </code> étape · <code>&gt; </code> note grise · <code>**gras**</code>"},
+  encadre: {nom:"Encadré", champs:[["style","Style","select",{clair:"Rose clair",fonce:"Rose foncé",alerte:"Prune (attention)",contour:"Clair avec contour"}],["titre","Titre (facultatif)","text"],["texte","Texte","area"]], aide:"<code>- </code> puce · <code>1) </code> étape · <code>&gt; </code> note grise · barre d'outils : gras, italique, souligné, rose, taille"},
   colonnes:{nom:"Deux colonnes", champs:[["gStyle","Gauche : style","select",{clair:"Encadré rose clair",fonce:"Encadré rose foncé",alerte:"Encadré prune",aucun:"Texte simple",tableau:"Tableau"}],["gTitre","Gauche : titre","text"],["gTexte","Gauche : texte","area"],
              ["dStyle","Droite : style","select",{fonce:"Encadré rose foncé",clair:"Encadré rose clair",alerte:"Encadré prune",aucun:"Texte simple",tableau:"Tableau"}],["dTitre","Droite : titre","text"],["dTexte","Droite : texte","area"],["dAlerteTitre","Droite : encadré en dessous (titre)","text"],["dAlerteTexte","Droite : encadré en dessous (texte)","area"]],
              aide:"Style « Tableau » : une ligne par rangée, cellules séparées par <code>|</code>, la 1re ligne = en-têtes."},
@@ -367,7 +382,7 @@ const TYPES = {
   tableau: {nom:"Tableau", champs:[["texte","Une ligne par rangée, cellules séparées par |","area"],["grand","Chiffres en grand (tarifs)","check"]], aide:"La 1re ligne = en-têtes. ex. <code>Formule | PASS Hospi</code>"},
   personnes:{nom:"Liste de personnes", champs:[["texte","Une ligne par groupe : Groupe : Prénom NOM, Prénom NOM…","area"]], aide:"ex. <code>Actifs : Corinne CORDIER, Rémy DIESEN</code> (prénom en gras automatiquement)"},
   roles:   {nom:"Tableau clé / valeur", champs:[["titre","Titre","text","Où siègent-ils ?"],["texte","Une ligne par rangée : clé | valeur","area"]], aide:"ex. <code>Bureau | Stéphane PASQUALINI</code>"},
-  appli:   {nom:"Appli MNPAF (avec badge)", champs:[["texte","Texte à gauche","area"]], aide:"<code>- </code> puce · <code>**gras**</code>"}
+  appli:   {nom:"Appli MNPAF (avec badge)", champs:[["texte","Texte à gauche","area"]], aide:"<code>- </code> puce · barre d'outils : gras, italique, souligné, rose, taille"}
 };
 function blocHTML(b){
   switch(b.type){
@@ -418,11 +433,40 @@ function copyToDraft(d){ const c = JSON.parse(JSON.stringify(d)); Object.assign(
 function moisOptions(sel){ const now = new Date(); let o = ""; for(let k=-14;k<=4;k++){ const d = new Date(now.getFullYear(), now.getMonth()+k, 1); const v = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); o += `<option value="${v}" ${v===sel?"selected":""}>${cap(MOIS[d.getMonth()])} ${d.getFullYear()}</option>`; } return o; }
 function champ(b, [k, lab, ty, def]){
   const v = b[k] ?? "";
-  if(ty === "area") return `<label class="f">${lab}</label><textarea data-b="${k}" rows="${Math.min(10, Math.max(3, String(v).split("\n").length + 1))}">${esc(v)}</textarea>`;
+  if(ty === "area") return `<label class="f">${lab}</label>${TBAR}<textarea data-b="${k}" rows="${Math.min(10, Math.max(3, String(v).split("\n").length + 1))}">${esc(v)}</textarea>`;
   if(ty === "select") return `<label class="f">${lab}</label><select data-b="${k}">${Object.entries(def).map(([o,l]) => `<option value="${o}" ${o===v?"selected":""}>${l}</option>`).join("")}</select>`;
   if(ty === "check") return `<label class="chk" style="margin-top:8px"><input type="checkbox" data-b="${k}" ${v !== false ? "checked" : ""}> ${lab}</label>`;
   return `<label class="f">${lab}</label><input type="text" data-b="${k}" value="${esc(v)}">`;
 }
+const TBAR = `<div class="tbar"><button type="button" data-fmt="**" title="Gras"><b>G</b></button><button type="button" data-fmt="*" title="Italique"><i>I</i></button><button type="button" data-fmt="__" title="Souligné"><u>S</u></button><button type="button" data-fmt="==" title="En rose" style="color:#B33866;font-weight:700">A</button><span class="sep"></span><button type="button" data-fmt="{+|+}" title="Plus grand">A+</button><button type="button" data-fmt="{-|-}" title="Plus petit" style="font-size:11px">A−</button><span class="sep"></span><button type="button" data-ligne="- " title="Liste à puces">• Liste</button><button type="button" data-ligne="> " title="Note grise">Note</button><button type="button" data-fmt="" title="Retirer la mise en forme">⌫</button></div>`;
+function formater(btn){
+  const ta = btn.closest(".tbar").nextElementSibling; if(!ta || ta.tagName !== "TEXTAREA") return;
+  let a = ta.selectionStart, z = ta.selectionEnd, v = ta.value;
+  if(btn.dataset.ligne !== undefined){
+    const pf = btn.dataset.ligne, deb = v.lastIndexOf("\n", a - 1) + 1, fin = v.indexOf("\n", z) < 0 ? v.length : v.indexOf("\n", z);
+    const lignes = v.slice(deb, fin).split("\n"), tous = lignes.every(l => l.startsWith(pf));
+    const nv = lignes.map(l => tous ? l.slice(pf.length) : (l.trim() ? pf + l.replace(/^([-•>]\s+)/, "") : l)).join("\n");
+    ta.value = v.slice(0, deb) + nv + v.slice(fin); ta.setSelectionRange(deb, deb + nv.length);
+  } else {
+    const f = btn.dataset.fmt;
+    if(!f){ // nettoyer
+      const sel = v.slice(a, z).replace(/\*\*|__|==|\{[+-]|[+-]\}/g, "").replace(/(^|[^*])\*([^*]+)\*/g, "$1$2");
+      ta.value = v.slice(0, a) + sel + v.slice(z); ta.setSelectionRange(a, a + sel.length);
+    } else {
+      const [o, c] = f.includes("|") ? f.split("|") : [f, f];
+      // garder les espaces hors des marques
+      while(a < z && /\s/.test(v[a])) a++; while(z > a && /\s/.test(v[z-1])) z--;
+      const sel = v.slice(a, z);
+      if(v.slice(a - o.length, a) === o && v.slice(z, z + c.length) === c){ // déjà appliqué -> retirer
+        ta.value = v.slice(0, a - o.length) + sel + v.slice(z + c.length); ta.setSelectionRange(a - o.length, z - o.length);
+      } else {
+        const t = sel || "texte"; ta.value = v.slice(0, a) + o + t + c + v.slice(z); ta.setSelectionRange(a + o.length, a + o.length + t.length);
+      }
+    }
+  }
+  ta.focus(); ta.dispatchEvent(new Event("input", {bubbles:true}));
+}
+document.addEventListener("mousedown", e => { if(e.target.closest(".tbar button")) e.preventDefault(); });
 window.NL_API = {uid:() => uid(), nouveauBloc:t => nouveauBloc(t), etat:() => S, changed:f => changed(f), toast:m => toast(m), aDuContenu:() => hasContent(S)};
 function renderForm(){
   const f = $("#form"), sc = f.scrollTop, ro = S.statut === "publie";
@@ -431,7 +475,7 @@ function renderForm(){
   h += `<div class="card"><h2>En-tête <span class="st ${ro?"pub":""}">${ro?"Publiée":"Brouillon"}</span></h2>
     <div class="row2"><div><label class="f">Titre</label><input type="text" data-k="titreA" value="${esc(S.titreA)}"></div><div><label class="f">Suite du titre en gras</label><input type="text" data-k="titreB" value="${esc(S.titreB)}"></div></div>
     <label class="f">Sous-titre</label><input type="text" data-k="sous" value="${esc(S.sous)}">
-    <div class="row2"><div><label class="f">Mois</label><select data-k="mois">${moisOptions(S.mois)}</select></div><div></div></div>
+    <div class="row2"><div><label class="f">Mois</label><select data-k="mois">${moisOptions(S.mois)}</select></div><div><label class="f">Alignement du texte</label><select data-k="align"><option value="just" ${S.align !== "gauche" ? "selected" : ""}>Justifié</option><option value="gauche" ${S.align === "gauche" ? "selected" : ""}>Aligné à gauche</option></select></div></div>
     <div class="row2"><div><label class="f">Bandeau final : libellé</label><input type="text" data-k="contactLabel" value="${esc(S.contactLabel)}"></div><div><label class="f">Bandeau final : e-mail</label><input type="text" data-k="contactMail" value="${esc(S.contactMail)}"></div></div></div>`;
   S.sections.forEach((s, si) => {
     h += `<div class="card sec-card" data-s="${s.id}"><div class="sh"><b>Section ${si+1}</b>${si>0?`<button class="mini" data-a="sup" title="Monter">↑</button>`:""}${si<S.sections.length-1?`<button class="mini" data-a="sdown" title="Descendre">↓</button>`:""}<button class="mini danger" data-a="sdel">Supprimer</button></div>
@@ -457,6 +501,7 @@ $("#form").addEventListener("input", e => {
   if(t.dataset.b){ const s = secOf(t), b = s.blocs.find(x => x.id === t.closest("[data-b-id]").dataset.bId); b[t.dataset.b] = v; return changed(false); }
 });
 $("#form").addEventListener("click", e => {
+  const fb = e.target.closest(".tbar button"); if(fb) return formater(fb);
   if(e.target.id === "addSec"){ S.sections.push({id:uid(), titreA:"", titreB:"", picto:"", fond:"auto", blocs:[nouveauBloc("texte")]}); changed(true); const f = $("#form"); f.scrollTop = f.scrollHeight; return; }
   if(e.target.id === "pubBtn") return publier();
   if(e.target.id === "roCopy") return copyToDraft(S);
@@ -483,7 +528,7 @@ function el(html){ const d = document.createElement("div"); d.innerHTML = html.t
 const overflows = c => c.scrollHeight > c.clientHeight + 0.5;
 function newPage(box, idx){
   const w = document.createElement("div"); w.className = "pwrap";
-  const p = document.createElement("section"); p.className = "page"; p.style.setProperty("--k", DENS.k);
+  const p = document.createElement("section"); p.className = "page" + (S.align === "gauche" ? "" : " just"); p.style.setProperty("--k", DENS.k);
   p.innerHTML = (idx ? "" : `<div class="nhd"><div><h1>${esc(S.titreA)} <b>${esc(S.titreB)}</b></h1><div class="sous">${esc([S.sous, cap(moisLabel(S.mois))].filter(Boolean).join(" · "))}</div></div><img class="logo" src="${IMG}logo-unac-couleur.png" alt="UNAC"></div>
     <div class="avion"><div class="band"></div><img src="${IMG}avion-unac.png" alt=""></div>`) + `<div class="content"></div><div class="bottomgap"></div>${idx ? `<div class="num">${idx+1}</div>` : ""}`;
   w.appendChild(p); box.appendChild(w); return p.querySelector(".content");

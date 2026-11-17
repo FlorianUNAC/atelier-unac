@@ -18,6 +18,7 @@
         const t = n.tagName.toLowerCase();
         if(t === "br") out += "\n";
         else if(t === "strong" || t === "b"){ const raw = texteDe(n), x = raw.trim(); if(x) out += (/^\s/.test(raw) ? " " : "") + `**${x}**` + (/\s$/.test(raw) ? " " : ""); else out += raw; }
+        else if(t === "em" || t === "i" || t === "u"){ const m = t === "u" ? "__" : "*", raw = texteDe(n), x = raw.trim(); if(x && !/^\*\*.*\*\*$/.test(x)) out += (/^\s/.test(raw) ? " " : "") + m + x + m + (/\s$/.test(raw) ? " " : ""); else out += raw; }
         else out += texteDe(n);
       }
     });
