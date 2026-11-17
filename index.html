@@ -35,6 +35,10 @@
   h2 span{font-size:24px;font-weight:700;letter-spacing:.01em}
   h2::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.25)}
   .cie{scroll-margin-top:20px}
+  .groupe{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:6px 2px 12px}
+  .groupe h3{font-size:16px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;opacity:.95}
+  .groupe p{font-size:13px;opacity:.7}
+  .groupe.dev{opacity:.75}
   .outils-hop{position:relative;isolation:isolate;margin-bottom:38px;border-radius:18px}
   .outils-hop .grid{margin-bottom:0;filter:grayscale(1);opacity:.63}
   .outils-hop .tile[aria-disabled="true"]:hover{transform:none}
@@ -100,6 +104,7 @@
   <nav class="cies" aria-label="Compagnies"><a href="#af"><img src="commun/img/derives/derive-af.png" alt="">Air France</a><a href="#hop"><img src="commun/img/derives/derive-hop.png" alt="">HOP!</a><a href="#transavia"><img src="commun/img/derives/derive-transavia.png" alt="">Transavia</a><a href="#volotea"><img src="commun/img/derives/derive-volotea.png" alt="">Volotea</a><a href="#easyjet"><img src="commun/img/derives/derive-easyjet.png" alt="">easyJet</a><a href="#lacompagnie"><img src="commun/img/derives/derive-lacompagnie.png" alt="">La Compagnie</a><a href="#aircalin"><img src="commun/img/derives/derive-aircalin.png" alt="">Aircalin</a></nav>
   <section class="cie" id="af">
   <h2><img class="derive" src="commun/img/avion-af.png" alt=""><img class="cielogo" src="commun/img/sections/cie-airfrance-blanc.png" alt="Air France" style="height:17px"></h2>
+  <div class="groupe "><h3>Outils de création</h3><p>Comptes rendus, posts, bulletins, newsletters et courriers mis en page automatiquement.</p></div>
   <div class="grid">
     <a class="tile" href="cr-hebergement/">
       <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4h8a2 2 0 0 1 2 2v4"/><path d="M3 14h18"/><path d="M3 18v2M21 18v2"/><circle cx="7" cy="10" r="1.6"/></svg></div>
@@ -136,11 +141,11 @@
       <div class="tags"><i>Facebook</i><i>PDF</i></div>
       <span class="go">→</span>
     </a>
-    <a class="tile" href="formulaires/?section=af">
-      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M12 11v6M9.5 14.5 12 17l2.5-2.5"/></svg></div>
-      <b>Formulaires</b>
-      <span>Formulaires PDF à remplir par les délégués, à télécharger en un clic : retour du délégué testeur (test d’un nouvel hébergement)…</span>
-      <div class="tags"><i>PDF</i><i>Remplissable</i></div>
+    <a class="tile" href="newsletter/" data-version="lettre-section">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h6M7 16h8"/></svg></div>
+      <b>Newsletter</b>
+      <span>Newsletter avec l'avion UNAC ou lettre de section « Message de… » : import Word, mise en page automatique, PDF A4, images et envoi par e-mail.</span>
+      <div class="tags"><i>PDF A4</i><i>Import Word</i><i>E-mail</i></div>
       <span class="go">→</span>
     </a>
     <a class="tile" href="papier-entete/">
@@ -150,24 +155,45 @@
       <div class="tags"><i>Courrier</i><i>PDF A4</i></div>
       <span class="go">→</span>
     </a>
-    <a class="tile" href="newsletter/" data-version="lettre-section">
-      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h6M7 16h8"/></svg></div>
-      <b>Newsletter</b>
-      <span>Newsletter avec l'avion UNAC ou lettre de section « Message de… » : import Word, mise en page automatique, PDF A4, images et envoi par e-mail.</span>
-      <div class="tags"><i>PDF A4</i><i>Import Word</i><i>E-mail</i></div>
+    <div class="tile soon">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+      <b>Prochain outil</b>
+      <span>Tracts, lettres d'information, daily de la perm… les prochains générateurs arriveront ici.</span>
+    </div>
+  </div>
+  <div class="groupe "><h3>Base documentaire</h3><p>Formulaires et documents de référence à télécharger.</p></div>
+  <div class="grid">
+    <a class="tile" href="formulaires/?section=af">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M12 11v6M9.5 14.5 12 17l2.5-2.5"/></svg></div>
+      <b>Formulaires</b>
+      <span>Formulaires PDF à remplir par les délégués, à télécharger en un clic : retour du délégué testeur (test d’un nouvel hébergement)…</span>
+      <div class="tags"><i>PDF</i><i>Remplissable</i></div>
       <span class="go">→</span>
     </a>
+    <div class="tile soon">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+      <b>Bientôt</b>
+      <span>Accords PNC, livrets UNAC (pratique, retraite, reprise), notes et comptes rendus de référence.</span>
+    </div>
+  </div>
+  <div class="groupe "><h3>Charte graphique</h3><p>Logos, couleurs et typographies UNAC.</p></div>
+  <div class="grid">
+    <a class="tile" href="charte/" data-version="charte-1">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></div>
+      <b>Charte graphique</b>
+      <span>Logos UNAC et de section, avions et dérives, couleurs et typographies : téléchargement en PNG ou JPG, couleur, fond et taille au choix.</span>
+      <div class="tags"><i>Logos</i><i>PNG / JPG</i><i>Couleurs</i></div>
+      <span class="go">→</span>
+    </a>
+  </div>
+  <div class="groupe dev"><h3>Espace développeur</h3><p>Accès réservé.</p></div>
+  <div class="grid">
     <a class="tile" href="validation.html">
       <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></svg></span>
       <b>Créations en validation</b>
       <span>Accès réservé par code développeur.</span>
       <span class="go">→</span>
     </a>
-    <div class="tile soon">
-      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
-      <b>Prochain outil</b>
-      <span>Tracts, lettres d'information, daily de la perm… les prochains générateurs arriveront ici.</span>
-    </div>
   </div>
   </section>
 

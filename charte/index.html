@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Charte graphique · Atelier UNAC</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../commun/icons-atelier/favicon.png">
+<link rel="apple-touch-icon" href="../commun/icons-atelier/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Atelier UNAC">
+<script src="../commun/acces.js"></script>
+<style>
+  @font-face{font-family:"T1";src:url("../commun/polices/x1.woff2") format("woff2");font-weight:400;font-display:block}
+  @font-face{font-family:"T1";src:url("../commun/polices/x2.woff2") format("woff2");font-weight:700 800;font-display:block}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"T1",Inter,system-ui,sans-serif;color:#fff;min-height:100vh;background:radial-gradient(120% 90% at 0% 0%,#a5466f 0%,#7a2a4e 40%,#4f1530 100%) fixed}
+  .wrap{max-width:1120px;margin:0 auto;padding:28px 22px 60px}
+  .top{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+  .top a.back{color:#fff;text-decoration:none;font-weight:700;font-size:14px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:8px 14px}
+  .top .sp{flex:1}
+  .top img.logo{height:74px;display:block}
+  h1{font-size:30px;font-weight:700}
+  .sub{opacity:.82;margin:6px 0 22px;font-size:14.5px;line-height:1.5;max-width:720px}
+  nav.onglets{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 26px;position:sticky;top:0;z-index:5;padding:10px 0;background:linear-gradient(#5f1d3bcc,#5f1d3b00)}
+  nav.onglets a{color:#fff;text-decoration:none;font-weight:700;font-size:13.5px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 14px}
+  nav.onglets a:hover{background:rgba(255,255,255,.24)}
+  h2{font-size:20px;margin:34px 0 6px;display:flex;align-items:center;gap:12px}
+  h2::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.25)}
+  h2 + p{opacity:.8;font-size:13.5px;margin-bottom:14px;line-height:1.5}
+  .grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+  .carte{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px}
+  .apercu{height:150px;border-radius:11px;display:grid;place-items:center;overflow:hidden;background:#fff;
+    background-image:linear-gradient(45deg,#eee 25%,transparent 25%),linear-gradient(-45deg,#eee 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#eee 75%),linear-gradient(-45deg,transparent 75%,#eee 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0}
+  .apercu canvas{max-width:92%;max-height:130px;display:block}
+  .carte b{font-size:15px}
+  .carte .opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .carte select{width:100%;font:inherit;font-size:12.5px;border-radius:8px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.18);color:#fff;padding:6px 7px}
+  .carte select option{color:#222}
+  .carte button{font:inherit;font-weight:700;font-size:13.5px;border:0;border-radius:10px;background:#fff;color:#7a1f48;padding:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px}
+  .carte button svg{width:15px;height:15px}
+  .carte .info{font-size:11.5px;opacity:.7;text-align:center}
+  .couleurs{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+  .coul{border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08)}
+  .coul .pastille{height:84px}
+  .coul div{padding:10px 12px;font-size:13px;line-height:1.45}
+  .coul b{display:block;font-size:14px}
+  .coul button{font:inherit;font-size:11.5px;font-weight:700;border:1px solid rgba(255,255,255,.3);background:none;color:#fff;border-radius:7px;padding:3px 8px;margin:6px 6px 0 0;cursor:pointer}
+  .typo{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:16px 18px;font-size:14px;line-height:1.55}
+  .typo p + p{margin-top:8px}
+  .typo .ex{font-size:26px;margin:4px 0}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#fff;color:#7a1f48;font-weight:700;border-radius:12px;padding:10px 16px;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.on{opacity:1}
+  @media (max-width:600px){.top img.logo{height:56px}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Atelier</a><div class="sp"></div><img class="logo" src="../commun/img/logo-unac-blanc.png" alt="UNAC"></div>
+  <h1>Charte graphique</h1>
+  <p class="sub">Logos UNAC et de section, avions et dérives des compagnies, couleurs et typographies. Choisissez la couleur, le fond, le format et la taille : le fichier est préparé sur votre appareil.</p>
+  <nav class="onglets"><a href="#logos">Logos UNAC</a><a href="#sections">Logos de section</a><a href="#avions">Avions</a><a href="#derives">Dérives</a><a href="#couleurs">Couleurs</a><a href="#typos">Typographies</a></nav>
+
+  <h2 id="logos">Logos UNAC</h2>
+  <p>Le logo officiel, avec ou sans le bloc CFE-CGC. Version rose sur fond clair, blanche sur fond rose ou photo.</p>
+  <div class="grille" id="gLogos"></div>
+
+  <h2 id="sections">Logos de section</h2>
+  <p>UNAC + compagnie, pour les communications propres à chaque section.</p>
+  <div class="grille" id="gSections"></div>
+
+  <h2 id="avions">Avions des compagnies</h2>
+  <p>Illustrations utilisées dans l'Atelier, fond transparent.</p>
+  <div class="grille" id="gAvions"></div>
+
+  <h2 id="derives">Dérives</h2>
+  <p>Pastilles et pictos : la dérive de chaque compagnie.</p>
+  <div class="grille" id="gDerives"></div>
+
+  <h2 id="couleurs">Couleurs</h2>
+  <p>Cliquez pour copier le code.</p>
+  <div class="couleurs" id="gCouleurs"></div>
+
+  <h2 id="typos">Typographies</h2>
+  <div class="typo">
+    <p><b>UNAC</b> (Regular et Bold) : police de la charte, pour les titres, les textes et les visuels.</p>
+    <p class="ex" style="font-family:T1;font-weight:700">Ensemble, plus forts</p>
+    <p><b>Novotype</b> (Regular et Medium) : titres des posts « Test d'un nouvel hébergement » (mois, escale).</p>
+    <p style="opacity:.75;font-size:13px">Les fichiers de police ne sont pas diffusés ici (licences) : demandez-les à l'équipe communication de la section.</p>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+"use strict";
+const IMG = "../commun/img/";
+const SECTIONS = [["hop","HOP!"],["transavia","Transavia"],["volotea","Volotea"],["easyjet","easyJet"],["lacompagnie","La Compagnie"],["aircalin","Aircalin"]];
+const COMPAGNIES = [["af","Air France"]].concat(SECTIONS);
+const LOGO_SRC = id => id === "hop" ? {couleur:IMG+"logo-unac-hop-couleur.png", blanc:IMG+"logo-unac-hop-blanc.png"}
+  : {couleur:IMG+`sections/logo-unac-${id}-couleur.png`, blanc:IMG+`sections/logo-unac-${id}-blanc.png`};
+const FONDS = {transparent:"Fond transparent", "#FFFFFF":"Fond blanc", "#B33866":"Fond rose UNAC", "#EBEBEB":"Fond gris clair", "#4F1530":"Fond prune"};
+const TEINTES = {couleur:"Rose (officiel)", blanc:"Blanc", noir:"Noir", prune:"Prune"};
+const TAILLES = {800:"800 px", 200:"200 px", 400:"400 px", 1600:"1600 px", 2400:"2400 px (impression)"};
+const COULEURS = [
+  ["Rose UNAC","#B33866","179, 56, 102","Couleur principale : logo, titres, bandeaux."],
+  ["Prune","#4F1530","79, 21, 48","Fonds sombres, dégradés."],
+  ["Framboise","#7A2A4E","122, 42, 78","Dégradés, encadrés foncés."],
+  ["Rose clair","#F7EBF0","247, 235, 240","Encadrés et fonds de section."],
+  ["Gris clair","#EBEBEB","235, 235, 235","Fond des visuels et de la lettre de section."],
+  ["Texte","#2B2B30","43, 43, 48","Corps du texte."]
+];
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const toast = m => { const t = document.getElementById("toast"); t.textContent = m; t.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("on"), 1800); };
+const cache = {};
+const charger = src => cache[src] || (cache[src] = new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = src; }));
+const DL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>`;
+
+/* Dessine l'élément selon les options choisies */
+async function dessiner(it, o, largeur){
+  const src = it.logo ? (o.teinte === "couleur" ? it.src.couleur : it.src.blanc) : it.src;
+  const img = await charger(src);
+  const marge = o.marge === "oui" ? 0.08 : 0;
+  const w0 = img.naturalWidth, h0 = img.naturalHeight;
+  const W = Math.round(largeur), k = W / (w0 * (1 + 2*marge));
+  const c = document.createElement("canvas"); c.width = W; c.height = Math.round(h0*k + 2*marge*w0*k);
+  const x = c.getContext("2d"); x.imageSmoothingQuality = "high";
+  // calque du logo
+  const l = document.createElement("canvas"); l.width = Math.round(w0*k); l.height = Math.round(h0*k);
+  const lx = l.getContext("2d"); lx.imageSmoothingQuality = "high"; lx.drawImage(img, 0, 0, l.width, l.height);
+  if(it.logo && o.cfe === "non"){ lx.clearRect(l.width*0.785, l.height*0.75, l.width, l.height); }
+  if(it.logo && (o.teinte === "noir" || o.teinte === "prune")){ lx.globalCompositeOperation = "source-in"; lx.fillStyle = o.teinte === "noir" ? "#111" : "#4F1530"; lx.fillRect(0, 0, l.width, l.height); }
+  const fond = o.format === "jpg" && o.fond === "transparent" ? "#FFFFFF" : o.fond;
+  if(fond !== "transparent"){ x.fillStyle = fond; x.fillRect(0, 0, c.width, c.height); }
+  x.drawImage(l, Math.round(marge*w0*k), Math.round(marge*w0*k));
+  return c;
+}
+function carte(it, box){
+  const d = document.createElement("div"); d.className = "carte";
+  const opts = [];
+  if(it.logo){ opts.push(["teinte", TEINTES]); opts.push(["cfe", {oui:"Avec CFE-CGC", non:"Sans CFE-CGC"}]); }
+  const tailles = Object.fromEntries(Object.entries(TAILLES).filter(([t]) => +t <= (it.max || 2400)));
+  opts.push(["fond", FONDS], ["format", {png:"PNG", jpg:"JPG"}], ["taille", tailles], ["marge", {non:"Sans marge", oui:"Avec marge"}]);
+  d.innerHTML = `<div class="apercu"><canvas></canvas></div><b>${esc(it.nom)}</b>
+    <div class="opts">${opts.map(([k, v]) => `<select data-k="${k}">${Object.entries(v).map(([a, b]) => `<option value="${a}">${b}</option>`).join("")}</select>`).join("")}</div>
+    <button type="button">${DL}Télécharger</button><span class="info"></span>`;
+  const lire = () => Object.fromEntries([...d.querySelectorAll("select")].map(s => [s.dataset.k, s.value]));
+  const st = d.querySelector('[data-k="taille"]'); if(st.querySelector('option[value="800"]')) st.value = "800";
+  if(it.logo && it.fondDefaut){ d.querySelector('[data-k="teinte"]').value = "blanc"; d.querySelector('[data-k="fond"]').value = it.fondDefaut; }
+  const maj = async () => {
+    const o = lire(), c = await dessiner(it, o, 520), v = d.querySelector(".apercu canvas");
+    v.width = c.width; v.height = c.height; v.getContext("2d").drawImage(c, 0, 0);
+    d.querySelector(".apercu").style.backgroundColor = o.fond === "transparent" ? (o.teinte === "blanc" ? "#7a2a4e" : "#fff") : o.fond;
+    d.querySelector(".apercu").style.backgroundImage = o.fond === "transparent" && o.teinte !== "blanc" ? "" : "none";
+    d.querySelector(".info").textContent = `${o.format.toUpperCase()} · ${o.taille} px de large${o.format === "png" && o.fond === "transparent" ? " · transparent" : ""}`;
+  };
+  d.addEventListener("change", maj);
+  d.querySelector("button").addEventListener("click", async () => {
+    const o = lire(), c = await dessiner(it, o, +o.taille);
+    const nom = [it.fichier, it.logo ? o.teinte : "", it.logo && o.cfe === "non" ? "sans-cfe" : "", o.fond === "transparent" ? "transparent" : "fond-" + o.fond.slice(1), o.taille + "px"].filter(Boolean).join("-") + "." + o.format;
+    c.toBlob(b => { const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = nom; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast("Téléchargé : " + nom); }, o.format === "jpg" ? "image/jpeg" : "image/png", .95);
+  });
+  box.appendChild(d); maj().catch(() => { d.querySelector(".info").textContent = "Image indisponible"; });
+}
+const g = id => document.getElementById(id);
+carte({nom:"UNAC · rose", fichier:"logo-unac", logo:true, src:{couleur:IMG+"sections/logo-unac-couleur.png", blanc:IMG+"sections/logo-unac-blanc.png"}}, g("gLogos"));
+carte({nom:"UNAC · blanc sur rose", fichier:"logo-unac", logo:true, fondDefaut:"#B33866", src:{couleur:IMG+"sections/logo-unac-couleur.png", blanc:IMG+"sections/logo-unac-blanc.png"}}, g("gLogos"));
+SECTIONS.forEach(([id, nom]) => carte({nom:"UNAC " + nom, fichier:"logo-unac-" + id, logo:true, src:LOGO_SRC(id)}, g("gSections")));
+COMPAGNIES.forEach(([id, nom]) => carte({nom:"Avion " + nom, fichier:"avion-" + id, max:1600, src:IMG + `avion-${id}.png`}, g("gAvions")));
+COMPAGNIES.forEach(([id, nom]) => carte({nom:"Dérive " + nom, fichier:"derive-" + id, max:400, src:IMG + `derives/derive-${id}.png`}, g("gDerives")));
+g("gCouleurs").innerHTML = COULEURS.map(([n, hex, rgb, u]) => `<div class="coul"><div class="pastille" style="background:${hex}"></div><div><b>${n}</b>${u}<br><button data-c="${hex}">${hex}</button><button data-c="rgb(${rgb})">RVB ${rgb}</button></div></div>`).join("");
+g("gCouleurs").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if(!b) return; navigator.clipboard.writeText(b.dataset.c).then(() => toast("Copié : " + b.dataset.c), () => toast(b.dataset.c)); });
+</script>
+</body>
+</html>
