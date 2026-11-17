@@ -281,6 +281,7 @@
   <div class="mfoot"><button class="mbtn" id="hNew">+ Nouvelle newsletter</button><button class="mbtn pri" data-x>Fermer</button></div>
 </div></div>
 
+<script src="import-word.js"></script>
 <script>
 /* Modèle : la newsletter Mutuelle MNPAF de novembre 2026 */
 const MODELE = {
@@ -422,10 +423,11 @@ function champ(b, [k, lab, ty, def]){
   if(ty === "check") return `<label class="chk" style="margin-top:8px"><input type="checkbox" data-b="${k}" ${v !== false ? "checked" : ""}> ${lab}</label>`;
   return `<label class="f">${lab}</label><input type="text" data-b="${k}" value="${esc(v)}">`;
 }
+window.NL_API = {uid:() => uid(), nouveauBloc:t => nouveauBloc(t), etat:() => S, changed:f => changed(f), toast:m => toast(m), aDuContenu:() => hasContent(S)};
 function renderForm(){
   const f = $("#form"), sc = f.scrollTop, ro = S.statut === "publie";
   const dt = ts => new Date(ts).toLocaleDateString("fr-FR");
-  let h = ro ? `<div class="card robanner"><b>Newsletter publiée le ${dt(S.publieLe||S.maj)}</b><span>Consultation seule.</span><button class="mini" id="roCopy">Créer un brouillon à partir de celle-ci</button></div>` : "";
+  let h = (!ro && window.NL_IMPORT ? NL_IMPORT.bouton() : "") + (ro ? `<div class="card robanner"><b>Newsletter publiée le ${dt(S.publieLe||S.maj)}</b><span>Consultation seule.</span><button class="mini" id="roCopy">Créer un brouillon à partir de celle-ci</button></div>` : "");
   h += `<div class="card"><h2>En-tête <span class="st ${ro?"pub":""}">${ro?"Publiée":"Brouillon"}</span></h2>
     <div class="row2"><div><label class="f">Titre</label><input type="text" data-k="titreA" value="${esc(S.titreA)}"></div><div><label class="f">Suite du titre en gras</label><input type="text" data-k="titreB" value="${esc(S.titreB)}"></div></div>
     <label class="f">Sous-titre</label><input type="text" data-k="sous" value="${esc(S.sous)}">
