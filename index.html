@@ -603,15 +603,13 @@
     const ouvrir = (k, defiler) => {
       cats.forEach(c => { const on = c.dataset.cat === k; c.classList.toggle("on", on); c.setAttribute("aria-selected", on); });
       sec.querySelectorAll(".panel").forEach(p => p.hidden = p.dataset.cat !== k);
-      try{ localStorage.setItem(cle, k); }catch(e){}
-      if(defiler){ const p = sec.querySelector(`.panel[data-cat="${k}"]`); if(p && p.getBoundingClientRect().top > innerHeight - 120) p.scrollIntoView({behavior:"smooth", block:"start"}); }
+      if(defiler && k){ const p = sec.querySelector(`.panel[data-cat="${k}"]`); if(p && p.getBoundingClientRect().top > innerHeight - 120) p.scrollIntoView({behavior:"smooth", block:"start"}); }
     };
-    cats.forEach(c => c.addEventListener("click", () => ouvrir(c.dataset.cat, true)));
+    // un clic ouvre le sous-menu de la boîte, un second clic le referme
+    cats.forEach(c => c.addEventListener("click", () => ouvrir(c.classList.contains("on") ? null : c.dataset.cat, true)));
     // point bleu sur la boîte si un outil de la catégorie a été mis à jour
     cats.forEach(c => { const p = sec.querySelector(`.panel[data-cat="${c.dataset.cat}"]`); if(p && p.querySelector(".maj-outil")){ const d = document.createElement("span"); d.className = "maj-outil"; c.querySelector("b").prepend(d); } });
-    let k0 = "outils"; try{ k0 = localStorage.getItem(cle) || k0; }catch(e){}
-    if(!sec.querySelector(`.cat[data-cat="${k0}"]`)) k0 = cats[0].dataset.cat;
-    ouvrir(k0, false);
+    ouvrir(null, false); // fermé par défaut
   }
 </script>
 </body>
