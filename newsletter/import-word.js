@@ -36,8 +36,34 @@
   const estNote = t => /^(\*\*)?\s*(a noter|à noter|bon a savoir|bon à savoir|rappel|info|astuce|nb)\b/i.test(t);
 
   // Analyse : renvoie {titre, sous, sections:[{titre, blocs:[...]}]}
+  // Document sans titres (un mail, par exemple) : les lignes en gras deviennent des sections,
+  // les lignes qui suivent un « : » et finissent par « ; » forment une liste, la signature est regroupée.
+  function structurerMail(div){
+    if(div.querySelector("h1,h2,h3")) return;
+    const ps = [...div.children];
+    const gras = n => n.tagName === "P" && toutGras(n) && n.textContent.trim().length <= 90;
+    const nbGras = ps.filter(gras).length;
+    ps.forEach((n, i) => {
+      if(!gras(n)) return;
+      // signature : lignes en gras après « Bien amicalement / Cordialement… »
+      const prev = ps.slice(0, i).reverse().find(x => x.textContent.trim());
+      if(prev && (/^(bien )?(amicalement|cordialement|a bientot|bien a vous|salutations)/i.test(norm(prev.textContent.trim())) || prev.dataset.sign)){ n.dataset.sign = "1"; return; }
+      if(nbGras >= 1){ const h = document.createElement("h2"); h.textContent = n.textContent.trim(); n.replaceWith(h); }
+    });
+    // listes implicites
+    const kids = [...div.children];
+    for(let i = 0; i < kids.length; i++){
+      const n = kids[i]; if(n.tagName !== "P" || !/:\s*$/.test(n.textContent.trim())) continue;
+      const items = []; let j = i + 1;
+      while(j < kids.length && kids[j].tagName === "P"){ const t = kids[j].textContent.trim(); if(t.length > 160 || !/[;.]$/.test(t)) break; items.push(kids[j]); j++; if(/\.$/.test(t)) break; }
+      if(items.length >= 2 && items.slice(0, -1).every(x => /;$/.test(x.textContent.trim()))){
+        const ul = document.createElement("ul"); items.forEach(x => { const li = document.createElement("li"); li.innerHTML = x.innerHTML.replace(/[;.]\s*$/, ""); ul.appendChild(li); x.remove(); }); n.after(ul); i = j - 1;
+      }
+    }
+  }
   function analyserHTML(html){
     const div = document.createElement("div"); div.innerHTML = html;
+    structurerMail(div);
     const res = {titre:null, sous:"", sections:[]}; let sec = null, encadre = null;
     const nouvelleSection = titre => { sec = {titre:titre ? sansEmoji(titre) : "", blocs:[]}; res.sections.push(sec); encadre = null; };
     const blocs = () => { if(!sec) nouvelleSection(""); return sec.blocs; };
@@ -51,6 +77,7 @@
       if(!brut && tag !== "table") return;
       if(tag === "h1"){ if(!res.titre) res.titre = n.textContent.trim(); else nouvelleSection(n.textContent); return; }
       if(tag === "h2"){ nouvelleSection(n.textContent); return; }
+      if(n.dataset && n.dataset.sign){ const bl = blocs(), d = bl[bl.length-1]; if(d && d.type === "texte") d.texte += "\n" + brut; else bl.push({type:"texte", texte:brut}); return; }
       if(/^h[3-6]$/.test(tag) || (tag === "p" && toutGras(n) && n.textContent.trim().length <= 90)){
         const t = sansEmoji(n.textContent).replace(/:$/, "");
         if(!sec && !res.sous && res.titre && t.length < 120){ res.sous = t; return; }
@@ -61,6 +88,13 @@
         if(estAlerte(brut) || estNote(brut)){
           encadre = null; const m = brut.replace(/\*\*/g, "").match(/^([^:!.]{2,30})\s*[:!]\s*(.+)$/);
           blocs().push({type:"encadre", style: estAlerte(brut) ? "alerte" : "fonce", titre: m ? m[1].trim() : "", texte: m ? m[2].trim().replace(/^./, c => c.toUpperCase()) : brut}); return;
+        }
+        // consigne introduite par « : » et suivie d'une liste -> encadré d'action
+        const suiv = n.nextElementSibling;
+        if(/:\s*$/.test(brut) && suiv && /^(ul|ol)$/i.test(suiv.tagName) && !encadre){ encadre = {type:"encadre", style:"clair", titre:"", texte:brut, action:true}; blocs().push(encadre); return; }
+        if(encadre && encadre.action && encadre.listeFaite){
+          if(brut.length < 260 && /repon|adress|contact|envoy|transmet|retour/i.test(norm(brut))){ encadre.texte += "\n" + brut; encadre = null; return; }
+          encadre = null;
         }
         ajouterTexte(brut); return;
       }
@@ -75,7 +109,7 @@
           return;
         }
         if(!encadre && titreBold && items.length >= 3 && items.every(x => x.length < 160)){ blocs().push({type:"enbref", titreA:"En", titreB:"bref", texte:items.join("\n")}); return; }
-        ajouterTexte(items.map((x, i) => tag === "ol" ? `${i+1}) ${x}` : `- ${x}`).join("\n")); return;
+        ajouterTexte(items.map((x, i) => tag === "ol" ? `${i+1}) ${x}` : `- ${x}`).join("\n")); if(encadre) encadre.listeFaite = true; return;
       }
       if(tag === "table"){
         const rangs = [...n.querySelectorAll("tr")].map(tr => [...tr.children].map(td => sansEmoji(texteDe(td)).replace(/\n+/g, " ").replace(/\|/g, "/")));
