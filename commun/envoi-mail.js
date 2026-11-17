@@ -98,7 +98,8 @@
       <input type="text" id="mlTo" inputmode="email" autocomplete="email" placeholder="prenom.nom@exemple.fr ; autre@exemple.fr" value="${e_(dest)}">
       <label class="f" for="mlSub">Objet</label><input type="text" id="mlSub" value="${e_(titre)}">
       <label class="f" for="mlQ">Qualité du PDF</label>
-      <select id="mlQ"><option value="std">Standard · fichier léger, pour lecture à l'écran</option><option value="hd" ${qDef === "hd" ? "selected" : ""}>Haute définition 300 dpi · impression, Meljet</option></select>
+      <select id="mlQ"><option value="std">Standard · fichier léger, pour lecture à l'écran</option><option value="hd" ${qDef === "hd" ? "selected" : ""}>Haute définition 300 dpi · impression</option></select>
+      <p class="aide" style="margin-top:6px">Pour <b>Meljet</b> ou un imprimeur, le plus net reste « Télécharger le PDF » puis « Enregistrer au format PDF » : le texte y reste vectoriel, net à toutes les tailles.</p>
       <label class="f" for="mlMsg">Message</label><textarea id="mlMsg">${e_(msgDef)}</textarea>
       <p class="aide">Le PDF est fabriqué sur votre appareil puis joint au message dans votre propre messagerie : l'e-mail part de votre adresse, rien ne transite par l'Atelier.</p>`;
     foot.innerHTML = `<span></span><div style="display:flex;gap:8px"><button class="mbtn" data-x>Annuler</button><button class="mbtn pri" id="mlGo">Préparer l'envoi</button></div>`;

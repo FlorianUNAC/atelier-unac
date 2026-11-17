@@ -62,10 +62,10 @@
       files = blobs.map((b, i) => new File([b], `${base}${blobs.length > 1 ? "-" + (i+1) : ""}${HD ? "-HD" : ""}.png`, {type: "image/png"}));
       urls = blobs.map(b => URL.createObjectURL(b));
       const peutPartager = !!(navigator.canShare && navigator.canShare({files}));
-      body.innerHTML = `<p class="mintro">${files.length} image${files.length>1?"s":""} (une par page, ${largeur()} px de large${HD && !window.EXPORT_LARGEUR ? ", soit 300 dpi en A4" : ""}), prête${files.length>1?"s":""} ${HD ? "pour l'impression et Meljet" : "pour une publication Facebook"}.
+      body.innerHTML = `<p class="mintro">${files.length} image${files.length>1?"s":""} (une par page, ${largeur()} px de large${HD && !window.EXPORT_LARGEUR ? ", soit 300 dpi en A4" : ""}), prête${files.length>1?"s":""} ${HD ? "pour l'impression" : "pour une publication Facebook"}.${HD ? " <b>Pour Meljet ou un imprimeur, préférez « Télécharger le PDF »</b> : le texte y reste vectoriel, donc net à toutes les tailles, alors qu'une image peut être recompressée par la plateforme." : ""}
         ${peutPartager ? "« Partager » ouvre directement Facebook, Messages, WhatsApp… depuis le téléphone." : "Sur téléphone, un appui long sur une image permet aussi de l'enregistrer dans Photos."}</p>
         <div class="imgrid">${urls.map((u, i) => `<a href="${u}" download="${esc(files[i].name)}" title="Télécharger cette page"><img src="${u}" alt="Page ${i+1}"><span>Page ${i+1}</span></a>`).join("")}</div>`;
-      foot.innerHTML = `<button class="mbtn" id="imHD" title="${HD ? "Images plus légères, pour Facebook et l'écran" : "300 dpi : impression, Meljet"}">${HD ? "Version standard (Facebook)" : "Version haute définition (Meljet)"}</button><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+      foot.innerHTML = `<button class="mbtn" id="imHD" title="${HD ? "Images plus légères, pour Facebook et l'écran" : "300 dpi : impression"}">${HD ? "Version standard (Facebook)" : "Version haute définition (300 dpi)"}</button><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
         ${peutPartager ? `<button class="mbtn" id="imShare">Partager</button>` : ""}
         <button class="mbtn pri" id="imDl">${files.length > 1 ? "Tout télécharger (.zip)" : "Télécharger l'image"}</button></div>`;
       foot.querySelector("#imHD").addEventListener("click", () => { urls.forEach(u => URL.revokeObjectURL(u)); urls = []; files = []; window.exportImages(!HD); });
