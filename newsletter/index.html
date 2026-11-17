@@ -158,6 +158,7 @@
   .sh2 img{height:calc(var(--k)*52px);width:auto;flex:none;margin-bottom:-2px}
   .p{font-size:11pt;line-height:max(1.32,calc(var(--k)*1.5));margin:0;color:#2B2B30}
   .p b{font-weight:700}
+  .page:not(.lettre) .rt .p,.page:not(.lettre) .bx > .p,.page:not(.lettre) .lb{font-size:12pt}
   .note{font-size:calc(var(--k)*12.2px);line-height:1.45;margin:0;color:#66666C}
   .lb{font-size:11pt;font-weight:700;color:#B33868;margin:0}
   .rt{display:flex;flex-direction:column;gap:calc(var(--k)*6px)}
@@ -670,13 +671,14 @@ function buildPages(box){
     const head = titre ? `<div class="sh2"><h2>${esc(s.titreA)}${s.titreB ? ` <b>${esc(s.titreB)}</b>` : ""}</h2>${s.picto ? `<img src="${IMG}pictos/${s.picto}.png" alt="">` : ""}</div>` : "";
     const newSec = withHead => el(`<div class="sec ${fond}">${withHead ? head : ""}</div>`);
     let sec = newSec(true); c.appendChild(sec);
-    // Le titre part avec le 1er bloc ; si ce 1er bloc n'est qu'un court texte d'introduction, avec le 2e aussi
-    const lie = (titre && blocs.length > 1 && blocs[0].type === "texte" && String(blocs[0].texte||"").length < 260) ? 2 : 1;
-    const premiers = blocs.slice(0, lie).map(b => el(`<div class="blk">${blocHTML(b)}</div>`));
+    // Les blocs « texte » sont découpés par paragraphe : une section peut ainsi continuer sur la page suivante
+    const nodes = []; blocs.forEach(b => morceaux(b).forEach(h => nodes.push(el(`<div class="blk">${h}</div>`))));
+    // Le titre part avec au moins le 1er paragraphe (et le 2e si le 1er est très court)
+    const lie = titre && nodes.length > 1 && nodes[0].textContent.length < 120 ? 2 : 1;
+    const premiers = nodes.slice(0, lie);
     premiers.forEach(n => sec.appendChild(n));
     if(overflows(c) && c.children.length > 1){ c.removeChild(sec); next(); sec = newSec(true); c.appendChild(sec); premiers.forEach(n => sec.appendChild(n)); }
-    blocs.slice(lie).forEach(b => {
-      const node = el(`<div class="blk">${blocHTML(b)}</div>`);
+    nodes.slice(lie).forEach(node => {
       sec.appendChild(node);
       if(overflows(c)){ sec.removeChild(node); next(); sec = newSec(false); c.appendChild(sec); sec.appendChild(node); }
     });
