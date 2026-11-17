@@ -35,6 +35,22 @@
   h2 span{font-size:24px;font-weight:700;letter-spacing:.01em}
   h2::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.25)}
   .cie{scroll-margin-top:20px}
+  .cats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 18px}
+  .cat{font:inherit;color:#fff;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px;border-radius:18px;padding:18px;
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);transition:background .15s,transform .15s}
+  .cat:hover{background:rgba(255,255,255,.17);transform:translateY(-2px)}
+  .cat .cic{width:44px;height:44px;border-radius:12px;background:#fff;display:grid;place-items:center;margin-bottom:4px}
+  .cat .cic svg{width:24px;height:24px}
+  .cat b{font-size:17px}
+  .cat .cd{font-size:12.5px;opacity:.78;line-height:1.4;flex:1}
+  .cat .cn{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.75}
+  .cat.on{background:#fff;color:#5a1838;border-color:#fff;box-shadow:0 10px 26px rgba(30,5,18,.35)}
+  .cat.on .cic{background:#B33866}.cat.on .cic svg{stroke:#fff}
+  .cat.dev:not(.on){opacity:.7}
+  .panel{position:relative;padding-top:4px}
+  .panel .grid{margin-bottom:38px}
+  @media (max-width:900px){.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:480px){.cat .cd{display:none}.cat{padding:14px}}
   .groupe{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:6px 2px 12px}
   .groupe h3{font-size:16px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;opacity:.95}
   .groupe p{font-size:13px;opacity:.7}
@@ -104,7 +120,25 @@
   <nav class="cies" aria-label="Compagnies"><a href="#af"><img src="commun/img/derives/derive-af.png" alt="">Air France</a><a href="#hop"><img src="commun/img/derives/derive-hop.png" alt="">HOP!</a><a href="#transavia"><img src="commun/img/derives/derive-transavia.png" alt="">Transavia</a><a href="#volotea"><img src="commun/img/derives/derive-volotea.png" alt="">Volotea</a><a href="#easyjet"><img src="commun/img/derives/derive-easyjet.png" alt="">easyJet</a><a href="#lacompagnie"><img src="commun/img/derives/derive-lacompagnie.png" alt="">La Compagnie</a><a href="#aircalin"><img src="commun/img/derives/derive-aircalin.png" alt="">Aircalin</a></nav>
   <section class="cie" id="af">
   <h2><img class="derive" src="commun/img/avion-af.png" alt=""><img class="cielogo" src="commun/img/sections/cie-airfrance-blanc.png" alt="Air France" style="height:17px"></h2>
-  <div class="groupe "><h3>Outils de création</h3><p>Comptes rendus, posts, bulletins, newsletters et courriers mis en page automatiquement.</p></div>
+  <div class="cats" role="tablist">
+    <button type="button" class="cat " data-cat="outils" aria-controls="p-af-outils">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></span>
+      <b>Outils de création</b><span class="cd">Comptes rendus, posts, bulletins, newsletters et courriers mis en page automatiquement.</span><span class="cn">7 outils</span>
+    </button>
+    <button type="button" class="cat " data-cat="base" aria-controls="p-af-base">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></svg></span>
+      <b>Base documentaire</b><span class="cd">Formulaires et documents de référence à télécharger.</span><span class="cn">Formulaires · documents</span>
+    </button>
+    <button type="button" class="cat " data-cat="charte" aria-controls="p-af-charte">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></span>
+      <b>Charte graphique</b><span class="cd">Logos, couleurs et typographies UNAC.</span><span class="cn">Logos · couleurs · typos</span>
+    </button>
+    <button type="button" class="cat dev" data-cat="dev" aria-controls="p-af-dev">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></svg></span>
+      <b>Espace développeur</b><span class="cd">Accès réservé.</span><span class="cn">Accès réservé</span>
+    </button>
+  </div>
+  <div class="panel" id="p-af-outils" data-cat="outils" hidden>
   <div class="grid">
     <a class="tile" href="cr-hebergement/">
       <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4h8a2 2 0 0 1 2 2v4"/><path d="M3 14h18"/><path d="M3 18v2M21 18v2"/><circle cx="7" cy="10" r="1.6"/></svg></div>
@@ -161,7 +195,8 @@
       <span>Tracts, lettres d'information, daily de la perm… les prochains générateurs arriveront ici.</span>
     </div>
   </div>
-  <div class="groupe "><h3>Base documentaire</h3><p>Formulaires et documents de référence à télécharger.</p></div>
+  </div>
+  <div class="panel" id="p-af-base" data-cat="base" hidden>
   <div class="grid">
     <a class="tile" href="formulaires/?section=af">
       <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M12 11v6M9.5 14.5 12 17l2.5-2.5"/></svg></div>
@@ -176,7 +211,8 @@
       <span>Accords PNC, livrets UNAC (pratique, retraite, reprise), notes et comptes rendus de référence.</span>
     </div>
   </div>
-  <div class="groupe "><h3>Charte graphique</h3><p>Logos, couleurs et typographies UNAC.</p></div>
+  </div>
+  <div class="panel" id="p-af-charte" data-cat="charte" hidden>
   <div class="grid">
     <a class="tile" href="charte/" data-version="charte-1">
       <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></div>
@@ -186,7 +222,8 @@
       <span class="go">→</span>
     </a>
   </div>
-  <div class="groupe dev"><h3>Espace développeur</h3><p>Accès réservé.</p></div>
+  </div>
+  <div class="panel" id="p-af-dev" data-cat="dev" hidden>
   <div class="grid">
     <a class="tile" href="validation.html">
       <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></svg></span>
@@ -194,6 +231,7 @@
       <span>Accès réservé par code développeur.</span>
       <span class="go">→</span>
     </a>
+  </div>
   </div>
   </section>
 
@@ -555,6 +593,25 @@
     };
     tuile.addEventListener("click", marquerVue, {once:true});
     tuile.addEventListener("auxclick", e => { if(e.button === 1) marquerVue(); });
+  }
+</script>
+<script>
+  // Catégories de l'accueil : une boîte par catégorie, ses outils en sous-menu
+  for(const sec of document.querySelectorAll(".cie")){
+    const cats = sec.querySelectorAll(".cat"); if(!cats.length) continue;
+    const cle = "atelier:cat:" + sec.id;
+    const ouvrir = (k, defiler) => {
+      cats.forEach(c => { const on = c.dataset.cat === k; c.classList.toggle("on", on); c.setAttribute("aria-selected", on); });
+      sec.querySelectorAll(".panel").forEach(p => p.hidden = p.dataset.cat !== k);
+      try{ localStorage.setItem(cle, k); }catch(e){}
+      if(defiler){ const p = sec.querySelector(`.panel[data-cat="${k}"]`); if(p && p.getBoundingClientRect().top > innerHeight - 120) p.scrollIntoView({behavior:"smooth", block:"start"}); }
+    };
+    cats.forEach(c => c.addEventListener("click", () => ouvrir(c.dataset.cat, true)));
+    // point bleu sur la boîte si un outil de la catégorie a été mis à jour
+    cats.forEach(c => { const p = sec.querySelector(`.panel[data-cat="${c.dataset.cat}"]`); if(p && p.querySelector(".maj-outil")){ const d = document.createElement("span"); d.className = "maj-outil"; c.querySelector("b").prepend(d); } });
+    let k0 = "outils"; try{ k0 = localStorage.getItem(cle) || k0; }catch(e){}
+    if(!sec.querySelector(`.cat[data-cat="${k0}"]`)) k0 = cats[0].dataset.cat;
+    ouvrir(k0, false);
   }
 </script>
 </body>
