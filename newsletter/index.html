@@ -246,6 +246,37 @@
     body:not(.tab-apercu) .preview{display:none}
     .form{border-right:0;padding:12px 12px 80px}
   }
+  /* ===== Modèle « Lettre de section » (Message de …) ===== */
+  .page.lettre{background:#EBEBEB}
+  .page.lettre .bottomgap{height:46px}
+  .lhd{flex:none;position:relative;padding:34px 42px 0;min-height:0}
+  .lhd .logo{width:62px;display:block}
+  .lhd .plume{position:absolute;right:0;top:0;width:150px}
+  .lhd .lab{margin-top:18px;font-size:calc(var(--k)*15px);letter-spacing:.09em;text-transform:uppercase;color:#8E8E93;font-weight:400}
+  .lhd .lab b{font-weight:700}
+  .lhd h1{margin:4px 0 0;font-size:calc(var(--k)*21px);line-height:1.2;color:#B33866;font-weight:700;padding-right:40px}
+  .lhd .salut{display:block;height:calc(var(--k)*34px);margin:calc(var(--k)*18px) 0 calc(var(--k)*2px) -4px}
+  .page.lettre .lhd2{flex:none;height:30px}
+  .page.lettre .sec{background:none!important;display:block;padding:calc(var(--k)*8px) 42px 0}
+  .page.lettre .sec > *{margin-bottom:calc(var(--k)*9px)}
+  .page.lettre .blk,.page.lettre .rt{display:block}
+  .page.lettre .rt > *{margin-bottom:calc(var(--k)*8px)}
+  .page.lettre .rt > *:last-child{margin-bottom:0}
+  .page.lettre .ul > div{display:flex;gap:8px}
+  .page.lettre .ul > div + div{margin-top:calc(var(--k)*5px)}
+  .page.lettre .ul span{color:#2B2B30;font-size:9px;line-height:2.1}
+  .lh2{margin:calc(var(--k)*16px) 0 calc(var(--k)*10px)!important;display:flow-root}
+  .lh2 h2{margin:0;font-size:calc(var(--k)*17.5px);line-height:1.22;color:#B33866;font-weight:700}
+  .lh2 img{display:block;width:100%;height:9px;margin-top:6px}
+  .page .surl{background:#B33866;color:#fff;font-weight:700;padding:1px 2px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+  .page .p.surl-p{line-height:1.62}
+  .lsign{text-align:right;z-index:4;white-space:nowrap}
+  .lsign b{display:block;color:#B33866;font-size:calc(var(--k)*17px);font-weight:700}
+  .lsign i{display:block;font-size:calc(var(--k)*14px);margin-top:2px}
+  .lphoto{position:absolute;right:0;bottom:0;height:330px;z-index:3;pointer-events:none}
+  .lphoto.ronde{right:34px;bottom:34px;width:170px;height:170px;border-radius:50%;object-fit:cover;border:6px solid #fff;box-shadow:0 10px 26px rgba(60,10,35,.22)}
+  .lflt-a{float:right;width:0;height:var(--fa,0px)}
+  .lflt-b{float:right;clear:right;width:var(--fw,190px);height:var(--fh,300px)}
   .filigrane{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:60;overflow:hidden}
   .filigrane span{transform:rotate(-28deg);font-weight:800;letter-spacing:.1em;color:rgba(140,120,130,.22);font-size:var(--fz,150px);white-space:nowrap}
   .pv-meta .ex,#pvMeta .ex{display:inline-block;background:#F7D160;color:#4f1a30;font-weight:700;border-radius:999px;padding:2px 10px;margin-right:6px}
@@ -293,6 +324,19 @@
 <script src="import-word.js"></script>
 <script>
 /* Modèle : la newsletter Mutuelle MNPAF de novembre 2026 */
+const SIGNATAIRES = {
+  fabrice:{nom:"Fabrice Jaudinaud", role:"Votre secrétaire de section", photo:"../message/img/fabrice-jaudinaud.png", mode:"detoure"},
+  laure:{nom:"Laure Desrentes", role:"Votre déléguée UNAC HOP!", photo:"../commun/img/hop/laure-desrentes.jpg", mode:"ronde"},
+  aucune:{nom:"", role:"", photo:"", mode:""}
+};
+const LETTRE_DEF = {titreA:"Message de", titreB:"Fabrice Jaudinaud", sous:"", salut:true, signNom:"Fabrice Jaudinaud", signRole:"Votre secrétaire de section", photo:"fabrice", align:"gauche"};
+const NL_DEF = {titreA:"Mutuelle", titreB:"MNPAF", sous:"Votre nouveau rendez-vous d'information mutuelle", align:"just"};
+const MODELE_LETTRE = Object.assign({modele:"lettre"}, LETTRE_DEF, {sous:"Desserte de Manille : récit du naufrage d’une négociation de façade.",
+ sections:[
+  {titreA:"", titreB:"", picto:"", fond:"auto", blocs:[{type:"texte", texte:"Le 23 octobre, la Direction d’Air France a annoncé la déprogrammation de la desserte de Manille pour la saison hiver, en prenant soin d’en faire porter implicitement la responsabilité aux organisations syndicales qui n’ont pas signé l’avenant proposé.\nCette communication appelle de notre part une mise au point sans détour.\n!!Ce qui s’est déroulé ces dernières semaines ne ressemble en rien à une négociation loyale : succession d’ultimatums, de silences et d’arguments invérifiables.!!"}]},
+  {titreA:"Une urgence à géométrie variable", titreB:"", picto:"", fond:"auto", blocs:[{type:"texte", texte:"Revenons aux faits.\nFin août, la Direction convoque les organisations syndicales pour leur proposer la reconduction d’un avenant permettant d’exploiter les vols vers Manille au-delà de la limite conventionnelle de 15 heures.\nUn an plus tard, nous retrouvons pourtant exactement la même méthode : un texte présenté à la dernière minute et une demande de signature dans un délai de deux ou trois jours.\n!!Une urgence qui peut attendre un mois et demi n’est pas une urgence. C’est un moyen de pression.!!"}]},
+  {titreA:"Une négociation sans chiffres, sans transparence, sans loyauté.", titreB:"", picto:"", fond:"auto", blocs:[{type:"texte", texte:"Au cours des rares échanges qui nous ont été accordés, **L’UNAC** a demandé des éléments pourtant élémentaires pour apprécier les propositions de la Direction :\n- Quelles économies exactes sont réalisées grâce à la réduction des temps d’escale et des frais d’hébergement ?\n- Quel est le coût comparé des différentes constructions de rotations ?\nNous n’avons obtenu aucun chiffrage permettant de vérifier les affirmations de la Direction.\n**La Direction a refusé de donner à la négociation les moyens d’aboutir.**\nIl est grand temps que la Direction d’Air France comprenne qu’une signature ne se décrète pas : elle se négocie."}]}
+ ]});
 const MODELE = {
  mois:"2026-11", titreA:"Mutuelle", titreB:"MNPAF", sous:"Votre nouveau rendez-vous d'information mutuelle",
  contactLabel:"Vos élu.es UNAC à la MNPAF", contactMail:"mutuelleaf@unac.asso.fr",
@@ -344,6 +388,7 @@ const gras = s => esc(s)
   .replace(/(^|[^*\w])\*(?!\s)([^*\n]+?)\*(?![*\w])/g, "$1<i>$2</i>")
   .replace(/__(.+?)__/g, "<u>$1</u>")
   .replace(/==(.+?)==/g, '<span class="hlr">$1</span>')
+  .replace(/!!(.+?)!!/g, '<span class="surl">$1</span>')
   .replace(/\{\+(.+?)\+\}/g, '<span class="tg">$1</span>')
   .replace(/\{-(.+?)-\}/g, '<span class="tp">$1</span>');
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
@@ -417,7 +462,7 @@ let DOCS = {}, S = null;
 function moisDefaut(){ const d = new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); }
 function nouveauBloc(type){ const b = {id:uid(), type}; TYPES[type].champs.forEach(([k,,ty,def]) => { b[k] = ty === "select" ? Object.keys(def)[0] : ty === "check" ? true : (typeof def === "string" ? def : ""); }); return b; }
 function blank(){
-  return {v:1, id:uid(), statut:"brouillon", cree:Date.now(), maj:Date.now(), mois:moisDefaut(), titreA:"Mutuelle", titreB:"MNPAF",
+  return {v:1, modele:"newsletter", id:uid(), statut:"brouillon", cree:Date.now(), maj:Date.now(), mois:moisDefaut(), titreA:"Mutuelle", titreB:"MNPAF",
     sous:"Votre nouveau rendez-vous d'information mutuelle", contactLabel:"Vos élu.es UNAC à la MNPAF", contactMail:"mutuelleaf@unac.asso.fr",
     sections:[{id:uid(), titreA:"", titreB:"", picto:"", fond:"blanc", blocs:[nouveauBloc("enbref")]},{id:uid(), titreA:"", titreB:"", picto:"", fond:"auto", blocs:[nouveauBloc("texte")]}]};
 }
@@ -439,7 +484,7 @@ function champ(b, [k, lab, ty, def]){
   if(ty === "check") return `<label class="chk" style="margin-top:8px"><input type="checkbox" data-b="${k}" ${v !== false ? "checked" : ""}> ${lab}</label>`;
   return `<label class="f">${lab}</label><input type="text" data-b="${k}" value="${esc(v)}">`;
 }
-const TBAR = `<div class="tbar"><button type="button" data-fmt="**" title="Gras"><b>G</b></button><button type="button" data-fmt="*" title="Italique"><i>I</i></button><button type="button" data-fmt="__" title="Souligné"><u>S</u></button><button type="button" data-fmt="==" title="En rose" style="color:#B33866;font-weight:700">A</button><span class="sep"></span><button type="button" data-fmt="{+|+}" title="Plus grand">A+</button><button type="button" data-fmt="{-|-}" title="Plus petit" style="font-size:11px">A−</button><span class="sep"></span><button type="button" data-ligne="- " title="Liste à puces">• Liste</button><button type="button" data-ligne="> " title="Note grise">Note</button><button type="button" data-fmt="" title="Retirer la mise en forme">⌫</button></div>`;
+const TBAR = `<div class="tbar"><button type="button" data-fmt="**" title="Gras"><b>G</b></button><button type="button" data-fmt="*" title="Italique"><i>I</i></button><button type="button" data-fmt="__" title="Souligné"><u>S</u></button><button type="button" data-fmt="==" title="En rose" style="color:#B33866;font-weight:700">A</button><button type="button" data-fmt="!!" title="Surligné (blanc sur fond rose)" style="background:#B33866;color:#fff;font-weight:700;border-color:#B33866">S</button><span class="sep"></span><button type="button" data-fmt="{+|+}" title="Plus grand">A+</button><button type="button" data-fmt="{-|-}" title="Plus petit" style="font-size:11px">A−</button><span class="sep"></span><button type="button" data-ligne="- " title="Liste à puces">• Liste</button><button type="button" data-ligne="> " title="Note grise">Note</button><button type="button" data-fmt="" title="Retirer la mise en forme">⌫</button></div>`;
 function formater(btn){
   const ta = btn.closest(".tbar").nextElementSibling; if(!ta || ta.tagName !== "TEXTAREA") return;
   let a = ta.selectionStart, z = ta.selectionEnd, v = ta.value;
@@ -451,7 +496,7 @@ function formater(btn){
   } else {
     const f = btn.dataset.fmt;
     if(!f){ // nettoyer
-      const sel = v.slice(a, z).replace(/\*\*|__|==|\{[+-]|[+-]\}/g, "").replace(/(^|[^*])\*([^*]+)\*/g, "$1$2");
+      const sel = v.slice(a, z).replace(/\*\*|__|==|!!|\{[+-]|[+-]\}/g, "").replace(/(^|[^*])\*([^*]+)\*/g, "$1$2");
       ta.value = v.slice(0, a) + sel + v.slice(z); ta.setSelectionRange(a, a + sel.length);
     } else {
       const [o, c] = f.includes("|") ? f.split("|") : [f, f];
@@ -473,11 +518,20 @@ function renderForm(){
   const f = $("#form"), sc = f.scrollTop, ro = S.statut === "publie";
   const dt = ts => new Date(ts).toLocaleDateString("fr-FR");
   let h = (!ro && window.NL_IMPORT ? NL_IMPORT.bouton() : "") + (ro ? `<div class="card robanner"><b>Newsletter publiée le ${dt(S.publieLe||S.maj)}</b><span>Consultation seule.</span><button class="mini" id="roCopy">Créer un brouillon à partir de celle-ci</button></div>` : "");
+  const L = S.modele === "lettre", alignSel = `<label class="f">Alignement du texte</label><select data-k="align"><option value="just" ${S.align !== "gauche" ? "selected" : ""}>Justifié</option><option value="gauche" ${S.align === "gauche" ? "selected" : ""}>Aligné à gauche</option></select>`;
   h += `<div class="card"><h2>En-tête <span class="st ${ro?"pub":""}">${ro?"Publiée":"Brouillon"}</span></h2>
+    <label class="f">Modèle</label><select data-k="modele" data-struct="1"><option value="newsletter" ${!L ? "selected" : ""}>Newsletter (en-tête avion, bandeau final)</option><option value="lettre" ${L ? "selected" : ""}>Lettre de section · « Message de … » (plume, signature, photo)</option></select>`
+  + (L ? `
+    <div class="row2"><div><label class="f">Libellé</label><input type="text" data-k="titreA" value="${esc(S.titreA)}" placeholder="Message de"></div><div><label class="f">Nom (en gras)</label><input type="text" data-k="titreB" value="${esc(S.titreB)}" placeholder="Fabrice Jaudinaud"></div></div>
+    <label class="f">Titre du message (rose)</label><input type="text" data-k="sous" value="${esc(S.sous)}" placeholder="Desserte de Manille : …">
+    <label class="chk" style="margin-top:10px"><input type="checkbox" data-k="salut" ${S.salut !== false ? "checked" : ""}> « Chères et chers collègues, » manuscrit</label>
+    <div class="row2"><div><label class="f">Signature : nom</label><input type="text" data-k="signNom" value="${esc(S.signNom||"")}"></div><div><label class="f">Signature : fonction</label><input type="text" data-k="signRole" value="${esc(S.signRole||"")}"></div></div>
+    <div class="row2"><div><label class="f">Photo</label><select data-k="photo" data-sig="1">${Object.entries({fabrice:"Fabrice (détourée)", laure:"Laure (ronde)", aucune:"Sans photo"}).map(([k,l]) => `<option value="${k}" ${(S.photo||"fabrice")===k?"selected":""}>${l}</option>`).join("")}</select></div><div>${alignSel}</div></div></div>`
+  : `
     <div class="row2"><div><label class="f">Titre</label><input type="text" data-k="titreA" value="${esc(S.titreA)}"></div><div><label class="f">Suite du titre en gras</label><input type="text" data-k="titreB" value="${esc(S.titreB)}"></div></div>
     <label class="f">Sous-titre</label><input type="text" data-k="sous" value="${esc(S.sous)}">
-    <div class="row2"><div><label class="f">Mois</label><select data-k="mois">${moisOptions(S.mois)}</select></div><div><label class="f">Alignement du texte</label><select data-k="align"><option value="just" ${S.align !== "gauche" ? "selected" : ""}>Justifié</option><option value="gauche" ${S.align === "gauche" ? "selected" : ""}>Aligné à gauche</option></select></div></div>
-    <div class="row2"><div><label class="f">Bandeau final : libellé</label><input type="text" data-k="contactLabel" value="${esc(S.contactLabel)}"></div><div><label class="f">Bandeau final : e-mail</label><input type="text" data-k="contactMail" value="${esc(S.contactMail)}"></div></div></div>`;
+    <div class="row2"><div><label class="f">Mois</label><select data-k="mois">${moisOptions(S.mois)}</select></div><div>${alignSel}</div></div>
+    <div class="row2"><div><label class="f">Bandeau final : libellé</label><input type="text" data-k="contactLabel" value="${esc(S.contactLabel)}"></div><div><label class="f">Bandeau final : e-mail</label><input type="text" data-k="contactMail" value="${esc(S.contactMail)}"></div></div></div>`);
   S.sections.forEach((s, si) => {
     h += `<div class="card sec-card" data-s="${s.id}"><div class="sh"><b>Section ${si+1}</b>${si>0?`<button class="mini" data-a="sup" title="Monter">↑</button>`:""}${si<S.sections.length-1?`<button class="mini" data-a="sdown" title="Descendre">↓</button>`:""}<button class="mini danger" data-a="sdel">Supprimer</button></div>
       <div class="row2"><div><label class="f">Titre (vide = sans titre)</label><input type="text" data-s-k="titreA" value="${esc(s.titreA)}" placeholder="Factures :"></div><div><label class="f">Suite en rose gras</label><input type="text" data-s-k="titreB" value="${esc(s.titreB)}" placeholder="ce qui change"></div></div>
@@ -497,7 +551,16 @@ function renderForm(){
 const secOf = el => S.sections.find(s => s.id === el.closest("[data-s]").dataset.s);
 $("#form").addEventListener("input", e => {
   const t = e.target, v = t.type === "checkbox" ? t.checked : t.value;
-  if(t.dataset.k){ S[t.dataset.k] = v; return changed(false); }
+  if(t.dataset.k){
+    if(t.dataset.k === "modele"){ // bascule de modèle : on remplace les réglages restés par défaut
+      const versL = v === "lettre", DEF = versL ? LETTRE_DEF : NL_DEF, ANC = versL ? NL_DEF : LETTRE_DEF;
+      ["titreA","titreB","sous","align"].forEach(k => { if(!S[k] || S[k] === ANC[k]) S[k] = DEF[k]; });
+      if(versL) ["salut","signNom","signRole","photo"].forEach(k => { if(S[k] === undefined) S[k] = LETTRE_DEF[k]; });
+      S.modele = v; return changed(true);
+    }
+    if(t.dataset.k === "photo"){ const g = SIGNATAIRES[v]; if(g && g.nom){ const anc = Object.values(SIGNATAIRES); if(!S.signNom || anc.some(x => x.nom === S.signNom)) S.signNom = g.nom; if(!S.signRole || anc.some(x => x.role === S.signRole)) S.signRole = g.role; if(!S.titreB || anc.some(x => x.nom === S.titreB)) S.titreB = g.nom; } S.photo = v; return changed(true); }
+    S[t.dataset.k] = v; return changed(false);
+  }
   if(t.dataset.sK){ secOf(t)[t.dataset.sK] = v; return changed(false); }
   if(t.dataset.b){ const s = secOf(t), b = s.blocs.find(x => x.id === t.closest("[data-b-id]").dataset.bId); b[t.dataset.b] = v; return changed(false); }
 });
@@ -529,7 +592,13 @@ function el(html){ const d = document.createElement("div"); d.innerHTML = html.t
 const overflows = c => c.scrollHeight > c.clientHeight + 0.5;
 function newPage(box, idx){
   const w = document.createElement("div"); w.className = "pwrap";
-  const p = document.createElement("section"); p.className = "page" + (S.align === "gauche" ? "" : " just"); p.style.setProperty("--k", DENS.k);
+  const p = document.createElement("section"); p.className = "page" + (S.align === "gauche" ? "" : " just") + (S.modele === "lettre" ? " lettre" : ""); p.style.setProperty("--k", DENS.k);
+  if(S.modele === "lettre"){
+    p.innerHTML = (idx ? `<div class="lhd2"></div>` : `<div class="lhd"><img class="plume" src="img/plume.png" alt=""><img class="logo" src="${IMG}logo-unac-couleur.png" alt="UNAC">
+      ${(S.titreA || S.titreB) ? `<div class="lab">${esc(S.titreA)} <b>${esc(S.titreB)}</b></div>` : ""}${S.sous ? `<h1>${gras(S.sous)}</h1>` : ""}${S.salut !== false ? `<img class="salut" src="img/salut.png" alt="Chères et chers collègues,">` : ""}</div>`)
+      + `<div class="content"></div><div class="bottomgap"></div>${idx ? `<div class="num">${idx+1}</div>` : ""}`;
+    w.appendChild(p); box.appendChild(w); return p.querySelector(".content");
+  }
   p.innerHTML = (idx ? "" : `<div class="nhd"><div><h1>${esc(S.titreA)} <b>${esc(S.titreB)}</b></h1><div class="sous">${esc([S.sous, cap(moisLabel(S.mois))].filter(Boolean).join(" · "))}</div></div><img class="logo" src="${IMG}logo-unac-couleur.png" alt="UNAC"></div>
     <div class="avion"><div class="band"></div><img src="${IMG}avion-unac.png" alt=""></div>`) + `<div class="content"></div><div class="bottomgap"></div>${idx ? `<div class="num">${idx+1}</div>` : ""}`;
   w.appendChild(p); box.appendChild(w); return p.querySelector(".content");
@@ -539,10 +608,65 @@ function buildPages(box){
   let idx = 0, c = newPage(box, 0), alt = 0;
   const grow = () => { const last = c.lastElementChild; if(last && last.classList.contains("sec")) last.classList.add("grow"); };
   const next = () => { grow(); idx++; c = newPage(box, idx); };
+  // Lettre : chaque paragraphe est un élément à part, pour couper proprement entre les pages
+  const morceaux = b => {
+    if(b.type !== "texte") return [blocHTML(b)];
+    const out = []; let liste = [];
+    const vide = () => { if(liste.length){ out.push(rt(liste.join("\n"))); liste = []; } };
+    String(b.texte||"").split("\n").forEach(l => { const t = l.trim(); if(!t){ vide(); return; } if(/^[-•]\s+/.test(t)) liste.push(t); else { vide(); out.push(rt(t)); } });
+    vide(); return out;
+  };
+  const lettreSection = (s, blocs, titre) => {
+    const head = titre ? `<div class="lh2"><h2>${esc(s.titreA)}${s.titreB ? ` ${esc(s.titreB)}` : ""}</h2><img src="img/trait.png" alt=""></div>` : "";
+    const nodes = []; blocs.forEach(b => morceaux(b).forEach(h => nodes.push(el(`<div class="blk">${h.replace(/<p class="p"><span class="surl">([\s\S]*)<\/span><\/p>/, (m, x) => x.includes("<span class=\"surl\">") ? m : `<p class="p surl-p"><span class="surl">${x}</span></p>`)}</div>`))));
+    let sec = el(`<div class="sec">${head}</div>`); c.appendChild(sec);
+    nodes.forEach((n, i) => {
+      sec.appendChild(n);
+      if(overflows(c)){
+        sec.removeChild(n);
+        const seul = i === 0 && head; // ne pas laisser un intertitre orphelin en bas de page
+        if(seul) c.removeChild(sec);
+        next(); sec = el(`<div class="sec">${seul ? head : ""}</div>`); c.appendChild(sec); sec.appendChild(n);
+      }
+    });
+  };
+  const finLettre = () => {
+    const g = SIGNATAIRES[S.photo || "fabrice"] || SIGNATAIRES.aucune, photo = g.photo;
+    const sign = (S.signNom || S.signRole) ? el(`<div class="lsign"><b>${esc(S.signNom||"")}</b>${S.signRole ? `<i>${esc(S.signRole)}</i>` : ""}</div>`) : null;
+    const pose = () => { // photo en bas à droite de la dernière page, le texte l'habille
+      const page = c.closest(".page"); page.querySelectorAll(".lphoto,.lflt-a,.lflt-b").forEach(x => x.remove());
+      if(!photo) return;
+      const ronde = g.mode === "ronde", fw = ronde ? 230 : 205, fh = ronde ? 230 : 345;
+      page.insertAdjacentHTML("beforeend", `<img class="lphoto ${ronde ? "ronde" : ""}" src="${photo}" alt="">`);
+      const H = c.clientHeight, zone = fh - 46, sh = sign ? 78 : 0, sw = ronde ? 250 : 300;
+      c.style.display = "block";
+      c.insertAdjacentHTML("afterbegin", `<div class="lflt-a" style="height:${Math.max(0, H - zone)}px"></div><div class="lflt-b" style="width:${fw}px;height:${zone - sh}px"></div>${sh ? `<div class="lflt-b" style="width:${fw + sw}px;height:${sh}px"></div>` : ""}`);
+      if(sign) Object.assign(sign.style, {position:"absolute", right:(ronde ? fw + 8 : 262) + "px", bottom:(ronde ? 60 : 64) + "px", margin:"0", padding:"0"});
+    };
+    if(sign) c.closest(".page").appendChild(sign);
+    pose();
+    if(overflows(c)){ // pas la place pour la photo et la signature : on emmène les derniers paragraphes sur une nouvelle page
+      const page = c.closest(".page"); page.querySelectorAll(".lphoto").forEach(x => x.remove()); c.querySelectorAll(".lflt-a,.lflt-b").forEach(x => x.remove()); c.style.display = "";
+      if(sign && sign.parentNode) sign.remove();
+      const pris = [];
+      for(let n = 0; n < 2; n++){
+        const secs = [...c.querySelectorAll(":scope > .sec")], ls = secs[secs.length - 1]; if(!ls) break;
+        const blk = [...ls.querySelectorAll(":scope > .blk")].pop(); if(!blk) break;
+        ls.removeChild(blk); pris.unshift(blk); if(!ls.querySelector(".blk")) c.removeChild(ls);
+        if(blk.textContent.length > 220) break;
+      }
+      grow(); idx++; c = newPage(box, idx);
+      const sec = el(`<div class="sec"></div>`); c.appendChild(sec); pris.forEach(n => sec.appendChild(n));
+      if(sign) c.closest(".page").appendChild(sign);
+      pose();
+    }
+  };
   S.sections.forEach(s => {
     const blocs = s.blocs.filter(b => !blocVide(b)); const titre = s.titreA || s.titreB;
     if(!blocs.length && !titre) return;
     const fond = s.fond === "auto" ? (alt++ % 2 ? "rose" : "") : (s.fond === "rose" ? "rose" : "");
+    const L = S.modele === "lettre";
+    if(L) return lettreSection(s, blocs, titre);
     const head = titre ? `<div class="sh2"><h2>${esc(s.titreA)}${s.titreB ? ` <b>${esc(s.titreB)}</b>` : ""}</h2>${s.picto ? `<img src="${IMG}pictos/${s.picto}.png" alt="">` : ""}</div>` : "";
     const newSec = withHead => el(`<div class="sec ${fond}">${withHead ? head : ""}</div>`);
     let sec = newSec(true); c.appendChild(sec);
@@ -557,6 +681,7 @@ function buildPages(box){
       if(overflows(c)){ sec.removeChild(node); next(); sec = newSec(false); c.appendChild(sec); sec.appendChild(node); }
     });
   });
+  if(S.modele === "lettre"){ finLettre(box); c.closest(".page").classList.add("last"); return box.querySelectorAll(".page").length; }
   // bandeau final
   const fin = el(`<div class="nfin"><img class="ap" src="${IMG}appli-unac.png" alt=""><div class="t"><small>Un doute, une question ?</small><b>Tchat appli UNAC · 24h/24, 7j/7</b></div><div class="c">${esc(S.contactLabel)}<b>${esc(S.contactMail)}</b></div><img class="lw" src="${IMG}logo-unac-blanc.png" alt=""></div>`);
   c.appendChild(fin); if(overflows(c)){ c.removeChild(fin); next(); c.appendChild(fin); }
@@ -567,7 +692,7 @@ let pvT = null;
 function schedulePreview(){ clearTimeout(pvT); pvT = setTimeout(renderPreview, 250); }
 
 /* ---------- Aperçu d'exemple : tant que rien n'est saisi, on montre un document type (filigrane « EXEMPLE ») ---------- */
-function exempleDoc(){ return Object.assign(blank(), JSON.parse(JSON.stringify(MODELE))); }
+function exempleDoc(){ return Object.assign(blank(), JSON.parse(JSON.stringify(S && S.modele === "lettre" ? MODELE_LETTRE : MODELE))); }
 const enExemple = () => S && S.statut !== "publie" && !hasContent(S);
 function renderPreview(){
   const vide = enExemple(), garde = S;

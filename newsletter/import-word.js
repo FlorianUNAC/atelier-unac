@@ -18,6 +18,7 @@
         const t = n.tagName.toLowerCase();
         if(t === "br") out += "\n";
         else if(t === "strong" || t === "b"){ const raw = texteDe(n), x = raw.trim(); if(x) out += (/^\s/.test(raw) ? " " : "") + `**${x}**` + (/\s$/.test(raw) ? " " : ""); else out += raw; }
+        else if(t === "mark"){ const raw = texteDe(n), x = raw.trim(); if(x) out += (/^\s/.test(raw) ? " " : "") + "!!" + x.replace(/!!/g, "") + "!!" + (/\s$/.test(raw) ? " " : ""); else out += raw; }
         else if(t === "em" || t === "i" || t === "u"){ const m = t === "u" ? "__" : "*", raw = texteDe(n), x = raw.trim(); if(x && !/^\*\*.*\*\*$/.test(x)) out += (/^\s/.test(raw) ? " " : "") + m + x + m + (/\s$/.test(raw) ? " " : ""); else out += raw; }
         else out += texteDe(n);
       }
@@ -92,7 +93,7 @@
         }
         // consigne introduite par « : » et suivie d'une liste -> encadré d'action
         const suiv = n.nextElementSibling;
-        if(/:\s*$/.test(brut) && suiv && /^(ul|ol)$/i.test(suiv.tagName) && !encadre){ encadre = {type:"encadre", style:"clair", titre:"", texte:brut, action:true}; blocs().push(encadre); return; }
+        if(/:\s*$/.test(brut) && suiv && /^(ul|ol)$/i.test(suiv.tagName) && !encadre && !(window.NL_API && NL_API.etat().modele === "lettre")){ encadre = {type:"encadre", style:"clair", titre:"", texte:brut, action:true}; blocs().push(encadre); return; }
         if(encadre && encadre.action && encadre.listeFaite){
           if(brut.length < 260 && /repon|adress|contact|envoy|transmet|retour/i.test(norm(brut))){ encadre.texte += "\n" + brut; encadre = null; return; }
           encadre = null;
@@ -123,7 +124,8 @@
       }
       ajouterTexte(brut);
     });
-    return optimiser(res);
+    const L = window.NL_API && NL_API.etat().modele === "lettre";
+    return L ? res : optimiser(res);
   }
 
   // Optimisation de la mise en forme
@@ -196,7 +198,7 @@
       let html;
       if(/\.docx$/i.test(f.name)){
         await chargerScript("../commun/vendor/mammoth.browser.min.js");
-        html = (await mammoth.convertToHtml({arrayBuffer: await f.arrayBuffer()}, {styleMap:["p[style-name='Title'] => h1:fresh","p[style-name='Titre'] => h1:fresh","p[style-name='Subtitle'] => h3:fresh","p[style-name='Sous-titre'] => h3:fresh"]})).value;
+        html = (await mammoth.convertToHtml({arrayBuffer: await f.arrayBuffer()}, {styleMap:["p[style-name='Title'] => h1:fresh","p[style-name='Titre'] => h1:fresh","p[style-name='Subtitle'] => h3:fresh","p[style-name='Sous-titre'] => h3:fresh","highlight => mark"]})).value;
       } else if(/\.(txt|md)$/i.test(f.name) || /^text\//.test(f.type)) html = texteVersHTML(await f.text());
       else throw new Error("format non pris en charge : utilisez un fichier Word (.docx) ou texte");
       $("#nwTxt").value = ""; montrer(analyserHTML(html));
@@ -205,11 +207,16 @@
   function appliquer(ajout){
     const r = RES; if(!r) return;
     const mk = window.NL_API;
-    const sections = r.sections.map(s => { const [a, b] = coupe(s.titre || ""); return {id:mk.uid(), titreA:a, titreB:b, picto:pictoPour(s.titre), fond:"auto", blocs:s.blocs.map(b => Object.assign(mk.nouveauBloc(b.type), b, {id:mk.uid()}))}; });
+    const L = mk.etat().modele === "lettre";
+    const sections = r.sections.map(s => { const [a, b] = L ? [s.titre || "", ""] : coupe(s.titre || ""); return {id:mk.uid(), titreA:a, titreB:b, picto:pictoPour(s.titre), fond:"auto", blocs:s.blocs.map(b => Object.assign(mk.nouveauBloc(b.type), b, {id:mk.uid()}))}; });
     const S = mk.etat();
+    if(L && S.salut !== false && sections[0]){ // la formule manuscrite remplace « Chères et chers collègues, »
+      const b0 = sections[0].blocs[0]; if(b0 && b0.type === "texte") b0.texte = String(b0.texte||"").replace(/^\s*(\*\*)?ch[eè]r(e|es)?s?\s+(et|&)\s+chers?\s+coll[eè]gues\s*,?(\*\*)?\s*\n?/i, "");
+    }
     if(ajout) S.sections.push(...sections);
     else S.sections = sections;
-    if($("#nwTitre") && $("#nwTitre").checked){ const [a, b] = coupe(r.titre); S.titreA = a; S.titreB = b; if(r.sous) S.sous = r.sous; }
+    if(L && $("#nwTitre") && $("#nwTitre").checked){ if(r.titre) S.sous = r.titre; }
+    else if($("#nwTitre") && $("#nwTitre").checked){ const [a, b] = coupe(r.titre); S.titreA = a; S.titreB = b; if(r.sous) S.sous = r.sous; }
     $("#nwModal").classList.remove("on"); mk.changed(true);
     mk.toast(ajout ? "Texte ajouté à la suite : mise en page recalculée" : "Texte importé : mise en page optimisée automatiquement");
   }
