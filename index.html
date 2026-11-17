@@ -49,7 +49,8 @@
   .cat.dev:not(.on){opacity:.7}
   .panel{position:relative;padding-top:4px}
   .panel .grid{margin-bottom:38px}
-  @media (max-width:900px){.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .cats.cats3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media (max-width:900px){.cats,.cats.cats3{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media (max-width:480px){.cat .cd{display:none}.cat{padding:14px}}
   .groupe{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:6px 2px 12px}
   .groupe h3{font-size:16px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;opacity:.95}
@@ -237,6 +238,25 @@
 
   <section class="cie" id="hop" aria-label="HOP!" aria-describedby="etat-hop">
   <h2><img class="derive" src="commun/img/avion-hop.png" alt=""><img class="hoplogo" src="commun/img/hop-blanc.png" alt="HOP!"></h2>
+  <div class="cats" role="tablist">
+    <button type="button" class="cat " data-cat="outils" aria-controls="p-hop-outils">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></span>
+      <b>Outils de création</b><span class="cd">Posts, bulletins, comptes rendus et messages aux couleurs UNAC HOP!.</span><span class="cn">5 outils · en développement</span>
+    </button>
+    <button type="button" class="cat " data-cat="base" aria-controls="p-hop-base">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></svg></span>
+      <b>Base documentaire</b><span class="cd">Formulaires et documents de référence à télécharger.</span><span class="cn">En développement</span>
+    </button>
+    <button type="button" class="cat " data-cat="charte" aria-controls="p-hop-charte">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></span>
+      <b>Charte graphique</b><span class="cd">Logo UNAC HOP!, avion, dérive, couleurs et typographies.</span><span class="cn">Logos · couleurs · typos</span>
+    </button>
+    <button type="button" class="cat dev" data-cat="dev" aria-controls="p-hop-dev">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></svg></span>
+      <b>Espace développeur</b><span class="cd">Accès réservé.</span><span class="cn">Accès réservé</span>
+    </button>
+  </div>
+  <div class="panel" id="p-hop-outils" data-cat="outils" hidden>
   <div class="outils-hop">
     <div class="voile-hop">
       <div class="encadre-hop">
@@ -280,13 +300,6 @@
       <div class="tags"><i>Facebook</i><i>PDF</i></div>
       <span class="go">→</span>
     </a>
-    <a class="tile" role="link" aria-disabled="true" data-href="formulaires/?section=hop">
-      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M12 11v6M9.5 14.5 12 17l2.5-2.5"/></svg></div>
-      <b>Formulaires</b>
-      <span>Formulaires PDF aux couleurs UNAC HOP!, à télécharger en un clic.</span>
-      <div class="tags"><i>PDF</i><i>Remplissable</i></div>
-      <span class="go">→</span>
-    </a>
     <div class="tile soon">
       <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
       <b>Prochains outils <img class="hopmini" src="commun/img/hop-blanc.png" alt="HOP!"></b>
@@ -294,10 +307,66 @@
     </div>
   </div>
   </div>
+  </div>
+  <div class="panel" id="p-hop-base" data-cat="base" hidden>
+  <div class="outils-hop">
+    <div class="voile-hop">
+      <div class="encadre-hop">
+        <p class="etat-section" id="etat-hop-base">En cours de développement</p>
+        <a class="acces-dev-hop" href="hop-developpeur.html" aria-label="Ouvrir l’espace développeur HOP!" title="Espace développeur HOP!"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></svg></a>
+      </div>
+    </div>
+  <div class="grid">
+    <a class="tile" role="link" aria-disabled="true" data-href="formulaires/?section=hop">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M12 11v6M9.5 14.5 12 17l2.5-2.5"/></svg></div>
+      <b>Formulaires</b>
+      <span>Formulaires PDF aux couleurs UNAC HOP!, à télécharger en un clic.</span>
+      <div class="tags"><i>PDF</i><i>Remplissable</i></div>
+      <span class="go">→</span>
+    </a>
+  </div>
+  </div>
+  </div>
+  <div class="panel" id="p-hop-charte" data-cat="charte" hidden>
+  <div class="grid">
+    <a class="tile" href="charte/#sections">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></div>
+      <b>Charte graphique</b>
+      <span>Logo UNAC HOP!, avion et dérive HOP!, couleurs et typographies : téléchargement en PNG ou JPG.</span>
+      <div class="tags"><i>Logos</i><i>PNG / JPG</i><i>Couleurs</i></div>
+      <span class="go">→</span>
+    </a>
+  </div>
+  </div>
+  <div class="panel" id="p-hop-dev" data-cat="dev" hidden>
+  <div class="grid">
+    <a class="tile" href="hop-developpeur.html">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></svg></div>
+      <b>Espace développeur HOP!</b>
+      <span>Accès aux outils HOP! en cours de développement, par code développeur.</span>
+      <span class="go">→</span>
+    </a>
+  </div>
+  </div>
   </section>
 
   <section class="cie" id="transavia" aria-label="Transavia" aria-describedby="etat-transavia">
   <h2><img class="derive" src="commun/img/avion-transavia.png" alt=""><img class="cielogo" src="commun/img/sections/cie-transavia-blanc.png" alt="Transavia" style="height:20px"></h2>
+  <div class="cats cats3" role="tablist">
+    <button type="button" class="cat " data-cat="outils" aria-controls="p-transavia-outils">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></span>
+      <b>Outils de création</b><span class="cd">Posts, bulletins, comptes rendus et messages aux couleurs UNAC Transavia.</span><span class="cn">6 outils · en développement</span>
+    </button>
+    <button type="button" class="cat " data-cat="base" aria-controls="p-transavia-base">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></svg></span>
+      <b>Base documentaire</b><span class="cd">Formulaires et documents de référence à télécharger.</span><span class="cn">En développement</span>
+    </button>
+    <button type="button" class="cat " data-cat="charte" aria-controls="p-transavia-charte">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></span>
+      <b>Charte graphique</b><span class="cd">Logo UNAC Transavia, avion, dérive, couleurs et typographies.</span><span class="cn">Logos · couleurs · typos</span>
+    </button>
+  </div>
+  <div class="panel" id="p-transavia-outils" data-cat="outils" hidden>
   <div class="outils-hop">
     <div class="voile-hop">
       <div class="encadre-hop">
@@ -350,9 +419,53 @@
     </a>
   </div>
   </div>
+  </div>
+  <div class="panel" id="p-transavia-base" data-cat="base" hidden>
+  <div class="outils-hop">
+    <div class="voile-hop">
+      <div class="encadre-hop">
+        <img class="logo-sec" src="commun/img/sections/logo-unac-transavia-blanc.png" alt="UNAC Transavia">
+        <p class="etat-section" id="etat-transavia-base">En cours de développement</p>
+      </div>
+    </div>
+  <div class="grid">
+    <div class="tile soon">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+      <b>Formulaires et documents</b>
+      <span>Formulaires PDF et documents de référence de la section.</span>
+    </div>
+  </div>
+  </div>
+  </div>
+  <div class="panel" id="p-transavia-charte" data-cat="charte" hidden>
+  <div class="grid">
+    <a class="tile" href="charte/#sections">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></div>
+      <b>Charte graphique</b>
+      <span>Logo UNAC Transavia, avion et dérive Transavia, couleurs et typographies : téléchargement en PNG ou JPG.</span>
+      <div class="tags"><i>Logos</i><i>PNG / JPG</i><i>Couleurs</i></div>
+      <span class="go">→</span>
+    </a>
+  </div>
+  </div>
   </section>
   <section class="cie" id="volotea" aria-label="Volotea" aria-describedby="etat-volotea">
   <h2><img class="derive" src="commun/img/avion-volotea.png" alt=""><img class="cielogo" src="commun/img/sections/cie-volotea-blanc.png" alt="Volotea" style="height:30px"></h2>
+  <div class="cats cats3" role="tablist">
+    <button type="button" class="cat " data-cat="outils" aria-controls="p-volotea-outils">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></span>
+      <b>Outils de création</b><span class="cd">Posts, bulletins, comptes rendus et messages aux couleurs UNAC Volotea.</span><span class="cn">6 outils · en développement</span>
+    </button>
+    <button type="button" class="cat " data-cat="base" aria-controls="p-volotea-base">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></svg></span>
+      <b>Base documentaire</b><span class="cd">Formulaires et documents de référence à télécharger.</span><span class="cn">En développement</span>
+    </button>
+    <button type="button" class="cat " data-cat="charte" aria-controls="p-volotea-charte">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></span>
+      <b>Charte graphique</b><span class="cd">Logo UNAC Volotea, avion, dérive, couleurs et typographies.</span><span class="cn">Logos · couleurs · typos</span>
+    </button>
+  </div>
+  <div class="panel" id="p-volotea-outils" data-cat="outils" hidden>
   <div class="outils-hop">
     <div class="voile-hop">
       <div class="encadre-hop">
@@ -405,9 +518,53 @@
     </a>
   </div>
   </div>
+  </div>
+  <div class="panel" id="p-volotea-base" data-cat="base" hidden>
+  <div class="outils-hop">
+    <div class="voile-hop">
+      <div class="encadre-hop">
+        <img class="logo-sec" src="commun/img/sections/logo-unac-volotea-blanc.png" alt="UNAC Volotea">
+        <p class="etat-section" id="etat-volotea-base">En cours de développement</p>
+      </div>
+    </div>
+  <div class="grid">
+    <div class="tile soon">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+      <b>Formulaires et documents</b>
+      <span>Formulaires PDF et documents de référence de la section.</span>
+    </div>
+  </div>
+  </div>
+  </div>
+  <div class="panel" id="p-volotea-charte" data-cat="charte" hidden>
+  <div class="grid">
+    <a class="tile" href="charte/#sections">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></div>
+      <b>Charte graphique</b>
+      <span>Logo UNAC Volotea, avion et dérive Volotea, couleurs et typographies : téléchargement en PNG ou JPG.</span>
+      <div class="tags"><i>Logos</i><i>PNG / JPG</i><i>Couleurs</i></div>
+      <span class="go">→</span>
+    </a>
+  </div>
+  </div>
   </section>
   <section class="cie" id="easyjet" aria-label="easyJet" aria-describedby="etat-easyjet">
   <h2><img class="derive" src="commun/img/avion-easyjet.png" alt=""><img class="cielogo" src="commun/img/sections/cie-easyjet-blanc.png" alt="easyJet" style="height:26px"></h2>
+  <div class="cats cats3" role="tablist">
+    <button type="button" class="cat " data-cat="outils" aria-controls="p-easyjet-outils">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></span>
+      <b>Outils de création</b><span class="cd">Posts, bulletins, comptes rendus et messages aux couleurs UNAC easyJet.</span><span class="cn">6 outils · en développement</span>
+    </button>
+    <button type="button" class="cat " data-cat="base" aria-controls="p-easyjet-base">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></svg></span>
+      <b>Base documentaire</b><span class="cd">Formulaires et documents de référence à télécharger.</span><span class="cn">En développement</span>
+    </button>
+    <button type="button" class="cat " data-cat="charte" aria-controls="p-easyjet-charte">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></span>
+      <b>Charte graphique</b><span class="cd">Logo UNAC easyJet, avion, dérive, couleurs et typographies.</span><span class="cn">Logos · couleurs · typos</span>
+    </button>
+  </div>
+  <div class="panel" id="p-easyjet-outils" data-cat="outils" hidden>
   <div class="outils-hop">
     <div class="voile-hop">
       <div class="encadre-hop">
@@ -460,9 +617,53 @@
     </a>
   </div>
   </div>
+  </div>
+  <div class="panel" id="p-easyjet-base" data-cat="base" hidden>
+  <div class="outils-hop">
+    <div class="voile-hop">
+      <div class="encadre-hop">
+        <img class="logo-sec" src="commun/img/sections/logo-unac-easyjet-blanc.png" alt="UNAC easyJet">
+        <p class="etat-section" id="etat-easyjet-base">En cours de développement</p>
+      </div>
+    </div>
+  <div class="grid">
+    <div class="tile soon">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+      <b>Formulaires et documents</b>
+      <span>Formulaires PDF et documents de référence de la section.</span>
+    </div>
+  </div>
+  </div>
+  </div>
+  <div class="panel" id="p-easyjet-charte" data-cat="charte" hidden>
+  <div class="grid">
+    <a class="tile" href="charte/#sections">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></div>
+      <b>Charte graphique</b>
+      <span>Logo UNAC easyJet, avion et dérive easyJet, couleurs et typographies : téléchargement en PNG ou JPG.</span>
+      <div class="tags"><i>Logos</i><i>PNG / JPG</i><i>Couleurs</i></div>
+      <span class="go">→</span>
+    </a>
+  </div>
+  </div>
   </section>
   <section class="cie" id="lacompagnie" aria-label="La Compagnie" aria-describedby="etat-lacompagnie">
   <h2><img class="derive" src="commun/img/avion-lacompagnie.png" alt=""><img class="cielogo" src="commun/img/sections/cie-lacompagnie-blanc.png" alt="La Compagnie" style="height:20px"></h2>
+  <div class="cats cats3" role="tablist">
+    <button type="button" class="cat " data-cat="outils" aria-controls="p-lacompagnie-outils">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></span>
+      <b>Outils de création</b><span class="cd">Posts, bulletins, comptes rendus et messages aux couleurs UNAC La Compagnie.</span><span class="cn">6 outils · en développement</span>
+    </button>
+    <button type="button" class="cat " data-cat="base" aria-controls="p-lacompagnie-base">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></svg></span>
+      <b>Base documentaire</b><span class="cd">Formulaires et documents de référence à télécharger.</span><span class="cn">En développement</span>
+    </button>
+    <button type="button" class="cat " data-cat="charte" aria-controls="p-lacompagnie-charte">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></span>
+      <b>Charte graphique</b><span class="cd">Logo UNAC La Compagnie, avion, dérive, couleurs et typographies.</span><span class="cn">Logos · couleurs · typos</span>
+    </button>
+  </div>
+  <div class="panel" id="p-lacompagnie-outils" data-cat="outils" hidden>
   <div class="outils-hop">
     <div class="voile-hop">
       <div class="encadre-hop">
@@ -515,9 +716,53 @@
     </a>
   </div>
   </div>
+  </div>
+  <div class="panel" id="p-lacompagnie-base" data-cat="base" hidden>
+  <div class="outils-hop">
+    <div class="voile-hop">
+      <div class="encadre-hop">
+        <img class="logo-sec" src="commun/img/sections/logo-unac-lacompagnie-blanc.png" alt="UNAC La Compagnie">
+        <p class="etat-section" id="etat-lacompagnie-base">En cours de développement</p>
+      </div>
+    </div>
+  <div class="grid">
+    <div class="tile soon">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+      <b>Formulaires et documents</b>
+      <span>Formulaires PDF et documents de référence de la section.</span>
+    </div>
+  </div>
+  </div>
+  </div>
+  <div class="panel" id="p-lacompagnie-charte" data-cat="charte" hidden>
+  <div class="grid">
+    <a class="tile" href="charte/#sections">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></div>
+      <b>Charte graphique</b>
+      <span>Logo UNAC La Compagnie, avion et dérive La Compagnie, couleurs et typographies : téléchargement en PNG ou JPG.</span>
+      <div class="tags"><i>Logos</i><i>PNG / JPG</i><i>Couleurs</i></div>
+      <span class="go">→</span>
+    </a>
+  </div>
+  </div>
   </section>
   <section class="cie" id="aircalin" aria-label="Aircalin" aria-describedby="etat-aircalin">
   <h2><img class="derive" src="commun/img/avion-aircalin.png" alt=""><img class="cielogo" src="commun/img/sections/cie-aircalin-blanc.png" alt="Aircalin" style="height:28px"></h2>
+  <div class="cats cats3" role="tablist">
+    <button type="button" class="cat " data-cat="outils" aria-controls="p-aircalin-outils">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></span>
+      <b>Outils de création</b><span class="cd">Posts, bulletins, comptes rendus et messages aux couleurs UNAC Aircalin.</span><span class="cn">6 outils · en développement</span>
+    </button>
+    <button type="button" class="cat " data-cat="base" aria-controls="p-aircalin-base">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></svg></span>
+      <b>Base documentaire</b><span class="cd">Formulaires et documents de référence à télécharger.</span><span class="cn">En développement</span>
+    </button>
+    <button type="button" class="cat " data-cat="charte" aria-controls="p-aircalin-charte">
+      <span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></span>
+      <b>Charte graphique</b><span class="cd">Logo UNAC Aircalin, avion, dérive, couleurs et typographies.</span><span class="cn">Logos · couleurs · typos</span>
+    </button>
+  </div>
+  <div class="panel" id="p-aircalin-outils" data-cat="outils" hidden>
   <div class="outils-hop">
     <div class="voile-hop">
       <div class="encadre-hop">
@@ -566,6 +811,35 @@
       <b>Newsletter</b>
       <span>Lettre d'information et lettre de section aux couleurs UNAC Aircalin, avec l'avion Aircalin.</span>
       <div class="tags"><i>PDF A4</i><i>E-mail</i></div>
+      <span class="go">→</span>
+    </a>
+  </div>
+  </div>
+  </div>
+  <div class="panel" id="p-aircalin-base" data-cat="base" hidden>
+  <div class="outils-hop">
+    <div class="voile-hop">
+      <div class="encadre-hop">
+        <img class="logo-sec" src="commun/img/sections/logo-unac-aircalin-blanc.png" alt="UNAC Aircalin">
+        <p class="etat-section" id="etat-aircalin-base">En cours de développement</p>
+      </div>
+    </div>
+  <div class="grid">
+    <div class="tile soon">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+      <b>Formulaires et documents</b>
+      <span>Formulaires PDF et documents de référence de la section.</span>
+    </div>
+  </div>
+  </div>
+  </div>
+  <div class="panel" id="p-aircalin-charte" data-cat="charte" hidden>
+  <div class="grid">
+    <a class="tile" href="charte/#sections">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3366a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.6"/><circle cx="17.5" cy="10.5" r="1.6"/><circle cx="8.5" cy="7.5" r="1.6"/><circle cx="6.5" cy="12.5" r="1.6"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2Z"/></svg></div>
+      <b>Charte graphique</b>
+      <span>Logo UNAC Aircalin, avion et dérive Aircalin, couleurs et typographies : téléchargement en PNG ou JPG.</span>
+      <div class="tags"><i>Logos</i><i>PNG / JPG</i><i>Couleurs</i></div>
       <span class="go">→</span>
     </a>
   </div>
