@@ -15,7 +15,7 @@
   st.textContent = `#mailModal .mbox{width:min(560px,100%)}
     #mailModal .mbody{padding:16px 18px;overflow:auto}
     #mailModal label.f{display:block;font-size:12px;font-weight:700;color:#7a5a6a;margin:10px 0 4px}
-    #mailModal input,#mailModal textarea{width:100%}
+    #mailModal input,#mailModal textarea,#mailModal select{width:100%}
     #mailModal textarea{min-height:110px}
     #mailModal .aide{font-size:12px;color:#7a5a6a;line-height:1.45;margin-top:12px;background:#faf3f6;border-radius:10px;padding:10px 12px}
     #mailModal .ok{font-size:13.5px;line-height:1.5;color:#3b2430}
@@ -59,14 +59,14 @@
     push(x + `trailer\n<< /Size ${total} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`);
     return new Blob(parts, {type: "application/pdf"});
   }
-  async function genererPdf(etat){
+  async function genererPdf(etat, hd){
     renderPreview();
     if(document.fonts && document.fonts.ready) await document.fonts.ready;
     await Promise.all([...document.querySelectorAll("#pages img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
     await loadScript(VENDOR + "html-to-image.js");
     const pages = [...document.querySelectorAll("#pages .page")];
-    const W = pages[0].offsetWidth || 794, H = pages[0].offsetHeight || 1123, ratio = 1600 / W;
-    const opts = {pixelRatio: ratio, width: W, height: H, quality: .9, backgroundColor: "#ffffff", style: {transform: "none", position: "static", margin: "0", left: "0", top: "0"}};
+    const W = pages[0].offsetWidth || 794, H = pages[0].offsetHeight || 1123, ratio = (hd ? 2480 : 1600) / W; // HD = A4 à 300 dpi (2480 × 3508 px)
+    const opts = {pixelRatio: ratio, width: W, height: H, quality: hd ? .96 : .9, backgroundColor: "#ffffff", style: {transform: "none", position: "static", margin: "0", left: "0", top: "0"}};
     try{ await htmlToImage.toJpeg(pages[0], opts); }catch(e){} // 1er passage : polices et images (Safari)
     const out = [];
     for(let i = 0; i < pages.length; i++){
@@ -91,11 +91,14 @@
   window.envoyerMail = function(){
     if(window.enExemple && enExemple()) return toast("Remplissez d’abord le document : l’aperçu n’est qu’un exemple");
     let dest = ""; try{ dest = localStorage.getItem(CLE) || ""; }catch(e){}
+    let qDef = "std"; try{ qDef = localStorage.getItem(CLE + "Q") || "std"; }catch(e){}
     const titre = window.titreExport ? window.titreExport() : document.title;
     const msgDef = (window.mailDefaut && mailDefaut()) || `Bonjour,\n\nVous trouverez ci-joint « ${titre} ».\n\nBien cordialement,\nVos délégués UNAC`;
     body.innerHTML = `<label class="f" for="mlTo">Destinataire(s)</label>
       <input type="text" id="mlTo" inputmode="email" autocomplete="email" placeholder="prenom.nom@exemple.fr ; autre@exemple.fr" value="${e_(dest)}">
       <label class="f" for="mlSub">Objet</label><input type="text" id="mlSub" value="${e_(titre)}">
+      <label class="f" for="mlQ">Qualité du PDF</label>
+      <select id="mlQ"><option value="std">Standard · fichier léger, pour lecture à l'écran</option><option value="hd" ${qDef === "hd" ? "selected" : ""}>Haute définition 300 dpi · impression, Meljet</option></select>
       <label class="f" for="mlMsg">Message</label><textarea id="mlMsg">${e_(msgDef)}</textarea>
       <p class="aide">Le PDF est fabriqué sur votre appareil puis joint au message dans votre propre messagerie : l'e-mail part de votre adresse, rien ne transite par l'Atelier.</p>`;
     foot.innerHTML = `<span></span><div style="display:flex;gap:8px"><button class="mbtn" data-x>Annuler</button><button class="mbtn pri" id="mlGo">Préparer l'envoi</button></div>`;
@@ -103,10 +106,12 @@
     foot.querySelector("#mlGo").addEventListener("click", async () => {
       const to = M.querySelector("#mlTo").value.trim(), sujet = M.querySelector("#mlSub").value.trim(), msg = M.querySelector("#mlMsg").value;
       if(to && !valide(to)){ toast("Adresse e-mail invalide"); M.querySelector("#mlTo").focus(); return; }
-      try{ localStorage.setItem(CLE, to); }catch(e){}
+      const hd = M.querySelector("#mlQ").value === "hd";
+      try{ localStorage.setItem(CLE, to); localStorage.setItem(CLE + "Q", hd ? "hd" : "std"); }catch(e){}
       body.innerHTML = `<p class="ok" id="mlEtat">Préparation du PDF…</p>`; foot.innerHTML = "";
       let f;
-      try{ f = await genererPdf(t => { const x = M.querySelector("#mlEtat"); if(x) x.textContent = t; }); }
+      try{ f = await genererPdf(t => { const x = M.querySelector("#mlEtat"); if(x) x.textContent = t + (hd ? " (haute définition)" : ""); }, hd);
+        if(hd) f = new File([f], f.name.replace(/\.pdf$/, "-HD.pdf"), {type: "application/pdf"}); }
       catch(err){ body.innerHTML = `<p class="merr">Le PDF n'a pas pu être généré (${e_(err.message || String(err))}). Utilisez « Télécharger le PDF » puis joignez-le à votre e-mail.</p>`; foot.innerHTML = `<span></span><button class="mbtn" data-x>Fermer</button>`; return; }
       const L = liens(to, sujet, msg), Ko = Math.round(f.size / 1024);
       const ua = navigator.userAgent, mobile = navigator.maxTouchPoints > 0 && /Mobi|Android|iPhone|iPad|Macintosh/.test(ua), safariMac = /Macintosh/.test(ua) && /Safari/.test(ua) && !/Chrome|Edg/.test(ua);
