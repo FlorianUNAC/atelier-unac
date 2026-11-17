@@ -329,6 +329,7 @@
 /* Modèle : la newsletter Mutuelle MNPAF de novembre 2026 */
 const SIGNATAIRES = {
   fabrice:{nom:"Fabrice Jaudinaud", role:"Votre secrétaire de section", photo:"../message/img/fabrice-jaudinaud.png", mode:"detoure"},
+  pascale:{nom:"Pascale Pierson", role:"Votre experte retraite", photo:"img/pascale-pierson.png", mode:"detoure"},
   laure:{nom:"Laure Desrentes", role:"Votre déléguée UNAC HOP!", photo:"../commun/img/hop/laure-desrentes.jpg", mode:"ronde"},
   aucune:{nom:"", role:"", photo:"", mode:""}
 };
@@ -529,7 +530,7 @@ function renderForm(){
     <label class="f">Titre du message (rose)</label><input type="text" data-k="sous" value="${esc(S.sous)}" placeholder="Desserte de Manille : …">
     <label class="chk" style="margin-top:10px"><input type="checkbox" data-k="salut" ${S.salut !== false ? "checked" : ""}> « Chères et chers collègues, » manuscrit</label>
     <div class="row2"><div><label class="f">Signature : nom</label><input type="text" data-k="signNom" value="${esc(S.signNom||"")}"></div><div><label class="f">Signature : fonction</label><input type="text" data-k="signRole" value="${esc(S.signRole||"")}"></div></div>
-    <div class="row2"><div><label class="f">Photo</label><select data-k="photo" data-sig="1">${Object.entries({fabrice:"Fabrice (détourée)", laure:"Laure (ronde)", aucune:"Sans photo"}).map(([k,l]) => `<option value="${k}" ${(S.photo||"fabrice")===k?"selected":""}>${l}</option>`).join("")}</select></div><div>${alignSel}</div></div></div>`
+    <div class="row2"><div><label class="f">Photo</label><select data-k="photo" data-sig="1">${Object.entries({fabrice:"Fabrice (détourée)", pascale:"Pascale (détourée)", laure:"Laure (ronde)", aucune:"Sans photo"}).map(([k,l]) => `<option value="${k}" ${(S.photo||"fabrice")===k?"selected":""}>${l}</option>`).join("")}</select></div><div>${alignSel}</div></div></div>`
   : `
     <div class="row2"><div><label class="f">Titre</label><input type="text" data-k="titreA" value="${esc(S.titreA)}"></div><div><label class="f">Suite du titre en gras</label><input type="text" data-k="titreB" value="${esc(S.titreB)}"></div></div>
     <label class="f">Sous-titre</label><input type="text" data-k="sous" value="${esc(S.sous)}">
