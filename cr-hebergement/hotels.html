@@ -61,6 +61,7 @@
     <h2>3 · Chiffrer et mettre en ligne</h2>
     <p>Choisissez une <b>phrase secrète longue</b> (au moins 4 mots, par exemple « valise rouge escale minuit »), différente du code d'accès à l'Atelier. Transmettez-la uniquement aux délégués, de vive voix ou par message privé. Elle n'est jamais enregistrée sur le site : sans elle, le fichier en ligne est illisible. Si vous la changez, chaque délégué devra saisir la nouvelle.</p>
     <div class="row"><div><input type="password" id="p1" placeholder="Phrase secrète" autocomplete="new-password"><div class="force"><i id="force"></i></div><small class="h" id="forceTx"></small></div><div><input type="password" id="p2" placeholder="Confirmer la phrase secrète" autocomplete="new-password"></div></div>
+    <div class="row" style="margin-top:8px"><button class="btn ghost" id="bProposer" type="button">Proposer une phrase au hasard</button><span class="msg" id="mProp" style="margin:0"></span></div>
     <div class="row" style="margin-top:12px"><button class="btn" id="bPublier">Chiffrer et publier pour tous</button><button class="btn ghost" id="bTelecharger">Télécharger le fichier chiffré</button></div>
     <small class="h">La publication utilise le jeton GitHub enregistré sur cet appareil (menu Historique → « Publication pour tous les délégués »). Sans jeton : téléchargez le fichier chiffré et déposez-le sous le nom <code>cr-hebergement/hotels.enc.json</code> dans le dépôt.</small>
     <div class="msg" id="mPub"></div>
@@ -168,6 +169,14 @@ $("#bActuelle").addEventListener("click", async () => {
   }catch(err){ $("#mLoad").innerHTML = `<span class="warn">${/decrypt|operation/i.test(err.name+err.message) ? "Phrase secrète incorrecte." : esc(err.message)}</span>`; }
 });
 
+// Phrase proposée au hasard, tirée sur cet appareil (rien n'est envoyé)
+const MOTS = "abricot accent agenda aiguille album allure ananas ancre anneau antenne arbre ardoise argile atelier aurore avenue badge baguette balcon balise bambou banane banquise barque bassin bateau berceau bijou biscuit blason boussole bouteille brioche brume bureau cabine cactus cadran calepin canard canyon caramel carnet cascade castor cerise chaloupe chapeau citron clairon clocher colibri comete compas corail cordage costume coussin crayon cristal dauphin dentelle desert diamant domino dragon eclair ecureuil escale etoile falaise fanion farine fenetre festin feuille flamant flocon fontaine fourmi framboise fusee galet gazelle girafe glacier goeland grenier grillon guitare hamac harpe herisson hibou horizon igloo jardin jasmin jongleur kayak kiwi lagune lanterne lavande lezard licorne lumiere lutin madeleine magnolia mandarine manege marelle mascotte meduse melodie meteore mimosa miroir moulin muguet nacelle navire nuage oasis olive orage orchidee origami ouragan palmier panda papillon parapluie passerelle pastel pelican perle phare piano pinceau pirogue planete plume poivre pollen pompon prairie puzzle quartz radeau raquette refuge renard requin rivage roseau rubis sablier safran saphir satellite sauterelle sentier sirene soleil sorbet source tambour tapis theiere tilleul tipi tonnerre torrent toucan tournesol trefle tremplin tulipe valise vanille velours verger violon volcan voilier wagon yaourt zebre".split(" ");
+$("#bProposer").addEventListener("click", () => {
+  const r = new Uint32Array(5); crypto.getRandomValues(r);
+  const ph = [...r].map(x => MOTS[x % MOTS.length]).join(" ");
+  $("#p1").value = $("#p2").value = ph; $("#p1").dispatchEvent(new Event("input"));
+  $("#mProp").innerHTML = `Phrase : <b style="font-size:16px;letter-spacing:.02em">${esc(ph)}</b> · notez-la avant de chiffrer.`;
+});
 // Force de la phrase
 $("#p1").addEventListener("input", () => {
   const p = $("#p1").value.trim(), mots = p.split(/\s+/).filter(w => w.length >= 3).length;
