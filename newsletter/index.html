@@ -331,7 +331,7 @@ const SIGNATAIRES = {
   fabrice:{nom:"Fabrice Jaudinaud", role:"Votre secrétaire de section", photo:"../message/img/fabrice-jaudinaud.png", mode:"detoure"},
   pascale:{nom:"Pascale Pierson", role:"Votre experte retraite", photo:"img/pascale-pierson.png", mode:"detoure"},
   patricia:{nom:"Patricia Carniato", role:"Déléguée UNAC", photo:"img/patricia-carniato.png", mode:"detoure"},
-  binome:{nom:"Pascale Pierson & Patricia Carniato", role:"Section Retraités UNAC", photo:"img/pascale-pierson.png", photos:[["img/patricia-carniato.png",104,302],["img/pascale-pierson.png",0,330]], mode:"binome"},
+  binome:{nom:"Pascale Pierson & Patricia Carniato", role:"Section Retraités UNAC", photo:"img/pascale-pierson.png", photos:[["img/patricia-carniato.png",106,270],["img/pascale-pierson.png",0,330]], mode:"binome"},
   laure:{nom:"Laure Desrentes", role:"Votre déléguée UNAC HOP!", photo:"../commun/img/hop/laure-desrentes.jpg", mode:"ronde"},
   aucune:{nom:"", role:"", photo:"", mode:""}
 };
@@ -643,7 +643,7 @@ function buildPages(box){
     const pose = () => { // photo en bas à droite de la dernière page, le texte l'habille
       const page = c.closest(".page"); page.querySelectorAll(".lphoto,.lflt-a,.lflt-b").forEach(x => x.remove());
       if(!photo) return;
-      const ronde = g.mode === "ronde", duo = g.mode === "binome", fw = ronde ? 230 : duo ? 368 : 205, fh = ronde ? 230 : 345;
+      const ronde = g.mode === "ronde", duo = g.mode === "binome", fw = ronde ? 230 : duo ? 342 : 205, fh = ronde ? 230 : 345;
       if(duo) g.photos.forEach(([src, r, h], i) => page.insertAdjacentHTML("beforeend", `<img class="lphoto" src="${src}" alt="" style="right:${r}px;height:${h}px;z-index:${3 + i}">`));
       else page.insertAdjacentHTML("beforeend", `<img class="lphoto ${ronde ? "ronde" : ""}" src="${photo}" alt="">`);
       const H = c.clientHeight, zone = fh - 46, sh = sign ? 78 : 0, sw = ronde ? 250 : 300;
@@ -697,9 +697,9 @@ function buildPages(box){
   });
   if(S.modele === "lettre"){ finLettre(box); c.closest(".page").classList.add("last"); return box.querySelectorAll(".page").length; }
   // bandeau final
-  const PHS = {pascale:[["img/pascale-pierson.png",0]], patricia:[["img/patricia-carniato.png",0]], binome:[["img/patricia-carniato.png",72,212],["img/pascale-pierson.png",0,232]]}[S.photoFin];
+  const PHS = {pascale:[["img/pascale-pierson.png",0]], patricia:[["img/patricia-carniato.png",0]], binome:[["img/patricia-carniato.png",74,190],["img/pascale-pierson.png",0,232]]}[S.photoFin];
   const PH = !!PHS;
-  const PR = {pascale:150, patricia:205, binome:265}[S.photoFin] || 150;
+  const PR = {pascale:150, patricia:205, binome:245}[S.photoFin] || 150;
   const fin = el(`${PH ? `<div class="nfinw">${PHS.map(([src, r, h], i) => `<img class="pfin" src="${src}" alt="" style="right:${r}px;z-index:${2 + i}${h ? `;height:${h}px` : ""}">`).join("")}` : ""}<div class="nfin"${PH ? ` style="padding-right:${PR}px"` : ""}><img class="ap" src="${IMG}appli-unac.png" alt=""><div class="t"><small>Un doute, une question ?</small><b style="white-space:nowrap">Tchat appli UNAC · 24h/24, 7j/7</b></div><div class="c">${esc(S.contactLabel)}<b>${esc(S.contactMail)}</b></div><img class="lw" src="${IMG}logo-unac-blanc.png" alt=""></div>${PH ? "</div>" : ""}`);
   c.appendChild(fin); if(overflows(c)){ c.removeChild(fin); next(); c.appendChild(fin); }
   grow(); c.closest(".page").classList.add("last");
