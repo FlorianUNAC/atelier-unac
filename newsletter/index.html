@@ -330,6 +330,7 @@
 const SIGNATAIRES = {
   fabrice:{nom:"Fabrice Jaudinaud", role:"Votre secrétaire de section", photo:"../message/img/fabrice-jaudinaud.png", mode:"detoure"},
   pascale:{nom:"Pascale Pierson", role:"Votre experte retraite", photo:"img/pascale-pierson.png", mode:"detoure"},
+  patricia:{nom:"Patricia Carniato", role:"Déléguée UNAC", photo:"img/patricia-carniato.png", mode:"detoure"},
   laure:{nom:"Laure Desrentes", role:"Votre déléguée UNAC HOP!", photo:"../commun/img/hop/laure-desrentes.jpg", mode:"ronde"},
   aucune:{nom:"", role:"", photo:"", mode:""}
 };
@@ -530,12 +531,12 @@ function renderForm(){
     <label class="f">Titre du message (rose)</label><input type="text" data-k="sous" value="${esc(S.sous)}" placeholder="Desserte de Manille : …">
     <label class="chk" style="margin-top:10px"><input type="checkbox" data-k="salut" ${S.salut !== false ? "checked" : ""}> « Chères et chers collègues, » manuscrit</label>
     <div class="row2"><div><label class="f">Signature : nom</label><input type="text" data-k="signNom" value="${esc(S.signNom||"")}"></div><div><label class="f">Signature : fonction</label><input type="text" data-k="signRole" value="${esc(S.signRole||"")}"></div></div>
-    <div class="row2"><div><label class="f">Photo</label><select data-k="photo" data-sig="1">${Object.entries({fabrice:"Fabrice (détourée)", pascale:"Pascale (détourée)", laure:"Laure (ronde)", aucune:"Sans photo"}).map(([k,l]) => `<option value="${k}" ${(S.photo||"fabrice")===k?"selected":""}>${l}</option>`).join("")}</select></div><div>${alignSel}</div></div></div>`
+    <div class="row2"><div><label class="f">Photo</label><select data-k="photo" data-sig="1">${Object.entries({fabrice:"Fabrice (détourée)", pascale:"Pascale (détourée)", patricia:"Patricia (détourée)", laure:"Laure (ronde)", aucune:"Sans photo"}).map(([k,l]) => `<option value="${k}" ${(S.photo||"fabrice")===k?"selected":""}>${l}</option>`).join("")}</select></div><div>${alignSel}</div></div></div>`
   : `
     <div class="row2"><div><label class="f">Titre</label><input type="text" data-k="titreA" value="${esc(S.titreA)}"></div><div><label class="f">Suite du titre en gras</label><input type="text" data-k="titreB" value="${esc(S.titreB)}"></div></div>
     <label class="f">Sous-titre</label><input type="text" data-k="sous" value="${esc(S.sous)}">
     <div class="row2"><div><label class="f">Mois</label><select data-k="mois">${moisOptions(S.mois)}</select></div><div>${alignSel}</div></div>
-    <label class="f">Photo détourée sur le bandeau final</label><select data-k="photoFin" data-struct="1"><option value="" ${!S.photoFin ? "selected" : ""}>Aucune</option><option value="pascale" ${S.photoFin === "pascale" ? "selected" : ""}>Pascale Pierson (experte retraite)</option></select>
+    <label class="f">Photo détourée sur le bandeau final</label><select data-k="photoFin" data-struct="1"><option value="" ${!S.photoFin ? "selected" : ""}>Aucune</option><option value="pascale" ${S.photoFin === "pascale" ? "selected" : ""}>Pascale Pierson (experte retraite)</option><option value="patricia" ${S.photoFin === "patricia" ? "selected" : ""}>Patricia Carniato (déléguée UNAC)</option></select>
     <div class="row2"><div><label class="f">Bandeau final : libellé</label><input type="text" data-k="contactLabel" value="${esc(S.contactLabel)}"></div><div><label class="f">Bandeau final : e-mail</label><input type="text" data-k="contactMail" value="${esc(S.contactMail)}"></div></div></div>`);
   S.sections.forEach((s, si) => {
     h += `<div class="card sec-card" data-s="${s.id}"><div class="sh"><b>Section ${si+1}</b>${si>0?`<button class="mini" data-a="sup" title="Monter">↑</button>`:""}${si<S.sections.length-1?`<button class="mini" data-a="sdown" title="Descendre">↓</button>`:""}<button class="mini danger" data-a="sdel">Supprimer</button></div>
@@ -689,8 +690,9 @@ function buildPages(box){
   });
   if(S.modele === "lettre"){ finLettre(box); c.closest(".page").classList.add("last"); return box.querySelectorAll(".page").length; }
   // bandeau final
-  const PH = {pascale:"img/pascale-pierson.png"}[S.photoFin];
-  const fin = el(`${PH ? `<div class="nfinw"><img class="pfin" src="${PH}" alt="">` : ""}<div class="nfin"><img class="ap" src="${IMG}appli-unac.png" alt=""><div class="t"><small>Un doute, une question ?</small><b>Tchat appli UNAC · 24h/24, 7j/7</b></div><div class="c">${esc(S.contactLabel)}<b>${esc(S.contactMail)}</b></div><img class="lw" src="${IMG}logo-unac-blanc.png" alt=""></div>${PH ? "</div>" : ""}`);
+  const PH = {pascale:"img/pascale-pierson.png", patricia:"img/patricia-carniato.png"}[S.photoFin];
+  const PR = {pascale:150, patricia:205}[S.photoFin] || 150;
+  const fin = el(`${PH ? `<div class="nfinw"><img class="pfin" src="${PH}" alt="">` : ""}<div class="nfin"${PH ? ` style="padding-right:${PR}px"` : ""}><img class="ap" src="${IMG}appli-unac.png" alt=""><div class="t"><small>Un doute, une question ?</small><b style="white-space:nowrap">Tchat appli UNAC · 24h/24, 7j/7</b></div><div class="c">${esc(S.contactLabel)}<b>${esc(S.contactMail)}</b></div><img class="lw" src="${IMG}logo-unac-blanc.png" alt=""></div>${PH ? "</div>" : ""}`);
   c.appendChild(fin); if(overflows(c)){ c.removeChild(fin); next(); c.appendChild(fin); }
   grow(); c.closest(".page").classList.add("last");
   return box.querySelectorAll(".page").length;
