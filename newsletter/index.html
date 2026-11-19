@@ -154,6 +154,8 @@
   .avion img{position:absolute;right:6px;bottom:10px;width:492px;transform:rotate(-2.5deg);transform-origin:60% 70%;filter:drop-shadow(0 4px 4px rgba(60,10,30,.15))}
   .sec{flex:none;padding:calc(var(--k)*20px) 42px;display:flex;flex-direction:column;gap:calc(var(--k)*12px)}
   .sec.rose{background:#FCF6F8}
+  .page.gris{background:#EBEBEB}
+  .page.gris .sec.rose{background:#F6EEF2}
   .sec.grow{flex:1 0 auto}
   .sh2{display:flex;align-items:flex-end;gap:12px;border-bottom:2px solid #B33868;padding-bottom:8px}
   .sh2 h2{flex:1;margin:0;font-size:calc(var(--k)*21.5px);line-height:1.15;font-weight:400;color:#2B2B30;font-family:"Novotype locale","Novotype Medium",Novotype,"T1",sans-serif}
@@ -534,7 +536,7 @@ let DOCS = {}, S = null;
 function moisDefaut(){ const d = new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); }
 function nouveauBloc(type){ const b = {id:uid(), type}; TYPES[type].champs.forEach(([k,,ty,def]) => { b[k] = ty === "select" ? Object.keys(def)[0] : ty === "check" ? true : (typeof def === "string" ? def : ""); }); return b; }
 function blank(){
-  return {v:1, modele:"newsletter", id:uid(), statut:"brouillon", cree:Date.now(), maj:Date.now(), mois:moisDefaut(), titreA:"Mutuelle", titreB:"MNPAF",
+  return {v:1, modele:"newsletter", fondPage:"gris", id:uid(), statut:"brouillon", cree:Date.now(), maj:Date.now(), mois:moisDefaut(), titreA:"Mutuelle", titreB:"MNPAF",
     sous:"Votre nouveau rendez-vous d'information mutuelle", contactLabel:"Vos élu.es UNAC à la MNPAF", contactMail:"mutuelleaf@unac.asso.fr",
     sections:[{id:uid(), titreA:"", titreB:"", picto:"", fond:"blanc", blocs:[nouveauBloc("enbref")]},{id:uid(), titreA:"", titreB:"", picto:"", fond:"auto", blocs:[nouveauBloc("texte")]}]};
 }
@@ -617,6 +619,7 @@ function renderForm(){
     <div class="row2"><div><label class="f">Titre</label><input type="text" data-k="titreA" value="${esc(S.titreA)}"></div><div><label class="f">Suite du titre en gras</label><input type="text" data-k="titreB" value="${esc(S.titreB)}"></div></div>
     <label class="f">Sous-titre</label><input type="text" data-k="sous" value="${esc(S.sous)}">
     <div class="row2"><div><label class="f">Mois</label><select data-k="mois">${moisOptions(S.mois)}</select></div><div>${alignSel}</div></div>
+    <label class="f">Fond de page</label><select data-k="fondPage" data-struct="1"><option value="gris" ${S.fondPage === "gris" ? "selected" : ""}>Gris clair (#EBEBEB)</option><option value="blanc" ${S.fondPage !== "gris" ? "selected" : ""}>Blanc</option></select>
     <label class="f">Photo détourée sur le bandeau final</label><select data-k="photoFin" data-struct="1"><option value="" ${!S.photoFin ? "selected" : ""}>Aucune</option><option value="pascale" ${S.photoFin === "pascale" ? "selected" : ""}>Pascale Pierson (experte retraite)</option><option value="patricia" ${S.photoFin === "patricia" ? "selected" : ""}>Patricia Carniato (déléguée UNAC)</option><option value="binome" ${S.photoFin === "binome" ? "selected" : ""}>Binôme Pascale et Patricia</option></select>
     <div class="row2"><div><label class="f">Bandeau final : libellé</label><input type="text" data-k="contactLabel" value="${esc(S.contactLabel)}"></div><div><label class="f">Bandeau final : e-mail</label><input type="text" data-k="contactMail" value="${esc(S.contactMail)}"></div></div></div>`);
   S.sections.forEach((s, si) => {
@@ -688,7 +691,7 @@ function el(html){ const d = document.createElement("div"); d.innerHTML = html.t
 const overflows = c => c.scrollHeight > c.clientHeight + 0.5;
 function newPage(box, idx){
   const w = document.createElement("div"); w.className = "pwrap";
-  const p = document.createElement("section"); p.className = "page" + (S.align === "gauche" ? "" : " just") + (S.modele === "lettre" ? " lettre" : ""); p.style.setProperty("--k", DENS.k);
+  const p = document.createElement("section"); p.className = "page" + (S.align === "gauche" ? "" : " just") + (S.modele === "lettre" ? " lettre" : (S.fondPage === "gris" ? " gris" : "")); p.style.setProperty("--k", DENS.k);
   if(S.modele === "lettre"){
     p.innerHTML = (idx ? `<div class="lhd2"></div>` : `<div class="lhd"><img class="plume" src="img/plume.png" alt=""><img class="logo" src="${IMG}logo-unac-couleur.png" alt="UNAC">
       ${(S.titreA || S.titreB) ? `<div class="lab">${esc(S.titreA)} <b>${esc(S.titreB)}</b></div>` : ""}${S.sous ? `<h1>${gras(S.sous)}</h1>` : ""}${S.salut !== false ? `<img class="salut" src="img/salut.png" alt="Chères et chers collègues,">` : ""}</div>`)
@@ -771,7 +774,7 @@ function buildPages(box){
   S.sections.forEach(s => {
     const blocs = s.blocs.filter(b => !blocVide(b)); const titre = s.titreA || s.titreB;
     if(!blocs.length && !titre) return;
-    const fond = s.fond === "auto" ? (alt++ % 2 ? "rose" : "") : (s.fond === "rose" ? "rose" : "");
+    const fond = s.fond === "auto" ? (alt++ % 2 && S.fondPage !== "gris" ? "rose" : "") : (s.fond === "rose" ? "rose" : "");
     const L = S.modele === "lettre";
     if(L) return lettreSection(s, blocs, titre);
     const head = titre ? `<div class="sh2"><h2>${unac(esc(s.titreA))}${s.titreB ? ` <b>${unac(esc(s.titreB))}</b>` : ""}</h2>${s.picto ? `<img src="${IMG}pictos/${s.picto}.png" alt="">` : ""}</div>` : "";
