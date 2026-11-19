@@ -182,6 +182,26 @@
   .bx.fonce .stp .p,.bx.alerte .stp .p{color:#2B2B30}
   .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
   .gcol{display:flex;flex-direction:column;gap:12px}
+  /* Bloc « Dates de stages » : calendrier en tuiles */
+  .stg{background:linear-gradient(180deg,#A3285C 0%,#C2306E 100%);border-radius:16px;padding:calc(var(--k)*20px) 24px calc(var(--k)*22px);color:#fff;display:flex;flex-direction:column;gap:calc(var(--k)*14px);break-inside:avoid}
+  .stg h3{margin:0;font-family:"Novotype locale",Novotype,"T1",sans-serif;font-weight:400;font-size:calc(var(--k)*17px);line-height:1.25;letter-spacing:.01em;color:#fff}
+  .stg h3 .nm,.stg h3 b{font-weight:500}
+  .stg .atouts{display:flex;flex-wrap:wrap;gap:8px 22px}
+  .stg .atouts div{display:flex;align-items:center;gap:8px;font-family:"Novotype locale",Novotype,"T1",sans-serif;font-size:calc(var(--k)*13px);letter-spacing:.08em;text-transform:uppercase;color:#fff}
+  .stg .atouts b{font-weight:500}
+  .stg .atouts svg{width:20px;height:20px;flex:none}
+  .stg .mois{display:grid;gap:12px 14px}
+  .stg .m{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
+  .stg .m h4{margin:0;font-family:"Novotype locale",Novotype,"T1",sans-serif;font-weight:500;font-size:calc(var(--k)*12.5px);letter-spacing:.14em;text-transform:uppercase;color:#fff;opacity:.95}
+  .stg .tl{display:flex;gap:7px;justify-content:center;width:100%}
+  .stg .tile{background:#fff;border-radius:11px;box-shadow:0 6px 14px rgba(70,5,35,.28);flex:1 1 0;min-width:0;max-width:calc(var(--k)*52px);padding:calc(var(--k)*6px) 0 calc(var(--k)*5px);text-align:center;display:flex;flex-direction:column;align-items:center;line-height:1}
+  .stg .tile small{font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#9A8590}
+  .stg .tile b{font-size:calc(var(--k)*27px);font-weight:800;color:#B33868;letter-spacing:-.02em;margin:2px 0 1px}
+  .stg .tile i{font-style:normal;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#B33868}
+  .stg .insc{border-top:1px solid rgba(255,255,255,.35);padding-top:calc(var(--k)*11px);text-align:center;font-size:11pt;color:#fff}
+  .stg .insc b{font-weight:700}
+  .stg .nt{margin:calc(var(--k)*-6px) 0 0;text-align:center;font-size:9.5pt;color:#fff;opacity:.88}
+  .stg .p{color:#fff}
   .enbref{background:#FCF6F8;border:1px solid #EBD3DC;border-radius:14px;padding:calc(var(--k)*14px) 18px;display:flex;flex-direction:column;gap:9px}
   .enbref h3{margin:0;font-size:calc(var(--k)*17px);font-weight:400}
   .enbref h3 b{color:#B33868}
@@ -442,6 +462,22 @@ function rt(t){
 const noms = s => gras(s).replace(/(^|[\s(&,])([A-ZÉÈÊÀÂÎÔÛÇ][a-zéèêëàâîïôöûüç'’-]+(?:[- ][A-ZÉ][a-zéèêëàâîïôöûüç-]+)?)(?=\s+[A-ZÉÈÀÇ'’-]{2,})/g, "$1<b>$2</b>");
 const rows = t => String(t||"").split("\n").map(l => l.trim()).filter(Boolean).map(l => l.split("|").map(c => c.trim()));
 
+const MOIS_ABR = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."], JOURS = ["dim.","lun.","mar.","mer.","jeu.","ven.","sam."];
+const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-4.2-7.33"/><path d="M8 12.2l3 3 6.5-6.7"/></svg>';
+function stagesHTML(b){
+  const norm = x => x.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const groupes = rows(b.dates).map(c => {
+    const lab = c[0] || "", yr = (lab.match(/\b(20\d\d)\b/) || [])[1];
+    const mi = MOIS.findIndex(m => norm(lab).startsWith(norm(m).slice(0, 4)));
+    const jours = String(c.slice(1).join(" ")).split(/[^0-9]+/).filter(Boolean).map(Number);
+    const tiles = jours.map(j => { const d = (yr && mi >= 0) ? new Date(+yr, mi, j) : null;
+      return `<div class="tile">${d ? `<small>${JOURS[d.getDay()]}</small>` : ""}<b>${String(j).padStart(2, "0")}</b>${mi >= 0 ? `<i>${MOIS_ABR[mi]}</i>` : ""}</div>`; }).join("");
+    return `<div class="m"><h4>${esc(mi >= 0 ? MOIS[mi] + (yr ? " " + yr : "") : lab)}</h4><div class="tl">${tiles}</div></div>`;
+  });
+  const n = Math.max(1, Math.min(4, groupes.length));
+  const at = String(b.atouts || "").split("\n").map(l => l.trim()).filter(Boolean).map(l => `<div>${CHECK}<span>${gras(l)}</span></div>`).join("");
+  return `<div class="stg">${b.titre ? `<h3>${unac(gras(b.titre))}</h3>` : ""}${at ? `<div class="atouts">${at}</div>` : ""}${groupes.length ? `<div class="mois" style="grid-template-columns:repeat(${n},minmax(0,1fr))">${groupes.join("")}</div>` : ""}${b.insc ? `<p class="insc">${gras(b.insc)}</p>` : ""}${b.note ? `<p class="nt">${gras(b.note)}</p>` : ""}</div>`;
+}
 /* ---------- Types de blocs ---------- */
 const TYPES = {
   texte:   {nom:"Texte", champs:[["texte","Texte","area"]], aide:"<code>- </code> puce · <code>1) </code> étape numérotée · <code>&gt; </code> note grise · barre d'outils : gras, italique, souligné, rose, taille"},
@@ -455,6 +491,7 @@ const TYPES = {
   tableau: {nom:"Tableau", champs:[["texte","Une ligne par rangée, cellules séparées par |","area"],["grand","Chiffres en grand (tarifs)","check"]], aide:"La 1re ligne = en-têtes. ex. <code>Formule | PASS Hospi</code>"},
   personnes:{nom:"Liste de personnes", champs:[["texte","Une ligne par groupe : Groupe : Prénom NOM, Prénom NOM…","area"]], aide:"ex. <code>Actifs : Corinne CORDIER, Rémy DIESEN</code> (prénom en gras automatiquement)"},
   roles:   {nom:"Tableau clé / valeur", champs:[["titre","Titre","text","Où siègent-ils ?"],["texte","Une ligne par rangée : clé | valeur","area"]], aide:"ex. <code>Bureau | Stéphane PASQUALINI</code>"},
+  stages:  {nom:"Dates de stages (calendrier)", champs:[["titre","Titre","text","Stages retraite avec votre experte **UNAC** Pascale Pierson"],["atouts","Points forts (une ligne par point)","area"],["dates","Dates : une ligne par mois → Mois année | jours","area"],["insc","Inscription","text","Inscription par mail **navigants@unac.asso.fr**"],["note","Petite note (facultatif)","text"]], aide:"ex. <code>Janvier 2027 | 11, 12, 14</code> · le jour de la semaine est calculé tout seul"},
   appli:   {nom:"Appli MNPAF (avec badge)", champs:[["texte","Texte à gauche","area"]], aide:"<code>- </code> puce · barre d'outils : gras, italique, souligné, rose, taille"}
 };
 function blocHTML(b){
@@ -473,6 +510,7 @@ function blocHTML(b){
     case "personnes": return String(b.texte||"").split("\n").filter(l => l.trim()).map(l => { const i = l.indexOf(":"); const lab = i > 0 ? l.slice(0,i).trim() : ""; const ns = (i > 0 ? l.slice(i+1) : l).split(",").map(x => x.trim()).filter(Boolean);
       return `<div class="pers">${lab ? `<span class="lab">${esc(lab)}</span>` : ""}${ns.map(n => `<span class="chip">${noms(n)}</span>`).join("")}</div>`; }).join("");
     case "roles": return `<div class="roles">${b.titre ? `<p class="lb">${gras(b.titre)}</p>` : ""}${rows(b.texte).map(c => `<div class="rw"><span class="k">${gras(c[0]||"")}</span><span class="v">${noms(c.slice(1).join(" | "))}</span></div>`).join("")}</div>`;
+    case "stages": return stagesHTML(b);
     case "appli": return `<div class="appli"><div style="flex:1">${rt(b.texte)}</div><div class="badge"><img src="${IMG}appli-mnpaf.png" alt=""><div><p class="note">Disponible sur</p><div class="st"><span>App Store</span><span>Google Play</span></div></div></div></div>`;
   }
   return "";
