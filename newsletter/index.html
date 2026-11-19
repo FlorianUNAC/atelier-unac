@@ -183,6 +183,13 @@
   .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
   .gcol{display:flex;flex-direction:column;gap:12px}
   /* Bloc « Dates de stages » : calendrier en tuiles */
+  .cal{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}
+  .calm{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px;border:1px solid var(--ui-line);border-radius:10px;background:#fcfafb}
+  .calm select{width:auto;flex:none}
+  .calj{display:flex;flex-wrap:wrap;gap:5px;align-items:center;flex:1 1 100%}
+  .calj span{display:inline-flex;align-items:center;gap:2px}
+  .calj input{width:58px;text-align:center}
+  .cal > .mini{align-self:flex-start}
   .stg{background:linear-gradient(180deg,#A3285C 0%,#C2306E 100%);border-radius:0;margin-left:-42px;margin-right:-42px;padding:calc(var(--k)*22px) 66px calc(var(--k)*24px);color:#fff;display:flex;flex-direction:column;gap:calc(var(--k)*14px);break-inside:avoid}
   .stg h3{margin:0;font-family:"Novotype locale",Novotype,"T1",sans-serif;font-weight:400;font-size:calc(var(--k)*17px);line-height:1.25;letter-spacing:.01em;color:#fff}
   .stg h3 .nm,.stg h3 b{font-weight:500}
@@ -190,7 +197,7 @@
   .stg .atouts div{display:flex;align-items:center;gap:8px;font-family:"Novotype locale",Novotype,"T1",sans-serif;font-size:calc(var(--k)*13px);letter-spacing:.08em;text-transform:uppercase;color:#fff}
   .stg .atouts b{font-weight:500}
   .stg .atouts svg{width:20px;height:20px;flex:none}
-  .stg .mois{display:grid;gap:12px 14px}
+  .stg .mois{display:flex;flex-wrap:wrap;justify-content:space-around;gap:12px 18px}
   .stg .m{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
   .stg .m h4{margin:0;font-family:"Novotype locale",Novotype,"T1",sans-serif;font-weight:500;font-size:calc(var(--k)*12.5px);letter-spacing:.14em;text-transform:uppercase;color:#fff;opacity:.95}
   .stg .tl{display:flex;gap:7px;justify-content:center;width:100%}
@@ -472,11 +479,11 @@ function stagesHTML(b){
     const jours = String(c.slice(1).join(" ")).split(/[^0-9]+/).filter(Boolean).map(Number);
     const tiles = jours.map(j => { const d = (yr && mi >= 0) ? new Date(+yr, mi, j) : null;
       return `<div class="tile">${d ? `<small>${JOURS[d.getDay()]}</small>` : ""}<b>${String(j).padStart(2, "0")}</b>${mi >= 0 ? `<i>${MOIS_ABR[mi]}</i>` : ""}</div>`; }).join("");
-    return `<div class="m"><h4>${esc(mi >= 0 ? MOIS[mi] + (yr ? " " + yr : "") : lab)}</h4><div class="tl">${tiles}</div></div>`;
+    return `<div class="m" style="flex:${Math.max(1, jours.length)} 1 0;min-width:${Math.max(1, jours.length) * 46}px"><h4>${esc(mi >= 0 ? MOIS[mi] + (yr ? " " + yr : "") : lab)}</h4><div class="tl">${tiles}</div></div>`;
   });
   const n = Math.max(1, Math.min(4, groupes.length));
   const at = String(b.atouts || "").split("\n").map(l => l.trim()).filter(Boolean).map(l => `<div>${CHECK}<span>${gras(l)}</span></div>`).join("");
-  return `<div class="stg">${b.titre ? `<h3>${unac(gras(b.titre))}</h3>` : ""}${at ? `<div class="atouts">${at}</div>` : ""}${groupes.length ? `<div class="mois" style="grid-template-columns:repeat(${n},minmax(0,1fr))">${groupes.join("")}</div>` : ""}${b.insc ? `<p class="insc">${gras(b.insc)}</p>` : ""}${b.note ? `<p class="nt">${gras(b.note)}</p>` : ""}</div>`;
+  return `<div class="stg">${b.titre ? `<h3>${unac(gras(b.titre))}</h3>` : ""}${at ? `<div class="atouts">${at}</div>` : ""}${groupes.length ? `<div class="mois">${groupes.join("")}</div>` : ""}${b.insc ? `<p class="insc">${gras(b.insc)}</p>` : ""}${b.note ? `<p class="nt">${gras(b.note)}</p>` : ""}</div>`;
 }
 /* ---------- Types de blocs ---------- */
 const TYPES = {
@@ -491,7 +498,7 @@ const TYPES = {
   tableau: {nom:"Tableau", champs:[["texte","Une ligne par rangée, cellules séparées par |","area"],["grand","Chiffres en grand (tarifs)","check"]], aide:"La 1re ligne = en-têtes. ex. <code>Formule | PASS Hospi</code>"},
   personnes:{nom:"Liste de personnes", champs:[["texte","Une ligne par groupe : Groupe : Prénom NOM, Prénom NOM…","area"]], aide:"ex. <code>Actifs : Corinne CORDIER, Rémy DIESEN</code> (prénom en gras automatiquement)"},
   roles:   {nom:"Tableau clé / valeur", champs:[["titre","Titre","text","Où siègent-ils ?"],["texte","Une ligne par rangée : clé | valeur","area"]], aide:"ex. <code>Bureau | Stéphane PASQUALINI</code>"},
-  stages:  {nom:"Dates de stages (calendrier)", champs:[["titre","Titre","text","Stages retraite avec votre experte **UNAC** Pascale Pierson"],["atouts","Points forts (une ligne par point)","area"],["dates","Dates : une ligne par mois → Mois année | jours","area"],["insc","Inscription","text","Inscription par mail **navigants@unac.asso.fr**"],["note","Petite note (facultatif)","text"]], aide:"ex. <code>Janvier 2027 | 11, 12, 14</code> · le jour de la semaine est calculé tout seul"},
+  stages:  {nom:"Dates de stages (calendrier)", champs:[["titre","Titre","text","Stages retraite avec votre experte **UNAC** Pascale Pierson"],["atouts","Points forts (une ligne par point)","area"],["dates","Mois et dates des stages","cal"],["insc","Inscription","text","Inscription par mail **navigants@unac.asso.fr**"],["note","Petite note (facultatif)","text"]], aide:"Choisissez le mois et l'année, puis ajoutez autant de dates que nécessaire · le jour de la semaine est calculé tout seul"},
   appli:   {nom:"Appli MNPAF (avec badge)", champs:[["texte","Texte à gauche","area"]], aide:"<code>- </code> puce · barre d'outils : gras, italique, souligné, rose, taille"}
 };
 function blocHTML(b){
@@ -542,8 +549,22 @@ function copyToDraft(d){ const c = JSON.parse(JSON.stringify(d)); Object.assign(
 
 /* ---------- Formulaire ---------- */
 function moisOptions(sel){ const now = new Date(); let o = ""; for(let k=-14;k<=4;k++){ const d = new Date(now.getFullYear(), now.getMonth()+k, 1); const v = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); o += `<option value="${v}" ${v===sel?"selected":""}>${cap(MOIS[d.getMonth()])} ${d.getFullYear()}</option>`; } return o; }
+/* Calendrier des stages : « Mois année | j, j, j » par ligne, édité mois par mois */
+const calLire = t => rows(t).map(c => { const lab = c[0] || "", n = x => x.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const m = MOIS.findIndex(mm => n(lab).startsWith(n(mm).slice(0, 4))), y = +((lab.match(/\b(20\d\d)\b/) || [])[1] || new Date().getFullYear());
+  return {m: m < 0 ? 0 : m, y, j: String(c.slice(1).join(" ")).split(/[\s,\/;]+/).filter(Boolean).map(x => /^\d+$/.test(x) ? x : "")}; });
+const calEcrire = L => L.map(r => `${cap(MOIS[r.m])} ${r.y} | ${r.j.map(x => String(x).trim() || "?").join(", ")}`).join("\n");
+function calHTML(k, v){
+  const L = calLire(v), an = new Date().getFullYear();
+  const ligne = (r, i) => `<div class="calm" data-i="${i}"><select data-cal="m">${MOIS.map((mm, x) => `<option value="${x}" ${x === r.m ? "selected" : ""}>${cap(mm)}</option>`).join("")}</select><select data-cal="y">${[an - 1, an, an + 1, an + 2].map(y => `<option ${y === r.y ? "selected" : ""}>${y}</option>`).join("")}</select>`
+    + `<div class="calj">${r.j.map((j, x) => `<span><input type="number" min="1" max="31" data-cal="j" value="${esc(j)}"><button type="button" class="mini" data-cal-a="jdel" data-x="${x}" title="Retirer cette date">✕</button></span>`).join("")}<button type="button" class="mini" data-cal-a="jadd">+ date</button></div>`
+    + `<button type="button" class="mini danger" data-cal-a="mdel" title="Retirer ce mois">Retirer le mois</button></div>`;
+  return `<label class="f">Mois et dates des stages</label><div class="cal" data-cal-k="${k}">${L.map(ligne).join("")}<button type="button" class="mini" data-cal-a="madd">+ Ajouter un mois</button></div>`;
+}
+function calDepuisDOM(box){ return [...box.querySelectorAll(".calm")].map(r => ({m:+r.querySelector('[data-cal="m"]').value, y:+r.querySelector('[data-cal="y"]').value, j:[...r.querySelectorAll('[data-cal="j"]')].map(x => x.value)})); }
 function champ(b, [k, lab, ty, def]){
   const v = b[k] ?? "";
+  if(ty === "cal") return calHTML(k, v);
   if(ty === "area") return `<label class="f">${lab}</label>${TBAR}<textarea data-b="${k}" rows="${Math.min(10, Math.max(3, String(v).split("\n").length + 1))}">${esc(v)}</textarea>`;
   if(ty === "select") return `<label class="f">${lab}</label><select data-b="${k}">${Object.entries(def).map(([o,l]) => `<option value="${o}" ${o===v?"selected":""}>${l}</option>`).join("")}</select>`;
   if(ty === "check") return `<label class="chk" style="margin-top:8px"><input type="checkbox" data-b="${k}" ${v !== false ? "checked" : ""}> ${lab}</label>`;
@@ -617,6 +638,7 @@ function renderForm(){
 const secOf = el => S.sections.find(s => s.id === el.closest("[data-s]").dataset.s);
 $("#form").addEventListener("input", e => {
   const t = e.target, v = t.type === "checkbox" ? t.checked : t.value;
+  if(t.dataset.cal){ const box = t.closest(".cal"), s = secOf(t), b = s.blocs.find(x => x.id === t.closest("[data-b-id]").dataset.bId); b[box.dataset.calK] = calEcrire(calDepuisDOM(box)); return changed(false); }
   if(t.dataset.k){
     if(t.dataset.k === "modele"){ // bascule de modèle : on remplace les réglages restés par défaut
       const versL = v === "lettre", DEF = versL ? LETTRE_DEF : NL_DEF, ANC = versL ? NL_DEF : LETTRE_DEF;
@@ -632,6 +654,14 @@ $("#form").addEventListener("input", e => {
 });
 $("#form").addEventListener("click", e => {
   const fb = e.target.closest(".tbar button"); if(fb) return formater(fb);
+  const ca = e.target.closest("[data-cal-a]"); if(ca){
+    const box = ca.closest(".cal"), s = secOf(ca), b = s.blocs.find(x => x.id === ca.closest("[data-b-id]").dataset.bId), L = calDepuisDOM(box), row = ca.closest(".calm"), i = row ? +row.dataset.i : -1;
+    if(ca.dataset.calA === "madd"){ const d = L.length ? L[L.length - 1] : {m:new Date().getMonth(), y:new Date().getFullYear()}; const nm = L.length ? (d.m + 1) % 12 : d.m; L.push({m:nm, y:d.y + (L.length && nm === 0 ? 1 : 0), j:[""]}); }
+    if(ca.dataset.calA === "mdel") L.splice(i, 1);
+    if(ca.dataset.calA === "jadd") L[i].j.push("");
+    if(ca.dataset.calA === "jdel") L[i].j.splice(+ca.dataset.x, 1);
+    b[box.dataset.calK] = calEcrire(L); return changed(true);
+  }
   if(e.target.id === "addSec"){ S.sections.push({id:uid(), titreA:"", titreB:"", picto:"", fond:"auto", blocs:[nouveauBloc("texte")]}); changed(true); const f = $("#form"); f.scrollTop = f.scrollHeight; return; }
   if(e.target.id === "pubBtn") return publier();
   if(e.target.id === "roCopy") return copyToDraft(S);
