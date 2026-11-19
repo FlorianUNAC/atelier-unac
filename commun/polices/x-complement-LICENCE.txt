@@ -1,0 +1,3 @@
+x-complement-regular.woff2 et x-complement-bold.woff2 : sous-ensemble (espaces insécables, guillemets, puce, flèche)
+de la police Inter, © The Inter Project Authors (https://github.com/rsms/inter),
+distribuée sous licence SIL Open Font License 1.1 (https://openfontlicense.org).
