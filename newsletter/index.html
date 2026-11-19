@@ -355,7 +355,7 @@
 <script src="import-word.js"></script>
 <script>
 /* Modèle : la newsletter Mutuelle MNPAF de novembre 2026 */
-const unac = t => t.replace(/\bUNAC\b/g, '<span class="nm">UNAC</span>');
+const unac = t => t.replace(/\*\*(.+?)\*\*/g, '<span class="nm">$1</span>').replace(/\bUNAC\b/g, '<span class="nm">UNAC</span>'); /* titres : **mot** et « UNAC » en Novotype Medium */
 const SIGNATAIRES = {
   fabrice:{nom:"Fabrice Jaudinaud", role:"Votre secrétaire de section", photo:"../message/img/fabrice-jaudinaud.png", mode:"detoure"},
   pascale:{nom:"Pascale Pierson", role:"Votre experte retraite", photo:"img/pascale-pierson.png", mode:"detoure"},
