@@ -165,7 +165,7 @@
   .page h1,.page h2,.page .lsign{text-wrap:balance}
   .p{font-size:11pt;line-height:max(1.32,calc(var(--k)*1.5));margin:0;color:#2B2B30}
   .p b{font-weight:700}
-  .page:not(.lettre) .rt .p,.page:not(.lettre) .bx > .p,.page:not(.lettre) .lb{font-size:12pt}
+  .page:not(.lettre) .rt .p,.page:not(.lettre) .bx > .p,.page:not(.lettre) .lb{font-size:calc(12pt * clamp(1, 1 + (var(--k) - 1.06) * .35, 1.1))}
   .note{font-size:calc(var(--k)*12.2px);line-height:1.45;margin:0;color:#66666C}
   .lb{font-size:11pt;font-weight:700;color:#B33868;margin:0}
   .rt{display:flex;flex-direction:column;gap:calc(var(--k)*6px)}
@@ -199,14 +199,14 @@
   .stg .atouts div{display:flex;align-items:center;gap:8px;font-family:"Novotype locale",Novotype,"T1",sans-serif;font-size:calc(var(--k)*13px);letter-spacing:.08em;text-transform:uppercase;color:#fff}
   .stg .atouts b{font-weight:500}
   .stg .atouts svg{width:20px;height:20px;flex:none}
-  .stg .mois{display:flex;flex-wrap:wrap;justify-content:space-around;gap:12px 18px}
+  .stg .mois{display:flex;flex-wrap:wrap;justify-content:space-around;gap:12px 28px}
   .stg .m{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
-  .stg .m h4{margin:0;font-family:"Novotype locale",Novotype,"T1",sans-serif;font-weight:500;font-size:calc(var(--k)*12.5px);letter-spacing:.14em;text-transform:uppercase;color:#fff;opacity:.95}
-  .stg .tl{display:flex;gap:7px;justify-content:center;width:100%}
-  .stg .tile{background:#fff;border-radius:11px;box-shadow:0 6px 14px rgba(70,5,35,.28);flex:1 1 0;min-width:0;max-width:calc(var(--k)*52px);padding:calc(var(--k)*6px) 0 calc(var(--k)*5px);text-align:center;display:flex;flex-direction:column;align-items:center;line-height:1}
-  .stg .tile small{font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#9A8590}
-  .stg .tile b{font-size:calc(var(--k)*27px);font-weight:800;color:#B33868;letter-spacing:-.02em;margin:2px 0 1px}
-  .stg .tile i{font-style:normal;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#B33868}
+  .stg .m h4{margin:0;font-family:"Novotype locale",Novotype,"T1",sans-serif;font-weight:500;font-size:calc(var(--k)*12.5px*(1 + (var(--ks,1) - 1)*.5));letter-spacing:.14em;text-transform:uppercase;color:#fff;opacity:.95}
+  .stg .tl{display:flex;gap:calc(7px*var(--ks,1));justify-content:center;width:100%}
+  .stg .tile{background:#fff;border-radius:11px;box-shadow:0 6px 14px rgba(70,5,35,.28);flex:1 1 0;min-width:0;max-width:calc(var(--k)*52px*var(--ks,1));padding:calc(var(--k)*6px*var(--ks,1)) 0 calc(var(--k)*5px*var(--ks,1));text-align:center;display:flex;flex-direction:column;align-items:center;line-height:1}
+  .stg .tile small{font-size:calc(8.5px*var(--ks,1));font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#9A8590}
+  .stg .tile b{font-size:calc(var(--k)*27px*var(--ks,1));font-weight:800;color:#B33868;letter-spacing:-.02em;margin:2px 0 1px}
+  .stg .tile i{font-style:normal;font-size:calc(9px*var(--ks,1));font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#B33868}
   .stg .insc{border-top:1px solid rgba(255,255,255,.35);padding-top:calc(var(--k)*11px);text-align:center;font-size:11pt;color:#fff}
   .stg .insc b{font-weight:700}
   .stg .nt{margin:calc(var(--k)*-6px) 0 0;text-align:center;font-size:9.5pt;color:#fff;opacity:.88}
@@ -821,10 +821,49 @@ function renderPreviewReel(){
   const stage = document.createElement("div"); stage.style.cssText = "position:fixed;left:-20000px;top:0;visibility:hidden;width:900px"; document.body.appendChild(stage);
   let best = null;
   for(let i=0;i<DENSITES.length;i++){ DENS = DENSITES[i]; const n = buildPages(stage); if(!best || n < best.n) best = {i, n}; }
-  DENS = DENSITES[best.i]; const n = buildPages(stage);
+  DENS = DENSITES[best.i];
+  { // de la place en trop : on aère progressivement tant que le nombre de pages ne bouge pas (l'espace vide est comblé)
+    const base = DENSITES[best.i];
+    for(let k = base.k + .02; k <= 1.4; k += .02){ const d = {nom: k > 1.03 ? "aérée" : "standard", k:+k.toFixed(2)}; DENS = d; if(buildPages(stage) > best.n) break; best.d = d; }
+    DENS = best.d || base;
+  }
+  const n = buildPages(stage);
+  repartir(stage);
   const box = $("#pages"); box.innerHTML = ""; while(stage.firstChild) box.appendChild(stage.firstChild); stage.remove();
   fitPreview();
   $("#pvMeta").textContent = `${n} page${n>1?"s":""} · ${S.sections.length} section${S.sections.length>1?"s":""} · mise en page ${DENS.nom} (auto) · A4`;
+}
+/* Dernière page : l'espace libre restant est réparti entre les blocs (pas de grand vide au-dessus du bandeau final) */
+function repartir(stage){
+  if(S.modele === "lettre") return;
+  const pg = [...stage.querySelectorAll(".page")].pop(); if(!pg) return; const c = pg.querySelector(".content"); if(!c) return;
+  const secs = [...c.children].filter(x => x.classList.contains("sec")); if(!secs.length) return;
+  const stgs = [...c.querySelectorAll(".stg")];
+  const raz = () => { secs.forEach(x => { x.style.rowGap = ""; x.style.paddingBottom = ""; }); stgs.forEach(x => { x.style.paddingTop = x.style.paddingBottom = x.style.rowGap = ""; x.style.removeProperty("--ks"); }); };
+  const libre = () => c.clientHeight - [...c.children].reduce((a, x) => a + x.offsetHeight, 0) - 4;
+  const distrib = () => { raz();
+    let free = libre(); if(free < 16) return;
+    if(stgs.length){ // d'abord le pavé des dates s'aère (jusqu'à 60 % de l'espace libre)
+      let ks = 1; for(const t of [1.08, 1.16, 1.24]){ if(libre() < 40) break; stgs.forEach(x => x.style.setProperty("--ks", t)); if(overflows(c) || libre() < 0){ stgs.forEach(x => x.style.setProperty("--ks", ks)); break; } ks = t; }
+      free = libre(); const a = Math.min(free * .45 / stgs.length, 50);
+      if(a > 4){ stgs.forEach(x => { const cs = getComputedStyle(x); x.style.paddingTop = (parseFloat(cs.paddingTop) + a / 2) + "px"; x.style.paddingBottom = (parseFloat(cs.paddingBottom) + a / 2) + "px"; }); if(overflows(c)){ stgs.forEach(x => { x.style.paddingTop = x.style.paddingBottom = ""; }); } }
+      free = libre(); }
+    for(let it = 0; it < 2 && free >= 16; it++){
+      const slots = secs.reduce((a, x) => a + Math.max(0, x.children.length - 1) + 1, 0), add = Math.min(free / slots, 18);
+      secs.forEach(x => { const cs = getComputedStyle(x); x.style.rowGap = (parseFloat(cs.rowGap) + add) + "px"; x.style.paddingBottom = (parseFloat(cs.paddingBottom) + add) + "px"; });
+      if(overflows(c)){ secs.forEach(x => { x.style.rowGap = ""; x.style.paddingBottom = ""; }); return; } free = libre(); } };
+  const nf = c.querySelector(".nfinw"), imgs = nf ? [...nf.querySelectorAll(".pfin")] : [];
+  if(imgs.length){ // la photo du bandeau final dépasse vers le haut : on raccourcit le dernier texte sous sa tête et on rend le reste de la zone réservée au contenu
+    const gauche = Math.min(...imgs.map(i => i.getBoundingClientRect().left)) - 12, fin = secs[secs.length - 1].lastElementChild;
+    const pris = fin && fin.classList.contains("rt") ? [...fin.querySelectorAll(":scope > .p, :scope > .note")] : [];
+    pris.forEach(e => e.style.paddingRight = Math.max(0, e.getBoundingClientRect().right - gauche) + "px");
+    const ok = () => { const haut = Math.min(...imgs.map(i => i.getBoundingClientRect().top)); return ![...c.querySelectorAll(".p,.note,.lb,.stg,.bx,.enbref,.etapes,.chiffres,.roles,table,.sh2,.appli")].some(e => { if(nf.contains(e) || pris.includes(e) || e.closest(".stg,.bx,.enbref,.etapes,.chiffres,.roles,.appli") !== e && e.closest(".stg,.bx,.enbref,.etapes,.chiffres,.roles,.appli")) return false; const r = e.getBoundingClientRect(); return r.height > 0 && r.bottom > haut + 2 && r.right > gauche; }); };
+    let trouve = false;
+    for(let pt = 0; pt <= 130; pt += 10){ nf.style.paddingTop = pt + "px"; distrib(); if(!overflows(c) && ok()){ trouve = true; break; } }
+    if(!trouve){ nf.style.paddingTop = ""; pris.forEach(e => e.style.paddingRight = ""); distrib(); }
+    return;
+  }
+  distrib();
 }
 function fitPreview(){ const pv = $("#preview"); const k = Math.min(pv.clientWidth - 40, 794) / 794; document.querySelectorAll(".pwrap").forEach(w => { w.style.width = (794*k)+"px"; w.style.height = (1123*k)+"px"; w.firstChild.style.transform = `scale(${k})`; }); }
 window.addEventListener("resize", fitPreview);
