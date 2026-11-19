@@ -93,7 +93,7 @@
         }
         // consigne introduite par « : » et suivie d'une liste -> encadré d'action
         const suiv = n.nextElementSibling;
-        if(/:\s*$/.test(brut) && suiv && /^(ul|ol)$/i.test(suiv.tagName) && !encadre && !(window.NL_API && NL_API.etat().modele === "lettre")){ encadre = {type:"encadre", style:"clair", titre:"", texte:brut, action:true}; blocs().push(encadre); return; }
+        if(/:\s*$/.test(brut) && suiv && /^(ul|ol)$/i.test(suiv.tagName) && !encadre){ encadre = {type:"encadre", style:"fonce", titre:"", texte:brut, action:true}; blocs().push(encadre); return; }
         if(encadre && encadre.action && encadre.listeFaite){
           if(brut.length < 260 && /repon|adress|contact|envoy|transmet|retour/i.test(norm(brut))){ encadre.texte += "\n" + brut; encadre = null; return; }
           encadre = null;
