@@ -14,6 +14,8 @@
 <style>
   @font-face{font-family:"T1";src:url("../commun/polices/x1.woff2") format("woff2");font-weight:400;font-display:block}
   @font-face{font-family:"T1";src:url("../commun/polices/x2.woff2") format("woff2");font-weight:700 800;font-display:block}
+  /* Novotype : police installée sur le poste uniquement (le fichier n'est jamais publié) */
+  @font-face{font-family:"Novotype locale";src:local("Novotype Medium"),local("Novotype-Medium");font-weight:500}
   :root{--mag:#C2286A;--mag2:#A01A55;--rosepale:#FBE4EC;--ui-bg:#f6f1f4;--ui-card:#fff;--ui-line:#e7dbe2;--ui-ink:#2b1225;--ui-muted:#8b6f80}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
@@ -152,8 +154,8 @@
   .sec.rose{background:#FCF6F8}
   .sec.grow{flex:1 0 auto}
   .sh2{display:flex;align-items:flex-end;gap:12px;border-bottom:2px solid #B33868;padding-bottom:8px}
-  .sh2 h2{flex:1;margin:0;font-size:calc(var(--k)*23.5px);line-height:1.15;font-weight:400;color:#2B2B30}
-  .sh2 h2 b{color:#B33868;font-weight:700}
+  .sh2 h2{flex:1;margin:0;font-size:calc(var(--k)*21.5px);line-height:1.15;font-weight:500;color:#2B2B30;font-family:"Novotype locale","Novotype Medium",Novotype,"T1",sans-serif}
+  .sh2 h2 b{color:#B33868;font-weight:500}
   .sh2 img{height:calc(var(--k)*52px);width:auto;flex:none;margin-bottom:-2px}
   .p{font-size:11pt;line-height:max(1.32,calc(var(--k)*1.5));margin:0;color:#2B2B30}
   .p b{font-weight:700}
@@ -271,7 +273,7 @@
   .page.lettre .bx.fonce .ul span,.page.lettre .bx.alerte .ul span{color:#fff}
   .page.lettre .bx.fonce .p,.page.lettre .bx.fonce .lb,.page.lettre .bx.alerte .p,.page.lettre .bx.alerte .lb{color:#fff}
   .lh2{margin:calc(var(--k)*16px) 0 calc(var(--k)*10px)!important;display:flow-root}
-  .lh2 h2{margin:0;font-size:calc(var(--k)*17.5px);line-height:1.22;color:#B33866;font-weight:700}
+  .lh2 h2{margin:0;font-size:calc(var(--k)*18px);line-height:1.22;color:#B33866;font-weight:500;font-family:"Novotype locale","Novotype Medium",Novotype,"T1",sans-serif}
   .lh2 img{display:block;width:100%;height:9px;margin-top:6px}
   .page .surl{background:#B33866;color:#fff;font-weight:700;padding:1px 2px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
   .page .p.surl-p{line-height:1.62}
