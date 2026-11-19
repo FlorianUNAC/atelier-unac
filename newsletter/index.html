@@ -159,6 +159,8 @@
   .sh2 h2{flex:1;margin:0;font-size:calc(var(--k)*21.5px);line-height:1.15;font-weight:400;color:#2B2B30;font-family:"Novotype locale","Novotype Medium",Novotype,"T1",sans-serif}
   .sh2 h2 b{color:#B33868;font-weight:400}
   .sh2 img{height:calc(var(--k)*52px);width:auto;flex:none;margin-bottom:-2px}
+  .page .p,.page .note,.page .lb,.page li{text-wrap:pretty}
+  .page h1,.page h2,.page .lsign{text-wrap:balance}
   .p{font-size:11pt;line-height:max(1.32,calc(var(--k)*1.5));margin:0;color:#2B2B30}
   .p b{font-weight:700}
   .page:not(.lettre) .rt .p,.page:not(.lettre) .bx > .p,.page:not(.lettre) .lb{font-size:12pt}
@@ -396,7 +398,19 @@ const $ = s => document.querySelector(s);
 const uid = () => Math.random().toString(36).slice(2,9);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 /* Mise en forme en ligne : **gras** · *italique* · __souligné__ · ==rose== · {+plus grand+} · {-plus petit-} */
-const gras = s => esc(s)
+/* Typographie française : espaces insécables (; : ! ? « » %), chiffres collés à leur unité, pas de mot ou de ponctuation seul en fin de ligne */
+const MOIS_RX = "janvier|février|fevrier|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|decembre";
+const typo = s => String(s ?? "")
+  .replace(/[\u200B\uFEFF]/g, "").replace(/[ \t]{2,}/g, " ")
+  .replace(/[ \u00A0]+([;:!?»%€])/g, "\u202F$1")
+  .replace(/([^ \u00A0\u202F!*=({\[«-])(?=[;!?»](?:[ \u00A0]|$))/g, "$1\u202F")
+  .replace(/«[ \u00A0]*/g, "«\u202F")
+  .replace(new RegExp("(\\d) (" + MOIS_RX + "|ans?\\b|jours?\\b|mois\\b|h\\b|heures?\\b|euros?\\b|PNC\\b)", "gi"), "$1\u00A0$2")
+  .replace(/\b(le|du|au|les|des|n°|N°) (\d)/g, "$1\u00A0$2")
+  .replace(/\b(M\.|Mme|Dr) /g, "$1\u00A0");
+/* Dernière ligne jamais réduite à un mot : on lie les deux derniers mots (si le paragraphe est assez long) */
+const veuve = s => (s.split(" ").length > 4 && s.replace(/\*\*|__|==|!!|\{[+-]|[+-]\}/g, "").replace(/^.*[ \u00A0]/, "").length < 18) ? s.replace(/ (?=[^ ]+$)/, "\u00A0") : s;
+const gras = s => esc(veuve(typo(s)))
   .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
   .replace(/(^|[^*\w])\*(?!\s)([^*\n]+?)\*(?![*\w])/g, "$1<i>$2</i>")
   .replace(/__(.+?)__/g, "<u>$1</u>")
@@ -415,7 +429,7 @@ function rt(t){
   const lines = String(t||"").split("\n"); let h = "", ul = null;
   const flush = () => { if(ul){ h += `<div class="ul">${ul.map(x => `<div><span>●</span><p class="p">${gras(x)}</p></div>`).join("")}</div>`; ul = null; } };
   for(const raw of lines){
-    const l = raw.trim(); if(!l){ flush(); continue; }
+    const l = raw.replace(/[\u200B\uFEFF]/g, "").trim(); if(!l || !l.replace(/\*\*|__|==|!!|[\s\u00A0]/g, "")){ flush(); continue; }
     let m;
     if((m = l.match(/^[-•]\s+(.*)/))){ (ul = ul || []).push(m[1]); continue; }
     flush();
