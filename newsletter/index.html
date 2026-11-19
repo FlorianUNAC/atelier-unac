@@ -330,8 +330,8 @@
 const SIGNATAIRES = {
   fabrice:{nom:"Fabrice Jaudinaud", role:"Votre secrétaire de section", photo:"../message/img/fabrice-jaudinaud.png", mode:"detoure"},
   pascale:{nom:"Pascale Pierson", role:"Votre experte retraite", photo:"img/pascale-pierson.png", mode:"detoure"},
-  patricia:{nom:"Patricia Carniato", role:"Déléguée UNAC", photo:"img/patricia-carniato.png", mode:"detoure"},
-  binome:{nom:"Pascale Pierson & Patricia Carniato", role:"Section Retraités UNAC", photo:"img/pascale-pierson.png", photos:[["img/patricia-carniato.png",82,316],["img/pascale-pierson.png",0,450,-122]], mode:"binome"},
+  patricia:{nom:"Patricia Carniato", role:"Déléguée UNAC", photo:"img/patricia-carniato.png?v=2", mode:"detoure"},
+  binome:{nom:"Pascale Pierson & Patricia Carniato", role:"Section Retraités UNAC", photo:"img/pascale-pierson.png", photos:[["img/patricia-carniato.png?v=2",82,316],["img/pascale-pierson.png",0,450,-122]], mode:"binome"},
   laure:{nom:"Laure Desrentes", role:"Votre déléguée UNAC HOP!", photo:"../commun/img/hop/laure-desrentes.jpg", mode:"ronde"},
   aucune:{nom:"", role:"", photo:"", mode:""}
 };
@@ -697,7 +697,7 @@ function buildPages(box){
   });
   if(S.modele === "lettre"){ finLettre(box); c.closest(".page").classList.add("last"); return box.querySelectorAll(".page").length; }
   // bandeau final
-  const PHS = {pascale:[["img/pascale-pierson.png",0]], patricia:[["img/patricia-carniato.png",0]], binome:[["img/patricia-carniato.png",58,226],["img/pascale-pierson.png",0,320,-87]]}[S.photoFin];
+  const PHS = {pascale:[["img/pascale-pierson.png",0]], patricia:[["img/patricia-carniato.png?v=2",0]], binome:[["img/patricia-carniato.png?v=2",58,226],["img/pascale-pierson.png",0,320,-87]]}[S.photoFin];
   const PH = !!PHS;
   const PR = {pascale:150, patricia:205, binome:262}[S.photoFin] || 150;
   const fin = el(`${PH ? `<div class="nfinw">${PHS.map(([src, r, h, b], i) => `<img class="pfin" src="${src}" alt="" style="right:${r}px;z-index:${2 + i}${h ? `;height:${h}px` : ""}${b ? `;bottom:${b}px;clip-path:inset(0 0 ${-b}px 0)` : ""}">`).join("")}` : ""}<div class="nfin"${PH ? ` style="padding-right:${PR}px"` : ""}><img class="ap" src="${IMG}appli-unac.png" alt=""><div class="t"><small>Un doute, une question ?</small><b style="white-space:nowrap">Tchat appli UNAC · 24h/24, 7j/7</b></div><div class="c">${esc(S.contactLabel)}<b>${esc(S.contactMail)}</b></div><img class="lw" src="${IMG}logo-unac-blanc.png" alt=""></div>${PH ? "</div>" : ""}`);
