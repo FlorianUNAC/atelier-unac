@@ -183,7 +183,7 @@
   .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
   .gcol{display:flex;flex-direction:column;gap:12px}
   /* Bloc « Dates de stages » : calendrier en tuiles */
-  .stg{background:linear-gradient(180deg,#A3285C 0%,#C2306E 100%);border-radius:16px;padding:calc(var(--k)*20px) 24px calc(var(--k)*22px);color:#fff;display:flex;flex-direction:column;gap:calc(var(--k)*14px);break-inside:avoid}
+  .stg{background:linear-gradient(180deg,#A3285C 0%,#C2306E 100%);border-radius:0;margin-left:-42px;margin-right:-42px;padding:calc(var(--k)*22px) 66px calc(var(--k)*24px);color:#fff;display:flex;flex-direction:column;gap:calc(var(--k)*14px);break-inside:avoid}
   .stg h3{margin:0;font-family:"Novotype locale",Novotype,"T1",sans-serif;font-weight:400;font-size:calc(var(--k)*17px);line-height:1.25;letter-spacing:.01em;color:#fff}
   .stg h3 .nm,.stg h3 b{font-weight:500}
   .stg .atouts{display:flex;flex-wrap:wrap;gap:8px 22px}
@@ -710,10 +710,15 @@ function buildPages(box){
       if(duo){ // binôme : signature au-dessus des deux photos
         c.insertAdjacentHTML("afterbegin", `<div class="lflt-a" style="height:${Math.max(0, H - zone - sh)}px"></div><div class="lflt-b" style="width:${fw}px;height:${zone + sh}px"></div>`);
         if(sign) Object.assign(sign.style, {position:"absolute", right:"42px", bottom:(fh - 4) + "px", margin:"0", padding:"0"});
-        return;
+        sousBande(); return;
       }
       c.insertAdjacentHTML("afterbegin", `<div class="lflt-a" style="height:${Math.max(0, H - zone)}px"></div><div class="lflt-b" style="width:${fw}px;height:${zone - sh}px"></div>${sh ? `<div class="lflt-b" style="width:${fw + sw}px;height:${sh}px"></div>` : ""}`);
       if(sign) Object.assign(sign.style, {position:"absolute", right:(ronde ? fw + 8 : 262) + "px", bottom:(ronde ? 60 : 64) + "px", margin:"0", padding:"0"});
+      sousBande();
+    };
+    const sousBande = () => { // le pavé magenta reste en pleine largeur : l'habillage de la photo commence sous lui
+      const fa = c.querySelector(".lflt-a"), st = [...c.querySelectorAll(".stg")]; if(!fa || !st.length) return;
+      for(let k = 0; k < 3; k++){ const lim = Math.max(...st.map(e => e.offsetTop + e.offsetHeight - c.offsetTop)) + 6; if(parseFloat(fa.style.height) >= lim) break; fa.style.height = lim + "px"; }
     };
     if(sign) c.closest(".page").appendChild(sign);
     pose();
