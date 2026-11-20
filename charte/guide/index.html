@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S'approprier la charte graphique UNAC</title>
+<!--
+  GUIDE « S'approprier la charte graphique UNAC »
+  Pour le mettre à jour : modifier ce fichier (texte, consignes, journal en dernière page),
+  changer VERSION ci-dessous, puis régénérer le PDF (impression A4 sans marges, arrière-plans activés)
+  et remplacer S-approprier-la-charte-graphique-UNAC.pdf dans ce dossier.
+  Les échantillons Novotype sont des contours vectoriels (img/novo-*.svg) : la police n'est jamais publiée.
+-->
+<style>
+  @font-face{font-family:"T1";src:url("../../commun/polices/x1.woff2") format("woff2");font-weight:400;font-display:block}
+  @font-face{font-family:"T1";src:url("../../commun/polices/x2.woff2") format("woff2");font-weight:700 800;font-display:block}
+  @font-face{font-family:"T1";src:url("../../commun/polices/x-complement-regular.woff2") format("woff2");font-weight:400;unicode-range:U+0021-0026,U+0028-002B,U+002F,U+003B-0040,U+005B-0060,U+007B-007E,U+00A0-00AC,U+00AE-00B6,U+00B8-00BF,U+00C1-00C8,U+00CA-00DF,U+00E1,U+00E3-00E6,U+00EB-00ED,U+00EF-00F3,U+00F5-00F8,U+00FA,U+00FC-00FF,U+0152-0153,U+2009,U+2013-2014,U+2018,U+201C-201D,U+2022,U+202F,U+2039-203A,U+20AC,U+2192,U+25CF,U+2713;font-display:block}
+  @font-face{font-family:"T1";src:url("../../commun/polices/x-complement-bold.woff2") format("woff2");font-weight:700 800;unicode-range:U+0021-0026,U+0028-002B,U+002F,U+003B-0040,U+005B-0060,U+007B-007E,U+00A0-00AC,U+00AE-00B6,U+00B8-00BF,U+00C1-00C8,U+00CA-00DF,U+00E1,U+00E3-00E6,U+00EB-00ED,U+00EF-00F3,U+00F5-00F8,U+00FA,U+00FC-00FF,U+0152-0153,U+2009,U+2013-2014,U+2018,U+201C-201D,U+2022,U+202F,U+2039-203A,U+20AC,U+2192,U+25CF,U+2713;font-display:block}
+  @page{size:A4;margin:0}
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--rose:#B33866;--prune:#4F1530;--framb:#7A2A4E;--rc:#F7EBF0;--gris:#EBEBEB;--txt:#2B2B30}
+  html{background:#8a8a90}
+  body{font-family:"T1",sans-serif;color:var(--txt);-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:10.5pt;line-height:1.45}
+  .page{width:210mm;height:297mm;margin:10mm auto;background:#fff;position:relative;overflow:hidden;padding:17mm 18mm 20mm;display:flex;flex-direction:column;gap:4.2mm;break-after:page}
+  .page:last-child{break-after:auto}
+  @media print{html{background:none}.page{margin:0}}
+  .pied{position:absolute;left:18mm;right:18mm;bottom:9mm;display:flex;justify-content:space-between;font-size:8pt;color:#8b8088;border-top:1px solid #e3d7dd;padding-top:2.5mm}
+  h1{font-size:30pt;line-height:1.08;font-weight:700;color:var(--rose)}
+  h2{font-size:19pt;font-weight:700;color:var(--rose);line-height:1.15;display:flex;align-items:baseline;gap:4mm}
+  h2 .n{font-size:11pt;color:#fff;background:var(--rose);border-radius:99px;min-width:8mm;height:8mm;display:inline-flex;align-items:center;justify-content:center;transform:translateY(-1mm)}
+  h3{font-size:11.5pt;font-weight:700;color:var(--txt);margin-bottom:1.5mm}
+  p + p{margin-top:2mm}
+  .chapo{font-size:11.5pt;color:#55505a;max-width:160mm}
+  b{font-weight:700}
+  .rose{color:var(--rose)}
+  ul.l{list-style:none;display:flex;flex-direction:column;gap:1.6mm}
+  ul.l li{padding-left:5mm;position:relative}
+  ul.l li::before{content:"";position:absolute;left:0;top:2.1mm;width:2mm;height:2mm;border-radius:50%;background:var(--rose)}
+  ul.non li::before{content:"×";background:none;color:#c0392b;font-weight:700;top:0;font-size:9pt;width:auto;height:auto}
+  ul.oui li::before{content:"✓";background:none;color:#1e8a4c;font-weight:700;top:0;font-size:9.5pt;width:auto;height:auto}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:6mm}
+  .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm}
+  .bloc{background:var(--rc);border-radius:4mm;padding:5mm 6mm}
+  .bloc.gris{background:var(--gris)}
+  .bloc.fonce{background:linear-gradient(180deg,#A3285C,#C2306E);color:#fff}
+  .bloc.fonce h3{color:#fff}
+  .bloc.fonce ul.l li::before{background:#fff}
+  .note{font-size:8.5pt;color:#7a7079}
+  .tag{display:inline-block;font-size:7.5pt;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:.6mm 2.4mm;vertical-align:middle}
+  .tag.off{background:#e6f4ec;color:#1e7a45}.tag.rec{background:#fff1dc;color:#9a5a00}.tag.arb{background:#fde8ee;color:#a3285c}
+  table{width:100%;border-collapse:collapse;font-size:9.5pt}
+  th{text-align:left;font-weight:700;color:var(--rose);border-bottom:1.5px solid var(--rose);padding:1.6mm 2mm}
+  td{border-bottom:1px solid #eadfe4;padding:1.3mm 2mm;vertical-align:top}
+  code{font-family:"T1",sans-serif;font-weight:700;font-size:9pt;background:#f3eef1;border-radius:1mm;padding:0 1mm;letter-spacing:.02em}
+  /* Couverture */
+  .couv{padding:0;background:var(--gris)}
+  .couv .haut{padding:22mm 18mm 0;display:flex;justify-content:space-between;align-items:flex-start}
+  .couv .haut img{height:30mm}
+  .couv .titre{padding:30mm 18mm 0}
+  .couv .titre .sur{font-size:12pt;letter-spacing:.18em;text-transform:uppercase;color:#7a7079;font-weight:700}
+  .couv h1{font-size:40pt;margin-top:4mm;color:var(--txt);font-weight:400}
+  .couv h1 b{color:var(--rose)}
+  .couv .sous{margin-top:6mm;font-size:13pt;color:#55505a;max-width:150mm}
+  .couv .bande{position:absolute;left:0;right:0;bottom:0;height:92mm;background:linear-gradient(180deg,#A3285C,#C2306E);color:#fff;padding:14mm 18mm;display:flex;flex-direction:column;justify-content:space-between}
+  .couv .bande .nuancier{display:flex;gap:4mm}
+  .couv .bande .nuancier div{flex:1;height:16mm;border-radius:3mm;border:1px solid rgba(255,255,255,.4)}
+  .couv .bande .ver{display:flex;justify-content:space-between;align-items:flex-end;font-size:10pt}
+  .couv .bande .ver b{font-size:13pt}
+  .couv .avion{position:absolute;right:-4mm;bottom:80mm;width:132mm;transform:rotate(-2.5deg);z-index:2}
+  /* Couleurs */
+  .sw{border-radius:3mm;overflow:hidden;border:1px solid #e3d7dd;display:flex;flex-direction:column}
+  .sw .c{height:20mm}
+  .sw .t{padding:2.5mm 3mm;font-size:8.8pt;line-height:1.4}
+  .sw .t b{font-size:10pt;display:block}
+  .sw .t code{background:none;padding:0;font-size:8.6pt}
+  .proport{display:flex;height:9mm;border-radius:2mm;overflow:hidden;border:1px solid #ddd}
+  /* Logos */
+  .logos{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm}
+  .logos div{height:30mm;border-radius:3mm;display:flex;align-items:center;justify-content:center;border:1px solid #e3d7dd}
+  .logos img{max-height:19mm;max-width:80%}
+  .logos + .lg{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm;font-size:8.5pt;text-align:center;color:#55505a;margin-top:-3mm}
+  .sect{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm}
+  .sect div{display:flex;align-items:center;gap:3mm;font-size:9pt;border:1px solid #eadfe4;border-radius:2.5mm;padding:2mm 3mm}
+  .sect i{width:7mm;height:7mm;border-radius:1.5mm;flex:none}
+  /* Typos */
+  .spec{border:1px solid #eadfe4;border-radius:3mm;padding:3.5mm 4.5mm;display:flex;flex-direction:column;gap:1.6mm;font-size:10pt}
+  .spec .nom{display:flex;justify-content:space-between;align-items:baseline}
+  .spec .nom b{font-size:12pt}
+  .spec .ex{font-size:17pt;line-height:1.1}
+  .spec img{max-width:100%;height:auto;display:block}
+  .hier td:first-child{width:36mm;color:#55505a}
+  /* Exemples mise en page */
+  .mini{border-radius:3mm;background:var(--gris);padding:4mm;font-size:8.5pt;display:flex;flex-direction:column;gap:2mm;border:1px solid #ddd}
+  .mini .tt{height:auto;width:85%}
+  .mini .pv{background:linear-gradient(180deg,#A3285C,#C2306E);color:#fff;border-radius:1.5mm;padding:2.5mm 3mm}
+  .mini .pv li{list-style:none;padding-left:3mm;position:relative}
+  .mini .pv li::before{content:"";position:absolute;left:0;top:1.6mm;width:1.3mm;height:1.3mm;border-radius:50%;background:#fff}
+  .mini .bc{background:var(--rc);border-radius:1.5mm;padding:2.5mm 3mm}
+</style>
+</head>
+<body>
+
+<!-- ============ 1. COUVERTURE ============ -->
+<section class="page couv">
+  <div class="haut"><img src="../../commun/img/sections/logo-unac-couleur.png" alt="UNAC"><span class="tag arb" style="font-size:8pt">Document interne · délégués</span></div>
+  <div class="titre">
+    <div class="sur">Guide pratique</div>
+    <h1>S’approprier<br>la <b>charte graphique</b><br><b>UNAC</b></h1>
+    <p class="sous">Couleurs, typographies, logos, mise en page, impression : les repères pour que chaque support de la section soit immédiatement reconnaissable.</p>
+  </div>
+  <img class="avion" src="../../commun/img/avion-unac.png" alt="" onerror="this.remove()">
+  <div class="bande">
+    <div class="nuancier"><div style="background:#B33866"></div><div style="background:#7A2A4E"></div><div style="background:#4F1530"></div><div style="background:#F7EBF0"></div><div style="background:#EBEBEB"></div><div style="background:#FFFFFF"></div></div>
+    <div class="ver"><div>Document évolutif, mis à jour au fil<br>des consignes de la communication de la section.</div><div style="text-align:right"><b id="vNum">Version 1</b><br><span id="vDate">20 novembre 2026</span></div></div>
+  </div>
+</section>
+
+<!-- ============ 2. L'ESSENTIEL ============ -->
+<section class="page">
+  <h2>L’essentiel en une page</h2>
+  <p class="chapo">Dix réflexes qui suffisent dans 90 % des cas. Le détail suit dans les pages suivantes.</p>
+  <div class="g2" style="gap:5mm 8mm">
+    <div><h3><span class="rose">1.</span> Un seul rose</h3><p>Le rose UNAC <code>#B33866</code> porte l’identité : logo, titres, bandeaux, mots clés. Les autres roses ne font que l’accompagner.</p></div>
+    <div><h3><span class="rose">2.</span> Fond gris clair</h3><p>Les supports se posent sur un fond <code>#EBEBEB</code>, plutôt que sur du blanc pur.</p></div>
+    <div><h3><span class="rose">3.</span> Police UNAC pour tout le texte</h3><p>UNAC Regular pour le texte, UNAC Bold pour mettre en valeur. Aucune autre police dans le corps du texte.</p></div>
+    <div><h3><span class="rose">4.</span> Novotype avec parcimonie</h3><p>Réservée aux titres de section et à la signature. Jamais dans les paragraphes, les listes ni les encadrés.</p></div>
+    <div><h3><span class="rose">5.</span> Le mot UNAC ressort</h3><p>Dans un titre en Novotype, « UNAC » et les mots clés passent en Medium ; le reste en Regular.</p></div>
+    <div><h3><span class="rose">6.</span> Le logo ne se modifie pas</h3><p>Rose sur fond clair, blanc sur fond rose ou sombre. Ni déformation, ni ombre, ni contour.</p></div>
+    <div><h3><span class="rose">7.</span> La sobriété avant tout</h3><p>Pas d’étiquette au-dessus des titres, pas de grilles de petites cartes : une mise en page simple et aérée.</p></div>
+    <div><h3><span class="rose">8.</span> L’information clé dans un pavé rose</h3><p>Ce qu’il faut retenir ou faire va dans un pavé rose foncé, texte et puces en blanc.</p></div>
+    <div><h3><span class="rose">9.</span> Une typographie française soignée</h3><p>Pas de ponctuation ni de mot seul en fin de ligne, espaces insécables avant <code>: ; ! ?</code>.</p></div>
+    <div><h3><span class="rose">10.</span> Toujours finir par l’appli</h3><p>Chaque support se termine par le bloc « Un doute, une question ? Tchat appli UNAC · 24h/24, 7j/7 ».</p></div>
+  </div>
+  <div class="bloc" style="margin-top:auto">
+    <h3>Comment lire ce guide</h3>
+    <p><span class="tag off">Charte</span> règle de la charte ou consigne de la communication de la section · <span class="tag rec">Recommandation</span> bonne pratique retenue dans l’Atelier, à suivre faute de consigne contraire · <span class="tag arb">À arbitrer</span> point encore ouvert, à trancher avec la communication de la section.</p>
+  </div>
+  <div class="pied"><span>S’approprier la charte graphique UNAC</span><span>2</span></div>
+</section>
+
+<!-- ============ 3. COULEURS ============ -->
+<section class="page">
+  <h2><span class="n">1</span>Les couleurs</h2>
+  <p class="chapo">La palette est courte et volontairement monochrome : du rose, ses nuances sombres, du gris et du blanc.</p>
+  <div class="g3">
+    <div class="sw"><div class="c" style="background:#B33866"></div><div class="t"><b>Rose UNAC <span class="tag off">Charte</span></b>HEX <code>#B33866</code> · RVB <code>179 56 102</code><br>Logo, titres, bandeaux, mots clés.</div></div>
+    <div class="sw"><div class="c" style="background:#7A2A4E"></div><div class="t"><b>Framboise</b>HEX <code>#7A2A4E</code> · RVB <code>122 42 78</code><br>Dégradés, encadrés foncés.</div></div>
+    <div class="sw"><div class="c" style="background:#4F1530"></div><div class="t"><b>Prune</b>HEX <code>#4F1530</code> · RVB <code>79 21 48</code><br>Fonds sombres, bas de dégradé.</div></div>
+    <div class="sw"><div class="c" style="background:#F7EBF0"></div><div class="t"><b>Rose clair</b>HEX <code>#F7EBF0</code> · RVB <code>247 235 240</code><br>Encadrés clairs, fonds de section.</div></div>
+    <div class="sw"><div class="c" style="background:#EBEBEB"></div><div class="t"><b>Gris clair <span class="tag off">Charte</span></b>HEX <code>#EBEBEB</code> · RVB <code>235 235 235</code><br>Fond des supports et des visuels.</div></div>
+    <div class="sw"><div class="c" style="background:#2B2B30"></div><div class="t"><b>Texte</b>HEX <code>#2B2B30</code> · RVB <code>43 43 48</code><br>Corps du texte (jamais de noir pur).</div></div>
+  </div>
+  <div class="g2">
+    <div>
+      <h3>Le dégradé « pavé magenta » <span class="tag rec">Recommandation</span></h3>
+      <div style="height:14mm;border-radius:2.5mm;background:linear-gradient(90deg,#A3285C,#C2306E)"></div>
+      <p class="note" style="margin-top:1.5mm">De <code>#A3285C</code> (haut) à <code>#C2306E</code> (bas). Pour les pavés d’information clé (dates, consignes), texte et puces en blanc.</p>
+    </div>
+    <div>
+      <h3>Proportions conseillées <span class="tag rec">Recommandation</span></h3>
+      <div class="proport"><div style="flex:55;background:#EBEBEB"></div><div style="flex:20;background:#fff"></div><div style="flex:15;background:#B33866"></div><div style="flex:7;background:#2B2B30"></div><div style="flex:3;background:#7A2A4E"></div></div>
+      <p class="note" style="margin-top:1.5mm">Environ 55 % gris clair, 20 % blanc, 15 % rose, 7 % texte, 3 % nuances sombres. Le rose est un accent, pas un fond général.</p>
+    </div>
+  </div>
+  <div>
+    <h3>Couleurs des sections <span class="tag rec">Recommandation</span></h3>
+    <p class="note" style="margin-bottom:2mm">Pour les supports d’une section hors Air France, la couleur de la compagnie remplace le rose dans les accents (titres, bandeaux). Le logo UNAC de la section reste celui fourni dans la charte.</p>
+    <div class="sect">
+      <div><i style="background:#E4002B"></i><span><b>HOP!</b> · <code>#E4002B</code></span></div>
+      <div><i style="background:#0ACF78"></i><span><b>Transavia</b> · <code>#0ACF78</code></span></div>
+      <div><i style="background:#E4183F"></i><span><b>Volotea</b> · <code>#E4183F</code></span></div>
+      <div><i style="background:#FF6600"></i><span><b>easyJet</b> · <code>#FF6600</code></span></div>
+      <div><i style="background:#2F86D1"></i><span><b>La Compagnie</b> · <code>#2F86D1</code></span></div>
+      <div><i style="background:#0D4A9B"></i><span><b>Aircalin</b> · <code>#0D4A9B</code></span></div>
+    </div>
+  </div>
+  <div class="bloc">
+    <h3>Pour l’imprimeur <span class="tag arb">À arbitrer</span></h3>
+    <p>Les références CMJN et Pantone officielles ne sont pas encore renseignées. En attendant, envoyer un PDF en RVB : l’imprimeur fait la conversion.</p>
+  </div>
+  <div class="pied"><span>S’approprier la charte graphique UNAC</span><span>3</span></div>
+</section>
+
+<!-- ============ 4. TYPOGRAPHIES ============ -->
+<section class="page">
+  <h2><span class="n">2</span>Les typographies</h2>
+  <p class="chapo">Deux familles, deux rôles : UNAC pour lire, Novotype pour signer les titres.</p>
+  <div class="g2">
+    <div class="spec">
+      <div class="nom"><b>UNAC</b><span class="tag off">Charte</span></div>
+      <div class="ex">Regular <b>et Bold</b></div>
+      <div style="font-size:12pt">Aa Bb Cc Éé Àà 0123456789 « ? ! »</div>
+      <p><b>Pour :</b> tout le texte courant, les intertitres, les listes, les encadrés, les chiffres, les coordonnées.</p>
+      <p><b>Mise en valeur :</b> le Bold, sur quelques mots. Ni italique, ni soulignement.</p>
+    </div>
+    <div class="spec">
+      <div class="nom"><b>Novotype</b><span class="tag off">Charte</span></div>
+      <img src="img/novo-regular.svg" alt="Novotype Regular">
+      <img src="img/novo-medium.svg" alt="Novotype Medium">
+      <p><b>Pour :</b> les titres de section et le nom dans la signature, uniquement.</p>
+      <p><b>À savoir :</b> la Novotype n’a que des capitales : un titre en Novotype est toujours en capitales.</p>
+    </div>
+  </div>
+  <div class="bloc">
+    <h3>Le bon dosage de Novotype <span class="tag off">Consigne de la section</span></h3>
+    <div class="g2" style="gap:6mm;margin-top:2mm">
+      <div>
+        <img src="img/novo-titre-1.svg" alt="" style="width:100%;height:auto">
+        <img src="img/novo-titre-2.svg" alt="" style="width:100%;height:auto;margin-top:2mm">
+        <p class="note" style="margin-top:2mm">Titre en Novotype Regular ; « UNAC » et les mots clés en Novotype Medium, éventuellement en rose.</p>
+      </div>
+      <ul class="l non">
+        <li>Pas de Novotype dans les paragraphes, les listes, les pavés ou les tuiles de dates (« trop de Novotype »).</li>
+        <li>Pas de titre entièrement en Medium : c’est le contraste qui fait ressortir le mot clé.</li>
+        <li>Pas de Novotype sous 12 pt.</li>
+      </ul>
+    </div>
+  </div>
+  <div>
+    <h3>Hiérarchie type d’un support A4 <span class="tag rec">Recommandation</span></h3>
+    <table class="hier">
+      <tr><th>Élément</th><th>Police</th><th>Taille</th><th>Couleur</th></tr>
+      <tr><td>Titre du document</td><td>UNAC Regular + Bold (« Infos <b>RETRAITE</b> »)</td><td>34–40 pt</td><td>Rose UNAC</td></tr>
+      <tr><td>Titre de section</td><td>Novotype Regular, mots clés en Medium</td><td>16–20 pt</td><td>Texte + rose pour le mot clé</td></tr>
+      <tr><td>Intertitre</td><td>UNAC Bold</td><td>12–14 pt</td><td>Rose UNAC</td></tr>
+      <tr><td>Texte courant</td><td>UNAC Regular, interligne 1,4 à 1,5</td><td>11–12 pt</td><td>Texte <code>#2B2B30</code></td></tr>
+      <tr><td>Notes, mentions</td><td>UNAC Regular</td><td>8,5–10 pt</td><td>Texte ou gris</td></tr>
+      <tr><td>Signature</td><td>Nom en Novotype Medium, fonction en UNAC Regular (droit, sans italique)<br><img src="img/novo-signature.svg" alt="" style="height:4.2mm;width:auto;margin-top:1.2mm;vertical-align:middle"> <span style="font-size:9pt;margin-left:2mm">Votre experte retraite</span></td><td>14 / 11 pt</td><td>Rose / texte</td></tr>
+    </table>
+  </div>
+  <p class="note">Fichiers de police non diffusés sur le site (licences) : les demander à la communication de la section.</p>
+  <div class="pied"><span>S’approprier la charte graphique UNAC</span><span>4</span></div>
+</section>
+
+<!-- ============ 5. LOGOS ============ -->
+<section class="page">
+  <h2><span class="n">3</span>Le logo</h2>
+  <p class="chapo">Les fichiers officiels se téléchargent dans <b>Charte graphique</b> de l’Atelier UNAC (PNG ou JPG, toutes tailles, avec ou sans fond).</p>
+  <div class="logos">
+    <div style="background:#fff"><img src="../../commun/img/sections/logo-unac-couleur.png" alt=""></div>
+    <div style="background:#EBEBEB"><img src="../../commun/img/sections/logo-unac-couleur.png" alt=""></div>
+    <div style="background:#B33866"><img src="../../commun/img/sections/logo-unac-blanc.png" alt=""></div>
+    <div style="background:#4F1530"><img src="../../commun/img/sections/logo-unac-blanc.png" alt=""></div>
+  </div>
+  <div class="lg"><span>Rose sur blanc</span><span>Rose sur gris clair</span><span>Blanc sur rose</span><span>Blanc sur prune</span></div>
+  <div class="g2">
+    <div>
+      <h3>À faire <span class="tag off">Charte</span></h3>
+      <ul class="l oui">
+        <li>Utiliser uniquement les fichiers de la charte, jamais un logo recopié ou redessiné.</li>
+        <li>Version rose sur fond clair, version blanche sur fond rose ou sombre.</li>
+        <li>Garder les proportions : agrandir ou réduire en tirant par un coin.</li>
+        <li>Laisser de l’air autour du logo <span class="tag rec">Recommandation</span> : au moins la hauteur du « U » de UNAC de chaque côté.</li>
+        <li>Taille minimale <span class="tag rec">Recommandation</span> : 20 mm de large à l’impression, 120 px à l’écran.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>À éviter</h3>
+      <ul class="l non">
+        <li>Déformer, étirer, pencher ou recadrer le logo.</li>
+        <li>Changer sa couleur hors des versions prévues (rose, blanc, noir, prune).</li>
+        <li>Ajouter une ombre, un contour, un dégradé ou un effet.</li>
+        <li>Le poser sur une photo chargée ou un fond qui le rend peu lisible.</li>
+        <li>Le mettre en couleur sur fond rose (rose sur rose).</li>
+      </ul>
+    </div>
+  </div>
+  <div>
+    <h3>Logos de section</h3>
+    <p>Chaque section (HOP!, Transavia, Volotea, easyJet, La Compagnie, Aircalin) a son logo UNAC de section, ainsi que l’avion et la dérive aux couleurs de la compagnie. Ils se téléchargent au même endroit et suivent les mêmes règles.</p>
+    <div class="logos" style="grid-template-columns:repeat(6,1fr);margin-top:3mm">
+      <div><img src="../../commun/img/logo-unac-hop-couleur.png" alt="" onerror="this.parentNode.remove()"></div>
+      <div><img src="../../commun/img/sections/logo-unac-transavia-couleur.png" alt=""></div>
+      <div><img src="../../commun/img/sections/logo-unac-volotea-couleur.png" alt=""></div>
+      <div><img src="../../commun/img/sections/logo-unac-easyjet-couleur.png" alt=""></div>
+      <div><img src="../../commun/img/sections/logo-unac-lacompagnie-couleur.png" alt=""></div>
+      <div><img src="../../commun/img/sections/logo-unac-aircalin-couleur.png" alt=""></div>
+    </div>
+  </div>
+  <div class="bloc"><h3>Logos des compagnies</h3><p>Les logos Air France, HOP!, Transavia, etc. appartiennent aux compagnies : les utiliser seulement pour désigner la section concernée, sans les modifier ni les associer à un message qui pourrait laisser croire à une communication de la compagnie.</p></div>
+  <div class="pied"><span>S’approprier la charte graphique UNAC</span><span>5</span></div>
+</section>
+
+<!-- ============ 6. MISE EN PAGE ============ -->
+<section class="page">
+  <h2><span class="n">4</span>La mise en page</h2>
+  <p class="chapo">Une page UNAC se reconnaît à son calme : un fond gris clair, des titres nets, un seul pavé fort, de l’espace.</p>
+  <div class="g2">
+    <div class="mini">
+      <img class="tt" src="img/novo-titre-1.svg" alt="">
+      <div style="height:.6mm;background:#B33866;width:100%"></div>
+      <div>Texte courant en UNAC Regular, justifié ou aligné à gauche, avec des paragraphes courts.</div>
+      <div class="pv"><b>L’information clé</b><ul><li>Texte et puces en blanc</li><li>Un seul pavé fort par page</li></ul></div>
+      <div class="bc"><b class="rose">Bon à savoir</b> — l’encadré rose clair pour une précision secondaire.</div>
+      <div style="background:#B33866;color:#fff;border-radius:1.5mm;padding:2mm 3mm;font-size:8pt">Un doute, une question ? <b>Tchat appli UNAC · 24h/24, 7j/7</b></div>
+    </div>
+    <div>
+      <h3>Les éléments de base</h3>
+      <ul class="l">
+        <li><b>Fond</b> gris clair <code>#EBEBEB</code> <span class="tag off">Consigne</span></li>
+        <li><b>Titre de section</b> en Novotype, souligné d’un filet rose.</li>
+        <li><b>Pavé rose foncé</b> (dégradé magenta) pour l’information clé, en pleine largeur, texte et puces en blanc <span class="tag off">Consigne</span></li>
+        <li><b>Encadré rose clair</b> pour une précision secondaire.</li>
+        <li><b>Photos</b> des délégués détourées, posées sur le bandeau du bas.</li>
+        <li><b>Bloc final</b> appli UNAC sur chaque support.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="g2">
+    <div>
+      <h3>Oui</h3>
+      <ul class="l oui">
+        <li>Une idée par bloc, des phrases courtes.</li>
+        <li>De l’espace : la page doit respirer, sans grand vide en bas de page non plus.</li>
+        <li>Des dates et des chiffres mis en valeur (tuiles, gras).</li>
+        <li>Un appel à l’action clair : qui contacter, comment s’inscrire.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Non</h3>
+      <ul class="l non">
+        <li>Les étiquettes ou sur-titres au-dessus des titres <span class="tag off">Consigne</span></li>
+        <li>Les grilles de petites cartes ou de pictos alignés (effet « fait par une IA ») <span class="tag off">Consigne</span></li>
+        <li>Les ombres, effets 3D, contours et dégradés multicolores <span class="tag rec">Recommandation</span></li>
+        <li>Plus de deux couleurs d’accent sur une même page <span class="tag rec">Recommandation</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="bloc gris">
+    <h3>Illustrations</h3>
+    <p>Les pictos suivent l’ADN de l’application UNAC : isométrie, aplats sans contour, rose + gris + touches d’or, personnages arrondis (pas d’effet « cubes »), un objet principal et un accessoire qui porte le sens. Les visuels de l’appli sont réservés aux supports internes de la section.</p>
+  </div>
+  <div class="pied"><span>S’approprier la charte graphique UNAC</span><span>6</span></div>
+</section>
+
+<!-- ============ 7. ÉCRIRE ET PUBLIER ============ -->
+<section class="page">
+  <h2><span class="n">5</span>Écrire, imprimer, publier</h2>
+  <div class="g2">
+    <div>
+      <h3>Typographie française <span class="tag rec">Recommandation</span></h3>
+      <ul class="l">
+        <li>Espace insécable avant <code>: ; ! ?</code> et à l’intérieur des guillemets « … ».</li>
+        <li>Jamais de ponctuation ni de mot seul sur la dernière ligne d’un paragraphe.</li>
+        <li>Les dates et les nombres ne se coupent pas : « 30 novembre », « 10 h », « 2 ans ».</li>
+        <li>Majuscules accentuées : « À CDG », « ÉTAPES ».</li>
+        <li>Apostrophe typographique ’ plutôt que '.</li>
+        <li>Mois en minuscules (« janvier 2027 »), « 1<sup>er</sup> » ou « premier » en toutes lettres dans un titre en capitales.</li>
+      </ul>
+      <p class="note" style="margin-top:2mm">Les outils de l’Atelier appliquent automatiquement la plupart de ces règles.</p>
+    </div>
+    <div>
+      <h3>Ton et contenu</h3>
+      <ul class="l">
+        <li>Vouvoiement, ton direct et bienveillant.</li>
+        <li>Toujours une source ou une référence pour un chiffre ou un droit.</li>
+        <li><b>Sûreté :</b> pas de nom d’hôtel dans un support public (version adhérents uniquement).</li>
+        <li>Coordonnées officielles : <b>navigants@unac.asso.fr</b>, appli UNAC.</li>
+      </ul>
+    </div>
+  </div>
+  <div>
+    <h3>Formats et diffusion <span class="tag rec">Recommandation</span></h3>
+    <table>
+      <tr><th>Usage</th><th>Format</th><th>Fichier à envoyer</th></tr>
+      <tr><td>Impression Meljet, imprimeur</td><td>A4, 210 × 297 mm</td><td>PDF vectoriel (« Imprimer en PDF » depuis l’Atelier), polices incluses, sans ombres portées</td></tr>
+      <tr><td>Envoi par e-mail</td><td>A4</td><td>PDF ; image JPEG haute définition si le destinataire ne lit pas les PDF</td></tr>
+      <tr><td>Instagram, Facebook (post)</td><td>1080 × 1080 ou 1080 × 1350 px</td><td>PNG ou JPG (outil Chrono’)</td></tr>
+      <tr><td>Story</td><td>1080 × 1920 px</td><td>PNG ou JPG (outil Chrono’)</td></tr>
+      <tr><td>Image haute définition</td><td>2480 px de large (A4 à 300 dpi)</td><td>PNG, option « HD » des exports d’images</td></tr>
+    </table>
+  </div>
+  <div class="bloc fonce">
+    <h3>Avant d’envoyer : la check-list</h3>
+    <ul class="l" style="margin-top:1.5mm">
+      <li>Les couleurs et les polices sont celles de la charte, sans effet ajouté.</li>
+      <li>Le logo est un fichier officiel, bien lisible, non déformé.</li>
+      <li>La Novotype n’est utilisée que dans les titres de section et la signature.</li>
+      <li>Aucun mot ni signe de ponctuation n’est isolé en fin de ligne.</li>
+      <li>Le support se termine par le bloc appli UNAC et les bonnes coordonnées.</li>
+      <li>Relu par un second délégué ; validé par la communication de la section pour une diffusion large.</li>
+    </ul>
+  </div>
+  <div class="pied"><span>S’approprier la charte graphique UNAC</span><span>7</span></div>
+</section>
+
+<!-- ============ 8. JOURNAL ============ -->
+<section class="page">
+  <h2><span class="n">6</span>Journal des consignes</h2>
+  <p class="chapo">Chaque nouvelle consigne de la communication de la section est ajoutée ici, datée. C’est la page à consulter en premier à chaque nouvelle version.</p>
+  <table>
+    <tr><th style="width:24mm">Date</th><th>Consigne</th><th style="width:30mm">Source</th></tr>
+    <tr><td>Nov. 2026</td><td>La charte UNAC s’impose à toutes les publications de la section, posts Instagram et Facebook compris.</td><td>Communication de la section</td></tr>
+    <tr><td>Nov. 2026</td><td>Mises en page sobres : pas d’étiquettes au-dessus des titres, pas de grilles de petites cartes.</td><td>Communication de la section</td></tr>
+    <tr><td>Nov. 2026</td><td>Les illustrations reprennent l’ADN des pictos de l’appli UNAC ; personnages arrondis, sans effet « cubes ».</td><td>Section</td></tr>
+    <tr><td>Nov. 2026</td><td>Les supports se terminent par le bloc appli UNAC (« Un doute, une question ? »).</td><td>Section</td></tr>
+    <tr><td>19/11/2026</td><td>Encadré d’information en rose foncé, texte et puces en blanc.</td><td>Communication de la section</td></tr>
+    <tr><td>19/11/2026</td><td>Fond de page gris clair <code>#EBEBEB</code>.</td><td>Communication de la section</td></tr>
+    <tr><td>19/11/2026</td><td>Titres de section en Novotype : « UNAC » et mots clés en Medium, le reste en Regular.</td><td>Section</td></tr>
+    <tr><td>19/11/2026</td><td>« Trop de Novotype » : Novotype réservée aux titres de section (et au nom de la signature), jamais dans les pavés, listes et textes.</td><td>Communication de la section</td></tr>
+    <tr><td>19/11/2026</td><td>Signature : nom en Novotype Medium, fonction en dessous, en romain (pas d’italique).</td><td>Section</td></tr>
+    <tr><td>19/11/2026</td><td>Typographie : jamais de point d’exclamation ou de mot seul en fin de ligne.</td><td>Section</td></tr>
+    <tr><td>19/11/2026</td><td>Impression Meljet : PDF vectoriel, sans ombres portées.</td><td>Section</td></tr>
+    <tr><td style="height:9mm"></td><td></td><td></td></tr>
+    <tr><td style="height:9mm"></td><td></td><td></td></tr>
+  </table>
+  <div class="bloc">
+    <h3>Points à arbitrer <span class="tag arb">À arbitrer</span></h3>
+    <ul class="l" style="margin-top:1.5mm">
+      <li><b>Nuances de rose :</b> on trouve <code>#B33866</code> (charte), <code>#B33868</code> (newsletter) et <code>#C24477</code> (pictos de l’appli). Proposition : <code>#B33866</code> partout pour le texte et les aplats.</li>
+      <li><b>« Prune » :</b> le nom désigne <code>#4F1530</code> dans la charte et <code>#A54067</code> dans les thèmes de Chrono’. À renommer pour éviter la confusion.</li>
+      <li><b>Impression :</b> obtenir les références CMJN et Pantone officielles.</li>
+      <li><b>Logo :</b> confirmer la zone de protection et la taille minimale proposées.</li>
+    </ul>
+  </div>
+  <div class="pied"><span>S’approprier la charte graphique UNAC · <span id="vPied">Version 1 · 20 novembre 2026</span></span><span>8</span></div>
+</section>
+
+</body>
+</html>
