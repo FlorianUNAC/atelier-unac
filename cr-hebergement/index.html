@@ -227,6 +227,11 @@
   .mbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:#faf5f8;border-radius:10px;padding:9px 12px;margin-bottom:10px;font-size:13.5px}
   .mbar select{width:auto;padding:5px 8px;font-size:13px}
   .pre{margin-bottom:12px}
+  .template-download{min-width:0;border:1px solid var(--ui-line);border-radius:9px;padding:10px 12px}
+  .template-download legend{font-weight:700;padding:0 4px}
+  .template-download .mbtn{text-decoration:none;color:inherit}
+  .template-download button:disabled{opacity:.55;cursor:default}
+  .template-download small{display:block;margin-top:8px}
   .pre .chk{margin:0 0 6px}
   .ilist{display:flex;flex-direction:column}
   .irow{display:grid;grid-template-columns:22px 86px 1fr;gap:10px;align-items:start;padding:10px 0;border-bottom:1px dashed var(--ui-line)}
@@ -406,7 +411,7 @@ function blank(t){
 /* Plusieurs comptes rendus mémorisés sur l'appareil : brouillons et publiés */
 const DOCS_KEY = PFX + "docs", CUR_KEY = PFX + "current";
 let DOCS = {};
-const escVide = e => !((e.texte||"").trim() || (e.hotel||"").trim());
+const escVide = e => ![e.texte, e.hotel, e.etoiles, e.echeance].some(v => String(v || "").trim());
 const villeDe = e => (e.ville||"").trim() || ((refFor(type)[e.code]||{}).ville) || e.code;
 const ETOILE = `<svg viewBox="0 0 24 24"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5L2.5 9.5l6.6-.9z" fill="currentColor"/></svg>`;
 function echeanceFR(v){ v = (v||"").trim(); const m = v.match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? `${m[3]}/${m[2]}/${m[1]}` : v; }
@@ -1056,7 +1061,7 @@ function demo(t){
   window.addEventListener("load", renderPreview);
 })();
 </script>
-<script src="import.js"></script>
+<script src="import.js?v=trames-cr"></script>
 <script src="historique.js"></script>
 <script>
   window.nomExport = () => `CR-hebergement-${HOP ? "HOP" : TNOM[type]}-${moisLabel(S.mois).replace(/\s+/g, "-")}-${VERSION === "public" ? "public" : "adherents"}`;

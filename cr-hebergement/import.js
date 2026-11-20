@@ -29,12 +29,118 @@
   const loaded = {};
   function loadScript(src){ return loaded[src] || (loaded[src] = new Promise((ok,ko) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => ko(new Error("Chargement impossible : "+src)); document.head.appendChild(s); })); }
 
-  async function textFromFile(file){
+  function templateUrl(network){
+    return "../formulaires/cr-hebergement-" + network.toLowerCase() + ".pdf";
+  }
+
+  async function prefillHotels(pdf, hotels){
+    const fields = await pdf.getFieldObjects();
+    let count = 0;
+    for(const [code, hotel] of Object.entries(hotels)){
+      const values = {hotel:hotel.hotel, etoiles:hotel.etoiles, echeance:echeanceFR(hotel.echeance)};
+      let filled = false;
+      for(const [name, value] of Object.entries(values)){
+        const field = fields?.[`crheb_${name}_${code}`]?.[0];
+        if(!field || !value) continue;
+        pdf.annotationStorage.setValue(field.id, {value:String(value)});
+        filled = true;
+      }
+      if(filled) count++;
+    }
+    return count ? pdf.saveDocument() : null;
+  }
+
+  async function downloadWithHotels(network){
+    const hotels = HOTELS?.[network];
+    if(!hotels || !Object.keys(hotels).length) return toast("Déverrouillez la liste des hôtels pour ce réseau");
+    let pdf;
+    try{
+      await loadScript("../commun/vendor/pdf.min.js");
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "../commun/vendor/pdf.worker.min.js";
+      pdf = await pdfjsLib.getDocument({url:templateUrl(network)}).promise;
+      const bytes = await prefillHotels(pdf, hotels);
+      if(!bytes) return toast("Aucun hôtel du référentiel ne correspond à cette trame");
+      const url = URL.createObjectURL(new Blob([bytes], {type:"application/pdf"}));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "cr-hebergement-" + network.toLowerCase() + "-hotels-preremplis.pdf";
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+    }catch(error){
+      toast("Téléchargement impossible : " + (error.message || error));
+    }finally{
+      if(pdf) await pdf.destroy();
+    }
+  }
+
+  function parseForm(fields){
+    if(!fields?.crheb_v1) return null;
+    const value = key => String(fields[key]?.[0]?.value ?? "").trim();
+    const guess = value("crheb_v1");
+    if(!["LC", "MC"].includes(guess) || !(window.TYPES_SECTION || ["LC","MC"]).includes(guess)){
+      throw new Error("Ouvrez l’outil CR hébergement Air France pour importer cette trame LC ou MC.");
+    }
+    const mois = value("crheb_mois");
+    if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(mois)){
+      throw new Error("Renseignez le mois dans le PDF au format AAAA-MM (ex. 2026-11), puis enregistrez-le.");
+    }
+    const entries = new Map();
+    const add = (code, texte, key, ville = "") => {
+      const update = ["Yes", "On", true].includes(fields["crheb_maj_" + key]?.[0]?.value);
+      const hotel = update ? value("crheb_hotel_" + key) : "";
+      const etoiles = update ? value("crheb_etoiles_" + key) : "";
+      const date = update ? value("crheb_echeance_" + key) : "";
+      if(!texte && !hotel && !etoiles && !date && !ville) return;
+      if(!/^[A-Z]{3}$/.test(code)){
+        throw new Error("Autre escale " + key.split("_").pop() + " : indiquez un code IATA de trois lettres.");
+      }
+      if(etoiles && !/^[1-5]$/.test(etoiles)){
+        throw new Error(code + " : saisissez un nombre d’étoiles compris entre 1 et 5.");
+      }
+      const echeance = date.replace(/^(\d{2})\/(\d{2})\/(\d{4})$/, "$3-$2-$1");
+      if(echeance){
+        const parsed = new Date(echeance + "T00:00:00Z");
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(echeance) || !Number.isFinite(+parsed) || parsed.toISOString().slice(0, 10) !== echeance){
+          throw new Error(code + " : indiquez une date de fin de contrat valide au format JJ/MM/AAAA.");
+        }
+      }
+      const entry = entries.get(code) || {code, texte:""};
+      if(texte && !entry.texte.split("\n").includes(texte) && entry.texte !== texte){
+        entry.texte = [entry.texte, texte].filter(Boolean).join("\n");
+      }
+      for(const [field, data] of Object.entries({hotel, etoiles, echeance, ville})){
+        if(data) entry[field] = data;
+      }
+      entries.set(code, entry);
+    };
+    for(const key of Object.keys(fields)){
+      const match = key.match(/^crheb_escale_([A-Z]{3})$/);
+      if(match) add(match[1], value(key), match[1]);
+    }
+    for(let i = 1; i <= 8; i++){
+      const key = "extra_" + i;
+      add(value("crheb_extra_code_" + i).toUpperCase(), value("crheb_extra_note_" + i), key, value("crheb_ville_" + key));
+    }
+    const topics = {
+      general:"Points généraux", tests:"Tests et appels d’offres", navettes:"Navettes",
+      reserve:"Hébergement des réserves", prestations:"Prestations équipage"
+    };
+    const preambule = value("crheb_a_noter") || Object.entries(topics).flatMap(([key, label]) => {
+      const texte = value("crheb_" + key);
+      return texte ? [label + " — " + texte] : [];
+    }).join("\n");
+    const list = [...entries.values()];
+    return {list, preambule, guess, mois, R:refAll()};
+  }
+
+  async function readFile(file){
     const name = file.name.toLowerCase();
     if(name.endsWith(".pdf") || file.type === "application/pdf"){
       await loadScript("../commun/vendor/pdf.min.js");
       pdfjsLib.GlobalWorkerOptions.workerSrc = "../commun/vendor/pdf.worker.min.js";
       const pdf = await pdfjsLib.getDocument({data: new Uint8Array(await file.arrayBuffer())}).promise;
+      const form = parseForm(await pdf.getFieldObjects());
+      if(form) return form;
       let out = "";
       for(let p = 1; p <= pdf.numPages; p++){
         const tc = await (await pdf.getPage(p)).getTextContent();
@@ -174,14 +280,46 @@
   function step1(msg){
     result = null;
     body.innerHTML = `
-      <p class="mintro">Déposez la prise de notes telle quelle : l'outil repère les trigrammes (ou les noms de villes) et le texte qui suit, puis vous montre ce qu'il a compris avant de l'ajouter. Rien n'est envoyé sur Internet.</p>
+      <p class="mintro">Déposez votre PDF, document Word ou fichier texte. L’aperçu vous permet de vérifier les escales et le compte rendu cible avant l’import.</p>
+      ${["LC","MC"].includes(type) ? `<fieldset class="pre template-download">
+        <legend>Télécharger une trame du CR</legend>
+        <label>Réseau <select id="impTemplateNetwork"><option value="LC" ${type==="LC"?"selected":""}>Long-courrier</option><option value="MC" ${type==="MC"?"selected":""}>Moyen-courrier</option></select></label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+          <a class="mbtn" id="impTemplateBlank" href="${templateUrl(type)}" download>Sans les hôtels</a>
+          <button class="mbtn" id="impTemplateHotels" type="button">Avec les hôtels préremplis</button>
+        </div>
+        <small id="impTemplateHint"></small>
+      </fieldset>` : ""}
       <label class="drop" id="drop"><input type="file" id="impFile" accept=".pdf,.docx,.txt,.md,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 18v-6M9 14l3-3 3 3"/></svg>
-        <b>Choisir ou glisser un fichier</b><span>PDF (texte), Word .docx ou .txt</span></label>
+        <b>Choisir ou glisser un fichier</b><span>PDF remplissable ou texte, Word .docx ou .txt</span></label>
       <div class="or">ou collez le texte des notes</div>
       <textarea id="impText" rows="9" placeholder="ABJ : hôtel ok, chambres rénovées au 4e&#10;DSS - travaux de façade, bruit en journée&#10;Johannesburg : transfert à surveiller…"></textarea>
       ${msg ? `<p class="merr">${msg}</p>` : ""}`;
     foot.innerHTML = `<span></span><div style="display:flex;gap:8px"><button class="mbtn" data-x>Annuler</button><button class="mbtn pri" id="impGo">Analyser</button></div>`;
+    const network = body.querySelector("#impTemplateNetwork");
+    if(network){
+      const blank = body.querySelector("#impTemplateBlank");
+      const button = body.querySelector("#impTemplateHotels");
+      const hint = body.querySelector("#impTemplateHint");
+      let busy = false;
+      const update = () => {
+        const available = Object.keys(HOTELS?.[network.value] || {}).length > 0;
+        blank.href = templateUrl(network.value);
+        button.disabled = busy || !available;
+        hint.textContent = !available
+          ? "Déverrouillez la liste des hôtels dans l’éditeur pour activer le préremplissage."
+          : "Les cases de mise à jour restent décochées. Cochez-les uniquement pour importer une modification.";
+      };
+      network.addEventListener("change", update);
+      button.addEventListener("click", async () => {
+        busy = true;
+        update();
+        try{ await downloadWithHotels(network.value); }
+        finally{ busy = false; update(); }
+      });
+      update();
+    }
     const drop = body.querySelector("#drop");
     ["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("hov"); }));
     ["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("hov"); }));
@@ -196,7 +334,12 @@
   async function fromFile(f){
     body.innerHTML = `<p class="mintro">Lecture de « ${esc(f.name)} »…</p>`; foot.innerHTML = "";
     try{
-      const t = await textFromFile(f);
+      const t = await readFile(f);
+      if(typeof t !== "string"){
+        if(!t.list.length && !t.preambule) return step1("Le formulaire est vide. Remplissez et enregistrez le PDF avant de l’importer.");
+        result = {...t, target:t.guess, source:f.name, usePre:true};
+        return step2();
+      }
       if(t.replace(/\s/g,"").length < 15) return step1("Ce fichier ne contient pas de texte lisible (PDF scanné ou photo). Ouvrez-le, copiez le texte et collez-le ci-dessous, ou exportez-le en PDF « texte » depuis Word / Notes.");
       analyse(t, f.name);
     }catch(e){ step1("Lecture impossible : " + esc(e.message || e)); }
@@ -212,35 +355,50 @@
   function zoneFor(e, t){
     const r = result.R.codes[e.code];
     if(r && r.zones[t]) return r.zones[t];
+    if(result.mois) return "Autres escales";
     const zs = zonesOf(t);
     if(e.zoneHint){ const h = norm(e.zoneHint); const z = zs.find(n => norm(n) === h || norm(n).startsWith(h) || h.startsWith(norm(n))); if(z) return z; }
     return zs[0] || "";
   }
+  function targetDraft(t){
+    const matches = d => d.type === t && d.statut === "brouillon" && (!result.mois || d.mois === result.mois);
+    if(matches(S)) return S;
+    return Object.values(DOCS).filter(matches).sort((a,b) => b.maj - a.maj)[0];
+  }
   function zonesOf(t){
-    const d = t === type ? S.zones.map(z => z.nom) : (ESCALES[t]||[]).map(z => z.zone);
-    return [...new Set(d)];
+    const draft = targetDraft(t);
+    const d = draft ? draft.zones.map(z => z.nom) : (ESCALES[t]||[]).map(z => z.zone);
+    return [...new Set(result.mois ? [...d, "Autres escales"] : d)];
   }
 
   function step2(){
     const t = result.target, zs = zonesOf(t);
-    const curTexts = {}; if(t === type) S.zones.forEach(z => z.escales.forEach(e => { if(e.code && e.texte.trim()) curTexts[e.code] = 1; }));
+    const draft = targetDraft(t);
+    const curTexts = {};
+    draft?.zones.forEach(z => z.escales.forEach(e => { if(e.code && e.texte.trim()) curTexts[e.code] = 1; }));
     const nbExist = result.list.filter(e => curTexts[e.code]).length;
     body.innerHTML = `
       <div class="mbar">
         <div><b>${result.list.length} escale${result.list.length>1?"s":""}</b> détectée${result.list.length>1?"s":""} dans « ${esc(result.source)} »</div>
-        <label>Compte rendu : <select id="impType">${(window.TYPES_SECTION || ["LC","MC"]).map(x => `<option value="${x}" ${t===x?"selected":""}>${(window.TNOM||{})[x]||x}</option>`).join("")}</select></label>
+        ${result.mois ? `<span>Compte rendu <b>${t} · ${esc(moisLabel(result.mois))}</b> (${draft ? "brouillon existant" : "nouveau brouillon"})</span>` : `<label>Compte rendu : <select id="impType">${(window.TYPES_SECTION || ["LC","MC"]).map(x => `<option value="${x}" ${t===x?"selected":""}>${(window.TNOM||{})[x]||x}</option>`).join("")}</select></label>`}
       </div>
       ${nbExist ? `<div class="mbar"><span>${nbExist} escale${nbExist>1?"s ont":" a"} déjà un texte dans le CR ${t}.</span><label>Dans ce cas : <select id="impMode"><option value="append">ajouter à la suite</option><option value="replace">remplacer</option></select></label></div>` : ""}
-      ${result.preambule ? `<div class="pre"><label class="chk"><input type="checkbox" id="impPre"> Utiliser le début des notes (avant la 1re escale) pour « À noter »</label><textarea id="impPreTx" rows="3">${esc(result.preambule)}</textarea></div>` : ""}
+      ${result.preambule ? `<div class="pre"><label class="chk"><input type="checkbox" id="impPre" ${result.usePre?"checked":""}> ${result.mois ? "Importer l’encart « À noter »" : "Utiliser le début des notes (avant la 1re escale) pour « À noter »"}</label><textarea id="impPreTx" rows="3">${esc(result.preambule)}</textarea></div>` : ""}
       <div class="ilist">${result.list.map((e,i) => {
         const r = result.R.codes[e.code], z = zoneFor(e, t);
+        const updates = [
+          e.hotel && "Hôtel " + e.hotel, e.etoiles && e.etoiles + " ★",
+          e.echeance && "Fin de contrat " + e.echeance.split("-").reverse().join("/"),
+          e.ville && "Ville " + e.ville
+        ].filter(Boolean);
         return `<div class="irow" data-i="${i}">
-          <input type="checkbox" class="ion" checked aria-label="Importer">
+          <input type="checkbox" class="ion" ${e.on===false?"":"checked"} aria-label="Importer">
           <div class="icode"><input type="text" class="icd" value="${esc(e.code)}" maxlength="4"><small>${r ? esc(r.ville) : "hors référentiel"}${curTexts[e.code] ? " · <i>déjà saisi</i>" : ""}</small></div>
-          <div class="ibody"><select class="iz">${zs.map(n => `<option ${n===z?"selected":""}>${esc(n)}</option>`).join("")}</select><textarea class="itx" rows="2">${esc(e.texte)}</textarea></div>
+          <div class="ibody"><select class="iz">${zs.map(n => `<option ${n===z?"selected":""}>${esc(n)}</option>`).join("")}</select><textarea class="itx" rows="2">${esc(e.texte)}</textarea>
+          ${updates.length ? `<small>${esc(updates.join(" · "))}</small>` : ""}</div>
         </div>`; }).join("")}</div>`;
     foot.innerHTML = `<button class="mbtn" id="impBack">← Autre document</button><div style="display:flex;gap:8px"><button class="mbtn" data-x>Annuler</button><button class="mbtn pri" id="impOk">Ajouter au compte rendu</button></div>`;
-    body.querySelector("#impType").addEventListener("change", e => { collect(); result.target = e.target.value; step2(); });
+    body.querySelector("#impType")?.addEventListener("change", e => { collect(); result.target = e.target.value; step2(); });
     body.querySelectorAll(".icd").forEach(inp => inp.addEventListener("input", () => { inp.value = inp.value.toUpperCase().replace(/[^A-Z0-9]/g,""); }));
     foot.querySelector("#impBack").addEventListener("click", () => step1());
     foot.querySelector("#impOk").addEventListener("click", apply);
@@ -248,28 +406,45 @@
   function collect(){
     body.querySelectorAll(".irow").forEach(row => { const e = result.list[+row.dataset.i]; e.code = row.querySelector(".icd").value; e.texte = row.querySelector(".itx").value; e.on = row.querySelector(".ion").checked; e.zoneSel = row.querySelector(".iz").value; });
     const p = body.querySelector("#impPreTx"); if(p) result.preambule = p.value;
+    result.usePre = !!body.querySelector("#impPre")?.checked;
   }
 
   function apply(){
     collect();
     const mode = (body.querySelector("#impMode")||{}).value || "append";
-    const usePre = body.querySelector("#impPre") && body.querySelector("#impPre").checked;
-    ensureDraft(result.target);
+    const preambule = result.usePre ? result.preambule.trim() : "";
+    if(!preambule && !result.list.some(e => e.on !== false && e.code)){
+      return toast("Sélectionnez au moins une escale ou les points généraux");
+    }
+    if(result.mois){
+      const draft = targetDraft(result.target) || Object.assign(newDoc(result.target), {mois:result.mois});
+      if(draft !== S) openDoc(draft);
+    } else ensureDraft(result.target);
     let n = 0;
     result.list.forEach(e => {
       if(e.on === false || !e.code) return;
       let zone = S.zones.find(z => z.nom === e.zoneSel);
       if(!zone){ zone = {id:uid(), nom:e.zoneSel || "Autres escales", open:true, escales:[]}; S.zones.push(zone); }
       let found = null; S.zones.forEach(z => z.escales.forEach(x => { if(x.code === e.code) found = x; }));
-      if(found){
-        const tx = e.texte.trim();
+      if(!found){
+        found = {id:uid(), code:e.code, texte:""};
+        zone.escales.push(found);
+      }
+      const tx = e.texte.trim();
+      if(tx || !result.mois){
         if(!found.texte.trim() || mode === "replace") found.texte = tx;
         else if(tx && !found.texte.includes(tx)) found.texte = found.texte.trim() + "\n" + tx;
-      } else zone.escales.push({id:uid(), code:e.code, texte:e.texte.trim()});
+      }
+      for(const field of ["hotel", "etoiles", "echeance", "ville"]){
+        if(e[field]) found[field] = e[field];
+      }
       zone.open = true; n++;
     });
-    if(usePre && result.preambule.trim()) S.aNoter = S.aNoter.trim() ? S.aNoter.trim() + "\n" + result.preambule.trim() : result.preambule.trim();
+    if(preambule && !S.aNoter.includes(preambule)){
+      S.aNoter = [S.aNoter.trim(), preambule].filter(Boolean).join("\n");
+    }
     changed(true); close();
+    if(!n && preambule) return toast(`Points généraux importés dans le CR ${type}`);
     toast(`${n} escale${n>1?"s":""} importée${n>1?"s":""} dans le CR ${type} — à relire avant le PDF`);
   }
 

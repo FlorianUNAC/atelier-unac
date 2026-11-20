@@ -58,6 +58,12 @@ const FORMULAIRES = {
     {titre:"Papier à en-tête UNAC", fichier:"papier-entete-unac-remplissable.pdf?v=impression",
      desc:"Modèle de courrier A4 avec champs pour le destinataire, la date, l’objet, le corps du courrier et le signataire.",
      tags:["A4","Remplissable"]},
+    ...[["lc", "long-courrier"], ["mc", "moyen-courrier"]].map(([code, reseau]) => ({
+      titre:`Compte rendu du comité d’hébergement · ${reseau}`,
+      fichier:`cr-hebergement-${code}.pdf`,
+      desc:"Mois, réseau, encart À noter et escales avec mise à jour de l’hôtel, des étoiles et de l’échéance du contrat. Déposez le PDF rempli dans l’outil « CR hébergement ».",
+      tags:["PDF remplissable", code.toUpperCase()]
+    })),
     {titre:"Retour du délégué testeur · test d’un nouvel hébergement", fichier:"../test-hebergement/formulaire-test-hebergement.pdf",
      desc:"Escale, hôtel, note, localisation, restauration, chambre, facilités, bilan. S’importe tel quel dans l’outil « Test d’un nouvel hébergement ».",
      tags:["Commission hébergement","LC / MC"]}
