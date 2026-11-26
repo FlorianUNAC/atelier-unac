@@ -151,11 +151,11 @@
   .hd .big.hopbig img{height:34px}
   .hd .big .gh{display:block;overflow:hidden;height:38px;flex:none}
   .hd .lbl{position:absolute;left:36px;bottom:0;font-size:9.5px;color:rgba(255,255,255,.8);letter-spacing:.06em;background:rgba(255,255,255,.19);border-radius:8px 8px 0 0;padding:6px 12px 4px;line-height:1.1}
-  .band{flex:none;background:rgba(255,255,255,.19);margin-top:0;text-align:justify;hyphens:auto;-webkit-hyphens:auto;padding:14px 48px;min-height:70px;font-size:10.5px;line-height:1.45;white-space:pre-wrap}
+  .band{flex:none;background:rgba(255,255,255,.19);margin-top:0;text-align:justify;hyphens:auto;-webkit-hyphens:auto;padding:14px 48px;min-height:70px;font-size:12.5px;line-height:1.45;white-space:pre-wrap}
   .band:empty{padding:0}
 
   /* Zones */
-  .page{--fs:9.3px;--lh:1.38;--rg:20px;--zb:12px;--zt:30px;--zhmb:12px;--pill:11px}
+  .page{--fs:13.3px;--lh:1.38;--rg:20px;--zb:12px;--zt:30px;--zhmb:12px;--pill:13.5px}
   .zh{position:relative;padding:0 48px;height:30px;display:flex;align-items:center;margin-bottom:var(--zhmb);flex:none}
   .zh .globe{position:absolute;left:-19px;top:-5px;width:40px;height:40px}
   .zh .zt{font-size:15.5px;font-weight:700;letter-spacing:.01em}
@@ -726,10 +726,10 @@ function headerHTML(){
 // Densités de mise en page, de la plus aérée à la plus serrée : le rendu choisit automatiquement
 // la plus aérée qui tient dans le plus petit nombre de pages.
 const DENSITES = [
-  {nom:"aérée",    fs:10,  lh:1.42, rg:26, zb:18, zt:36, zhmb:14, pill:11.5},
-  {nom:"standard", fs:9.3, lh:1.38, rg:20, zb:12, zt:30, zhmb:12, pill:11},
-  {nom:"compacte", fs:8.9, lh:1.34, rg:15, zb:9,  zt:22, zhmb:10, pill:10.5},
-  {nom:"serrée",   fs:8.5, lh:1.3,  rg:11, zb:7,  zt:16, zhmb:8,  pill:10}
+  {nom:"aérée",    fs:14,   lh:1.42, rg:26, zb:18, zt:36, zhmb:14, pill:14},
+  {nom:"standard", fs:13.3, lh:1.38, rg:20, zb:12, zt:30, zhmb:12, pill:13.5},
+  {nom:"compacte", fs:12.6, lh:1.34, rg:15, zb:9,  zt:22, zhmb:10, pill:13},
+  {nom:"serrée",   fs:12,   lh:1.3,  rg:11, zb:7,  zt:16, zhmb:8,  pill:12.5}
 ];
 let DENS = DENSITES[1];
 function newPage(container, idx){
