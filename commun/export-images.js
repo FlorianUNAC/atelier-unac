@@ -122,20 +122,31 @@
       const opts = {pixelRatio: (CAR ? CW : largeur()) / W, width: W, height: H, style: {transform: "none", position: "static", margin: "0", left: "0", top: "0"}};
       try{ await htmlToImage.toBlob(pages[0], opts); }catch(e){} // 1er passage : charge polices et images (Safari)
       const blobs = [], brutes = [];
-      for(let i = 0; i < pages.length; i++){
+      if(CAR && window.carrouselSlides){ // diapositives conçues par l'outil pour le format 4:5
+        const host = document.createElement("div"); host.style.cssText = "position:fixed;left:-30000px;top:0;width:1080px";
+        document.body.appendChild(host);
+        try{
+          const sl = await window.carrouselSlides(host);
+          if(document.fonts && document.fonts.ready) await document.fonts.ready;
+          const o2 = {pixelRatio: 1, width: CW, height: CH, style: {transform: "none", position: "static", margin: "0", left: "0", top: "0"}};
+          try{ await htmlToImage.toBlob(sl[0], o2); }catch(e){}
+          for(let i = 0; i < sl.length; i++){ body.innerHTML = `<p class="mintro">Préparation du carrousel… diapositive ${i+1} / ${sl.length}</p>`; blobs.push(await htmlToImage.toBlob(sl[i], o2)); }
+        } finally { host.remove(); }
+      }
+      else for(let i = 0; i < pages.length; i++){
         body.innerHTML = `<p class="mintro">Préparation ${CAR ? "du carrousel" : "des images" + (HD ? " haute définition" : "")}… page ${i+1} / ${pages.length}</p>`;
         const bl = await htmlToImage.toBlob(pages[i], CAR ? {...opts, pixelRatio: CW / (W * .94), filter: n => !(n.classList && n.classList.contains("foot"))} : opts);
         if(CAR) brutes.push(bl);
         else blobs.push(HD && !window.EXPORT_LARGEUR ? await png300(bl) : bl);
       }
-      if(CAR){ body.innerHTML = `<p class="mintro">Découpage du carrousel…</p>`; blobs.push(...await decouper(brutes)); }
+      if(CAR && !window.carrouselSlides){ body.innerHTML = `<p class="mintro">Découpage du carrousel…</p>`; blobs.push(...await decouper(brutes)); }
       const base = nomBase();
       const pad = n => String(n).padStart(2, "0");
       files = blobs.map((b, i) => new File([b], CAR ? `${base}-carrousel-${pad(i+1)}.png` : `${base}${blobs.length > 1 ? "-" + (i+1) : ""}${HD ? "-HD" : ""}.png`, {type: "image/png"}));
       urls = blobs.map(b => URL.createObjectURL(b));
       const peutPartager = !!(navigator.canShare && navigator.canShare({files}));
       const modes = window.EXPORT_LARGEUR ? "" : `<div class="immodes" role="tablist"><button class="${CAR ? "" : "on"}" data-mode="pages">Pages A4</button><button class="${CAR ? "on" : ""}" data-mode="car">Carrousel Instagram / Facebook</button></div>`;
-      if(CAR) body.innerHTML = modes + `<p class="mintro">${files.length} diapositive${files.length>1?"s":""} au format carrousel <b>1080 × 1350 (4:5)</b>, pour Instagram et Facebook : chaque page est découpée entre deux blocs, sans couper le texte. Publiez-les dans l'ordre (jusqu'à 20 par publication sur Instagram).
+      if(CAR) body.innerHTML = modes + `<p class="mintro">${files.length} diapositive${files.length>1?"s":""} au format carrousel <b>1080 × 1350 (4:5)</b>, pour Instagram et Facebook : ${window.carrouselSlides ? "mise en page dédiée, en gros caractères." : "chaque page est découpée entre deux blocs, sans couper le texte."} Publiez-les dans l'ordre (jusqu'à 20 par publication sur Instagram).
         ${peutPartager ? "« Partager » les envoie directement vers Instagram, Facebook… depuis le téléphone." : "Sur téléphone, un appui long sur une image permet de l'enregistrer dans Photos."}</p>
         <div class="imgrid car">${urls.map((u, i) => `<a href="${u}" download="${esc(files[i].name)}" title="Télécharger cette diapositive"><img src="${u}" alt="Diapositive ${i+1}"><span>${i+1} / ${urls.length}</span></a>`).join("")}</div>`;
       else body.innerHTML = modes + `<p class="mintro">${files.length} image${files.length>1?"s":""} (une par page, ${largeur()} px de large${HD && !window.EXPORT_LARGEUR ? ", soit 300 dpi en A4" : ""}), prête${files.length>1?"s":""} ${HD ? "pour l'impression" : "pour une publication Facebook"}.${HD ? " <b>Pour Meljet ou un imprimeur, préférez « Télécharger le PDF »</b> : le texte y reste vectoriel, donc net à toutes les tailles, alors qu'une image peut être recompressée par la plateforme." : ""}

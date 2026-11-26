@@ -175,6 +175,46 @@
   .content > .sep:first-child{margin-top:0}
   .blk{flex:none;display:flex;flex-direction:column}
 
+
+  /* ================= CARROUSEL INSTAGRAM / FACEBOOK (1080 × 1350) ================= */
+  .cs{width:1080px;height:1350px;position:relative;overflow:hidden;color:#fff;font-family:"T1",Inter,system-ui,sans-serif;background:#4f1a30;isolation:isolate;display:flex;flex-direction:column}
+  .cs > .fond{position:absolute;inset:0;z-index:-1;background:url("../commun/img/fond-hebergement.jpg") var(--pos,30% 50%)/cover no-repeat;transform:scaleX(var(--flip,1))}
+  .cs .cfoot{position:absolute;left:72px;right:72px;bottom:44px;display:flex;justify-content:space-between;align-items:center;font-size:19px;letter-spacing:.12em;text-transform:uppercase;opacity:.62}
+  .cs .ctop{display:flex;align-items:center;justify-content:space-between;padding:56px 72px 0;flex:none}
+  .cs .ctop img{height:84px;display:block}
+  .cs .ctop .lab{font-size:20px;letter-spacing:.2em;text-transform:uppercase;opacity:.7;text-align:right;line-height:1.5}
+  .cs .ctop .lab svg{height:22px;width:auto;display:block;margin-left:auto;margin-bottom:6px}
+  .cs.cover .hdw{width:794px;height:214px;transform:scale(1.36);transform-origin:0 0;margin-top:120px;flex:none}
+  .cs.cover .hdw .hd .lbl{display:none}
+  .cs.cover .note{margin:150px 72px 0;background:rgba(255,255,255,.17);border-radius:26px;padding:34px 40px;font-size:31px;line-height:1.42;white-space:pre-wrap}
+  .cs.cover .note b{display:block;font-size:22px;letter-spacing:.16em;text-transform:uppercase;opacity:.75;margin-bottom:12px}
+  .cs.cover .swipe{position:absolute;right:72px;bottom:110px;font-size:24px;opacity:.8;letter-spacing:.04em}
+  .cs .czone{display:flex;align-items:center;gap:20px;margin:6px 0 26px -6px}
+  .cs .czone .globe{width:62px;height:62px;flex:none}
+  .cs .czone span{font-size:44px;font-weight:700;line-height:1.05}
+  .cs .czone em{font-style:normal;font-weight:400;opacity:.6;font-size:30px;margin-left:12px}
+  .cs .cbody{flex:1;min-height:0;display:flex;flex-direction:column;padding:44px 72px 100px;gap:34px;overflow:hidden}
+  .cs .cg > .czone + .ce{margin-top:0}
+  .cs .cg:has(> .czone):not(:first-child){margin-top:22px;padding-top:34px;border-top:2px solid rgba(255,255,255,.22)}
+  .cs .ce .pill{display:inline-block;background:rgba(255,255,255,.24);border-radius:12px;padding:8px 18px 6px;font-size:36px;font-weight:700;line-height:1.15}
+  .cs .ce .ht{display:flex;flex-wrap:wrap;align-items:center;column-gap:14px;row-gap:4px;margin-top:14px;padding-left:4px;font-size:28px;line-height:1.25}
+  .cs .ce .ht .hn{font-weight:700}
+  .cs .ce .ht .stars{display:inline-flex;gap:2px}
+  .cs .ce .ht .stars svg{width:25px;height:25px}
+  .cs .ce .ec{display:block;margin-top:6px;padding-left:4px;font-style:italic;font-size:24px;opacity:.82}
+  .cs .ce .ht .masque{display:inline-block;vertical-align:-3px;width:7.5em;height:.95em;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,.25),rgba(255,255,255,.6) 30%,rgba(255,255,255,.4) 60%,rgba(255,255,255,.55));filter:blur(2.5px)}
+  .cs .ce .tx{margin-top:10px;padding-left:4px;font-size:29px;line-height:1.42;opacity:.94;white-space:pre-wrap;overflow-wrap:break-word}
+  .cs.fin .ftitre{margin:70px 72px 0;font-size:46px;font-weight:700;line-height:1.15}
+  .cs.fin .fnoms{margin:22px 72px 0;font-size:34px;line-height:1.5;opacity:.95}
+  .cs.fin .fnoms strong{font-weight:700}
+  .cs.fin .fphotos{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:center;align-items:flex-end}
+  .cs.fin .fphotos img{display:block;filter:grayscale(1) contrast(1.06)}
+  .cs.fin .fappli{margin:44px 72px 0;display:inline-flex;align-self:flex-start;align-items:center;gap:20px;background:rgba(255,255,255,.16);border-radius:24px;padding:20px 30px 20px 20px}
+  .cs.fin .fappli img{width:62px;height:62px;border-radius:14px;display:block}
+  .cs.fin .fappli b{display:block;font-size:30px}
+  .cs.fin .fappli span{display:block;font-size:24px;opacity:.85;margin-top:3px}
+  .cs.fin .cfoot span:first-child{visibility:hidden}
+  .cs.fin .cfoot{z-index:2}
   /* Bloc de fin */
   .fin{flex:none;margin-top:auto;position:relative}
   .fin .appli{position:relative;margin:0 0 30px 48px;display:inline-flex;align-items:center;gap:12px;background:rgba(255,255,255,.14);border-radius:14px;padding:12px 18px 12px 14px;max-width:330px}
@@ -1057,6 +1097,47 @@ function demo(t){
     try{ const o = JSON.parse(await fromB64url(location.hash.slice(3))); history.replaceState(null,"",location.pathname); incoming(o); }
     catch(e){ toast("Lien de brouillon illisible"); }
   }
+
+  // ===== Carrousel Instagram / Facebook : diapositives conçues pour le format 1080 × 1350 =====
+  window.carrouselSlides = async function(host){
+    const slides = [], lab = `${HOP ? "UNAC HOP!" : "UNAC"} · Hébergement ${HOP ? "" : TNOM[type] + " · "}${moisLabel(S.mois)}`;
+    const mk = (cls, inner, i) => { const f = FONDS[i % FONDS.length]; const d = el(`<section class="cs ${cls}" style="--pos:${f.pos};--flip:${f.flip}"><div class="fond"></div>${inner}<div class="cfoot"><span>${esc(lab)}${VERSION === "adherents" ? " · Réservé aux adhérents" : ""}</span><span class="num"></span></div></section>`); host.appendChild(d); slides.push(d); return d; };
+    const top = () => `<div class="ctop"><img src="../commun/img/${HOP ? "logo-unac-hop-blanc.png" : "logo-unac-blanc.png"}" alt="UNAC"><div class="lab">${HEB_SVG}${esc(HOP ? "HOP!" : TNOM[type])} · ${esc(moisLabel(S.mois))}</div></div>`;
+    // 1. couverture
+    const note = S.aNoter.trim();
+    mk("cover", `<div class="hdw">${headerHTML().replace(/<div class="band">[\s\S]*$/, "")}</div>${note ? `<div class="note"><b>À noter</b>${esc(note)}</div>` : ""}<div class="swipe">Faites défiler →</div>`, 0);
+    // 2. escales, zone par zone, une colonne en gros caractères
+    const carte = e => {
+      const n = (e.hotel||"").trim().replace(/^h[ôo]tel\s+/i, ""), et = +e.etoiles || 0, ec = echeanceFR(e.echeance);
+      const nom = !n ? "" : VERSION === "public" ? `<span class="masque"></span>` : esc(n);
+      return `<div class="ce"><span class="pill">${esc(villeDe(e))}</span>${(n || et) ? `<div class="ht">${n ? `<span class="hn">Hôtel ${nom}</span>` : ""}${et ? `<span class="stars">${ETOILE.repeat(et)}</span>` : ""}</div>` : ""}${ec ? `<span class="ec">Échéance du contrat au ${esc(ec)}</span>` : ""}${(e.texte||"").trim() ? `<div class="tx">${esc(e.texte.trim())}</div>` : ""}</div>`;
+    };
+    const deborde = b => b.scrollHeight > b.clientHeight + 1;
+    // les zones s'enchaînent : une nouvelle zone commence sur la même diapositive s'il reste de la place (jamais un titre seul en bas)
+    let body = null;
+    const nouvelle = () => { const d = mk("", `${top()}<div class="cbody"></div>`, slides.length); body = d.querySelector(".cbody"); };
+    const titre = (nom, suite) => `<div class="czone">${globeSVG(nom)}<span>${esc(nom)}${suite ? "<em>(suite)</em>" : ""}</span></div>`;
+    S.zones.forEach(z => {
+      const list = zoneEntries(z); if(!list.length) return;
+      list.forEach((e, k) => {
+        const grp = el(`<div class="cg">${k === 0 ? titre(z.nom, false) : ""}${carte(e)}</div>`);
+        if(!body){ nouvelle(); }
+        body.appendChild(grp);
+        if(deborde(body) && body.children.length > 1){
+          body.removeChild(grp); nouvelle();
+          body.appendChild(el(`<div class="cg">${titre(z.nom, k > 0)}${carte(e)}</div>`));
+        }
+      });
+    });
+    // 3. référents + appli
+    const R = S.referents !== false ? refBloc() : null;
+    const appli = `<div class="fappli">${APP_IC}<div><b>Un doute, une question ?</b><span>Tchat appli UNAC · 24h/24, 7j/7</span></div></div>`;
+    mk("fin", `${top()}${R ? `<div class="ftitre">${esc(R.titre)}</div><div class="fnoms">${refNoms().map(p => `<div><strong>${esc(p.prenom)}</strong> ${esc(p.nom)}</div>`).join("")}</div>` : `<div class="ftitre">Une question sur un hôtel, une escale ?</div>`}${appli}
+      ${R ? `<div class="fphotos">${R.personnes.map(p => `<img src="../commun/img/referents/${p.photo}" style="height:${Math.round(p.h * 2.05)}px;${p.chevauche ? `margin-left:-${Math.round(p.chevauche * 2.05)}px` : ""}" alt="">`).join("")}</div>` : ""}`, slides.length);
+    slides.forEach((d, i) => d.querySelector(".num").textContent = `${i + 1} / ${slides.length}`);
+    await Promise.all([...host.querySelectorAll("img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+    return slides;
+  };
   // Re-pagination une fois toutes les images chargées (hauteurs définitives)
   window.addEventListener("load", renderPreview);
 })();
