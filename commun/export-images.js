@@ -108,6 +108,7 @@
     return new Blob([src.slice(0, ihdrFin), ch, src.slice(ihdrFin)], {type: "image/png"});
   }
   window.exportImages = async function(hd){
+    if(window.EXPORT_LARGEUR) CAR = false; // outils déjà au format réseaux sociaux (Chrono', Message…) : pas de carrousel
     if(typeof hd === "boolean"){ HD = hd; try{ localStorage.setItem("atelier:imgHD:" + location.pathname, HD ? "1" : "0"); }catch(e){} }
     body.innerHTML = `<p class="mintro">Préparation des images…</p>`; foot.innerHTML = "";
     M.classList.add("on");
@@ -133,7 +134,7 @@
       files = blobs.map((b, i) => new File([b], CAR ? `${base}-carrousel-${pad(i+1)}.png` : `${base}${blobs.length > 1 ? "-" + (i+1) : ""}${HD ? "-HD" : ""}.png`, {type: "image/png"}));
       urls = blobs.map(b => URL.createObjectURL(b));
       const peutPartager = !!(navigator.canShare && navigator.canShare({files}));
-      const modes = `<div class="immodes" role="tablist"><button class="${CAR ? "" : "on"}" data-mode="pages">Pages A4</button><button class="${CAR ? "on" : ""}" data-mode="car">Carrousel Instagram / Facebook</button></div>`;
+      const modes = window.EXPORT_LARGEUR ? "" : `<div class="immodes" role="tablist"><button class="${CAR ? "" : "on"}" data-mode="pages">Pages A4</button><button class="${CAR ? "on" : ""}" data-mode="car">Carrousel Instagram / Facebook</button></div>`;
       if(CAR) body.innerHTML = modes + `<p class="mintro">${files.length} diapositive${files.length>1?"s":""} au format carrousel <b>1080 × 1350 (4:5)</b>, pour Instagram et Facebook : chaque page est découpée entre deux blocs, sans couper le texte. Publiez-les dans l'ordre (jusqu'à 20 par publication sur Instagram).
         ${peutPartager ? "« Partager » les envoie directement vers Instagram, Facebook… depuis le téléphone." : "Sur téléphone, un appui long sur une image permet de l'enregistrer dans Photos."}</p>
         <div class="imgrid car">${urls.map((u, i) => `<a href="${u}" download="${esc(files[i].name)}" title="Télécharger cette diapositive"><img src="${u}" alt="Diapositive ${i+1}"><span>${i+1} / ${urls.length}</span></a>`).join("")}</div>`;
