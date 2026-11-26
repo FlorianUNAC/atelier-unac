@@ -191,11 +191,13 @@
     const i = MOIS_FR.findIndex(x => t.startsWith(x.slice(0, 4))), y = (t.match(/20\d\d/) || [])[0];
     return i >= 0 && y ? y + "-" + String(i + 1).padStart(2, "0") : "";
   }
+  const coupeF = t => { const i = t.indexOf(" : "); return i > 0 ? [t.slice(0, i) + " :", t.slice(i + 3)] : coupe(t); };
   function depuisFormulaire(fields){
     if(!fields || !fields.nl_v1) return null;
     const v = k => sansEmojiLignes(String(fields[k]?.[0]?.value ?? ""));
     const res = {titre:null, sous:v("nl_sous"), titreA:v("nl_titreA"), titreB:v("nl_titreB"), mois:moisDe(v("nl_mois")), moisBrut:v("nl_mois"),
       redacteur:v("nl_redacteur"), remarques:v("nl_remarques"), formulaire:true, sections:[]};
+    if(v("nl_titre")){ [res.titreA, res.titreB] = coupeF(v("nl_titre")); }
     res.titre = [res.titreA, res.titreB].filter(Boolean).join(" ") || null;
     const bref = [];
     for(let i = 1; i <= 12; i++){
@@ -208,11 +210,22 @@
     if(une.length) res.sections.push({titre:"", libelle:"Première page", titreA:"", titreB:"", blocs:une});
     for(let i = 1; i <= 20; i++){
       const p = "nl_s" + i + "_";
-      if(!(p + "titreA" in fields)) break;
-      const tA = v(p + "titreA").replace(/\n+/g, " "), tB = v(p + "titreB").replace(/\n+/g, " ");
+      if(!(p + "titreA" in fields) && !(p + "titre" in fields)) break;
+      let tA = v(p + "titreA").replace(/\n+/g, " "), tB = v(p + "titreB").replace(/\n+/g, " ");
+      if(v(p + "titre")) [tA, tB] = coupeF(v(p + "titre").replace(/\n+/g, " "));
       const texte = v(p + "texte"), eT = v(p + "enc_titre").replace(/\n+/g, " "), eX = v(p + "enc_texte"), att = v(p + "attention");
       const blocs = [];
-      if(texte) blocs.push({type:"texte", texte});
+      // « Attention : … », « À noter : … », « Bon à savoir : … » en début de ligne -> encadré de couleur
+      const RE_ENC = /^(\*\*)?\s*(attention|important|vigilance|à noter|a noter|bon à savoir|bon a savoir|rappel|à savoir|a savoir)\s*(\*\*)?\s*[:!]\s*(.+)$/i;
+      let cur = [];
+      const vider = () => { const t = cur.join("\n").trim(); if(t) blocs.push({type:"texte", texte:t}); cur = []; };
+      texte.split("\n").forEach(l => {
+        const m = l.trim().match(RE_ENC);
+        if(!m){ cur.push(l); return; }
+        vider(); const mot = m[2].charAt(0).toUpperCase() + m[2].slice(1).toLowerCase();
+        blocs.push({type:"encadre", style:/^(attention|important|vigilance)$/i.test(m[2]) ? "alerte" : "fonce", titre:mot, texte:m[4].trim().replace(/^./, c => c.toUpperCase())});
+      });
+      vider();
       if(eT || eX) blocs.push({type:"encadre", style: estAlerte(eT) ? "alerte" : estNote(eT) ? "fonce" : "clair", titre:eT, texte:eX});
       if(att){ const m = att.replace(/\*\*/g, "").match(/^(attention|important|vigilance)\s*[:!]\s*([\s\S]+)$/i); blocs.push({type:"encadre", style:"alerte", titre:"Attention", texte: m ? m[2].trim().replace(/^./, c => c.toUpperCase()) : att}); }
       if(!blocs.length && !tA && !tB) continue;
@@ -242,7 +255,7 @@
       <div class="ires">${r.sections.map((s, i) => `<div><span>${escH(s.titre || s.libelle || `Section ${i+1}`)}</span><span>${s.blocs.map(b => `<i class="tagb">${NOMS[b.type]||b.type}${b.type === "encadre" && b.style === "alerte" ? " (attention)" : ""}</i>`).join(" ")}</span></div>`).join("")}</div>
       ${r.formulaire && (r.redacteur || r.moisBrut) ? `<p class="hint" style="margin-top:10px">Formulaire${r.redacteur ? ` rempli par <b>${escH(r.redacteur)}</b>` : ""}${r.moisBrut ? ` · parution : ${escH(r.moisBrut)}${r.mois ? "" : " (mois non reconnu, à choisir dans l'en-tête)"}` : ""}</p>` : ""}
       ${r.remarques ? `<div class="merr" style="margin-top:10px;white-space:pre-line"><b>Remarques pour la mise en page</b>\n${escH(r.remarques)}</div>` : ""}
-      ${r.titre ? `<label class="chk" style="margin-top:10px"><input type="checkbox" id="nwTitre" ${r.formulaire ? "checked" : ""}> Utiliser « ${escH(r.titre)} »${r.formulaire ? " et le sous-titre" + (r.mois ? " et le mois" : "") : ""} comme en-tête de la newsletter</label>` : ""}`;
+      ${r.titre ? `<label class="chk" style="margin-top:10px"><input type="checkbox" id="nwTitre" ${r.formulaire ? "checked" : ""}> Utiliser « ${escH(r.titre)} »${r.formulaire && r.mois ? " et le mois" : ""} comme en-tête de la newsletter</label>` : ""}`;
   }
   function montrer(r){ RES = r; $("#nwRes").innerHTML = r.sections.length ? resume(r) : `<p class="mintro" style="color:#a3263b">Aucun contenu reconnu.</p>`; $("#nwOk").disabled = $("#nwAdd").disabled = !r.sections.length; }
   async function lireFichier(f){
@@ -270,7 +283,7 @@
     if(ajout) S.sections.push(...sections);
     else S.sections = sections;
     if(L && $("#nwTitre") && $("#nwTitre").checked){ if(r.titre) S.sous = r.titre; }
-    else if($("#nwTitre") && $("#nwTitre").checked){ const [a, b] = r.formulaire ? [r.titreA, r.titreB] : coupe(r.titre); S.titreA = a; S.titreB = b; if(r.sous) S.sous = r.sous; if(r.mois) S.mois = r.mois; }
+    else if($("#nwTitre") && $("#nwTitre").checked){ const [a, b] = r.formulaire ? [r.titreA, r.titreB] : coupe(r.titre); S.titreA = a; S.titreB = b; if(r.sous || r.formulaire) S.sous = r.sous; if(r.mois) S.mois = r.mois; }
     $("#nwModal").classList.remove("on"); mk.changed(true);
     mk.toast(ajout ? "Texte ajouté à la suite : mise en page recalculée" : "Texte importé : mise en page optimisée automatiquement");
   }
@@ -291,7 +304,7 @@
     m.innerHTML = `<div class="mbox" role="dialog" aria-modal="true">
       <div class="mhead"><h3>Importer le contenu de la newsletter</h3><button class="mclose" data-x aria-label="Fermer">×</button></div>
       <div class="mbody">
-        <p class="mintro"><b>Formulaire de contribution</b> : déposez le PDF rempli par un rédacteur (<a href="../formulaires/newsletter-contribution.pdf" download style="color:#9b2f60;font-weight:700">télécharger le formulaire vierge</a>). Il est repris tel quel : en-tête, « En bref », message de la section, rubriques, encadrés et mises en garde.</p>
+        <p class="mintro"><b>Formulaire de contribution</b> : déposez le PDF rempli par un rédacteur (<a href="../formulaires/newsletter-contribution.pdf" download style="color:#9b2f60;font-weight:700">télécharger le formulaire vierge</a>). Titre, rubriques et encadrés « Attention » sont repris tels quels.</p>
         <p class="mintro">Ou déposez le document Word de la newsletter. Les <b>titres</b> du document deviennent les sections, les <b>sous-titres</b> ou lignes en gras des encadrés, les <b>listes</b> des puces, étapes ou « En bref », les <b>tableaux</b> des tableaux, les chiffres en début de ligne des <b>chiffres clés</b>, « Attention » ou « À noter » des encadrés colorés. La mise en page (pages, densité, colonnes) est ensuite optimisée automatiquement. Rien ne quitte l'appareil.</p>
         <label class="drop" id="nwDrop"><input type="file" id="nwFile" accept=".pdf,.docx,.txt,.md" hidden><b>Choisir le formulaire PDF ou le fichier Word</b><span>ou le glisser ici · .pdf, .docx ou texte</span></label>
         <label class="f" style="margin-top:14px">… ou coller le texte</label>

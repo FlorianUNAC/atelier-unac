@@ -25,6 +25,6 @@ Pour ajouter un outil : créer un dossier à la racine, s'appuyer sur `commun/`,
 
 ## Newsletter : formulaire de contribution
 
-- `formulaires/newsletter-contribution.pdf` : PDF remplissable pour un rédacteur (en-tête, « En bref », message de la section, 8 rubriques avec encadré et mise en garde, remarques non publiées).
+- `formulaires/newsletter-contribution.pdf` : PDF remplissable simple pour un rédacteur : nom, mois, titre, puis 8 rubriques (titre + texte ; « - » = puce, « Attention : » / « À noter : » en début de ligne = encadré).
 - Le PDF rempli se dépose dans l'outil Newsletter (bouton d'import) : champs `nl_*` lus dans le navigateur, mise en page automatique.
 - Régénérer : `UNAC_PDF_FONT_DIR=… python3 scripts/generate-formulaire-newsletter.py`.

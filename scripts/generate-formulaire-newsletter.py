@@ -27,8 +27,7 @@ PALE = HexColor("#FBE4EC")
 OUTLINE = HexColor("#E3D6DD")
 BORDER = HexColor("#C9B8C1")
 SECTIONS = 8
-BREF = 6
-TOTAL = 2 + SECTIONS // 2
+TOTAL = 3
 
 
 def text(pdf, x, y, value, size=10, bold=False, color=INK, font=None):
@@ -85,114 +84,43 @@ def footer(pdf, page):
     pdf.showPage()
 
 
-def page_one(pdf):
-    header(pdf, "Le texte, sans se soucier de la mise en page")
-
-    # La newsletter
-    card(pdf, 566, 704)
-    text(pdf, MARGIN, 688, "LA NEWSLETTER", 10, True, PINK)
-    half = (BODY - 12) / 2
-    label(pdf, MARGIN, 674, "Rédigé par")
-    label(pdf, MARGIN + half + 12, 674, "Mois de parution (ex. 2026-12 ou décembre 2026)")
-    field(pdf, "nl_redacteur", "Rédigé par", MARGIN, 652, half, 18)
-    field(pdf, "nl_mois", "Mois de parution", MARGIN + half + 12, 652, half, 18, limit=20)
-    label(pdf, MARGIN, 638, "Titre (ex. Mutuelle)")
-    label(pdf, MARGIN + half + 12, 638, "Suite du titre, en gras (ex. MNPAF)")
-    field(pdf, "nl_titreA", "Titre", MARGIN, 616, half, 18, limit=40)
-    field(pdf, "nl_titreB", "Suite du titre en gras", MARGIN + half + 12, 616, half, 18, limit=40)
-    label(pdf, MARGIN, 602, "Sous-titre (facultatif)")
-    field(pdf, "nl_sous", "Sous-titre", MARGIN, 580, BODY, 18, limit=110)
-    field(pdf, "nl_v1", "Version du formulaire", 0, 0, 1, 1, value="NL1", readonly=True)
-
-    # En bref
-    card(pdf, 334, 554)
-    pill(pdf, MARGIN, 534, "En bref")
-    text(pdf, MARGIN + 70, 534, "Jusqu’à six points courts : une question et sa réponse.", 9, color=MUTED)
-    q_width = 190
-    label(pdf, MARGIN, 516, "Question (en gras)")
-    label(pdf, MARGIN + q_width + 10, 516, "Réponse")
-    for i in range(1, BREF + 1):
-        y = 494 - (i - 1) * 25.5
-        field(pdf, f"nl_bref_q_{i}", f"En bref {i} - question", MARGIN, y, q_width, 18, limit=70)
-        field(pdf, f"nl_bref_r_{i}", f"En bref {i} - réponse", MARGIN + q_width + 10, y, BODY - q_width - 10, 18, limit=120)
-
-    # Accroche
-    card(pdf, 178, 322)
-    pill(pdf, MARGIN, 302, "Le message de la section")
-    text(pdf, MARGIN + 165, 302, "Encadré en première page (facultatif).", 9, color=MUTED)
-    field(pdf, "nl_accroche", "Message de la section", MARGIN, 192, BODY, 100, True)
-
-    # Comment écrire
-    pdf.setFillColor(PALE)
-    pdf.roundRect(24, 50, WIDTH - 48, 116, 10, fill=1, stroke=0)
-    text(pdf, MARGIN, 148, "COMMENT ÉCRIRE", 10, True, PINK)
-    tips = [
-        ("Une rubrique par sujet", "un titre, le texte, et si besoin un encadré ou une mise en garde (pages suivantes)."),
-        ("- texte", "en début de ligne : une puce.            1) texte : une étape numérotée."),
-        ("**mot**", "entre deux paires d’étoiles : en gras.     > texte : une petite note grise."),
-        ("Pas de mise en page", "l’outil choisit les couleurs, les pictos, les colonnes et répartit les pages."),
-    ]
-    for i, (key, value) in enumerate(tips):
-        y = 130 - i * 18
-        text(pdf, MARGIN, y, key, 9, True, INK)
-        text(pdf, MARGIN + 112, y, value, 9, color=INK)
-    footer(pdf, 1)
-
-
-def rubrique(pdf, index, top):
-    bottom = top - 318
+def rubrique(pdf, index, top, height):
+    bottom = top - height
     card(pdf, bottom, top)
-    width = pill(pdf, MARGIN, top - 20, f"Rubrique {index}")
-    text(pdf, MARGIN + width + 10, top - 20, "Laissez vide si inutile.", 8.5, color=MUTED)
-    half = (BODY - 12) / 2
-    p = f"nl_s{index}_"
-    y = top - 40
-    label(pdf, MARGIN, y, "Titre (ex. Retraite :)")
-    label(pdf, MARGIN + half + 12, y, "Suite du titre, en rose (ex. ce qui évolue)")
-    field(pdf, p + "titreA", f"Rubrique {index} - titre", MARGIN, y - 22, half, 18, limit=60)
-    field(pdf, p + "titreB", f"Rubrique {index} - suite du titre", MARGIN + half + 12, y - 22, half, 18, limit=60)
-    y -= 36
-    label(pdf, MARGIN, y, "Texte")
-    field(pdf, p + "texte", f"Rubrique {index} - texte", MARGIN, y - 112, BODY, 106, True)
-    y -= 126
-    label(pdf, MARGIN, y, "Encadré : titre (ex. Bon à savoir)")
-    label(pdf, MARGIN + 170, y, "Encadré : texte")
-    field(pdf, p + "enc_titre", f"Rubrique {index} - titre de l'encadré", MARGIN, y - 46, 160, 40, True, 60)
-    field(pdf, p + "enc_texte", f"Rubrique {index} - texte de l'encadré", MARGIN + 170, y - 46, BODY - 170, 40, True)
-    y -= 60
-    label(pdf, MARGIN, y, "Attention / mise en garde (facultatif)")
-    field(pdf, p + "attention", f"Rubrique {index} - attention", MARGIN, y - 40, BODY, 34, True)
-
-
-def page_last(pdf):
-    header(pdf, "Pour la mise en page")
-    card(pdf, 430, 704)
-    pill(pdf, MARGIN, 684, "Remarques pour la mise en page")
-    text(pdf, MARGIN, 662, "Une photo, un document à joindre, une rubrique à mettre en avant, une date de diffusion… (non publié)", 9, color=MUTED)
-    field(pdf, "nl_remarques", "Remarques pour la mise en page", MARGIN, 446, BODY, 204, True)
-    pdf.setFillColor(PALE)
-    pdf.roundRect(24, 330, WIDTH - 48, 86, 10, fill=1, stroke=0)
-    text(pdf, MARGIN, 396, "ET ENSUITE ?", 10, True, PINK)
-    for i, line in enumerate([
-        "1) Enregistrez ce PDF (Fichier › Enregistrer), sans l’imprimer en PDF : les champs seraient perdus.",
-        "2) Renvoyez-le par e-mail à la personne qui met en page la newsletter.",
-        "3) Il est déposé dans l’outil Newsletter de l’Atelier UNAC : la mise en page se fait toute seule.",
-    ]):
-        text(pdf, MARGIN, 376 - i * 17, line, 9, color=INK)
-    footer(pdf, TOTAL)
+    text(pdf, MARGIN, top - 20, f"RUBRIQUE {index}", 10, True, PINK)
+    label(pdf, MARGIN, top - 38, "Titre")
+    field(pdf, f"nl_s{index}_titre", f"Rubrique {index} - titre", MARGIN, top - 60, BODY, 18, limit=90)
+    label(pdf, MARGIN, top - 74, "Texte")
+    field(pdf, f"nl_s{index}_texte", f"Rubrique {index} - texte", MARGIN, bottom + 12, BODY, height - 92, True)
 
 
 def generate():
     pdf = Canvas(str(ROOT / "formulaires/newsletter-contribution.pdf"), pagesize=A4)
     pdf.setTitle("Contribution à la newsletter UNAC")
     pdf.setAuthor("UNAC Air France")
-    page_one(pdf)
-    for page in range(SECTIONS // 2):
-        header(pdf, "Les rubriques")
-        rubrique(pdf, page * 2 + 1, 704)
-        rubrique(pdf, page * 2 + 2, 372)
-        footer(pdf, page + 2)
-    page_last(pdf)
+
+    header(pdf, "Écrivez simplement : la mise en page se fait toute seule")
+    card(pdf, 586, 704)
+    half = (BODY - 12) / 2
+    label(pdf, MARGIN, 686, "Votre nom")
+    label(pdf, MARGIN + half + 12, 686, "Mois de parution")
+    field(pdf, "nl_redacteur", "Votre nom", MARGIN, 664, half, 18)
+    field(pdf, "nl_mois", "Mois de parution (ex. décembre 2026)", MARGIN + half + 12, 664, half, 18, limit=20)
+    label(pdf, MARGIN, 648, "Titre de la newsletter (ex. Mutuelle MNPAF)")
+    field(pdf, "nl_titre", "Titre de la newsletter", MARGIN, 626, BODY, 18, limit=60)
+    text(pdf, MARGIN, 608, "Astuce : une ligne qui commence par « - » devient une puce ; par « Attention : » ou « À noter : »,", 8.5, color=MUTED)
+    text(pdf, MARGIN, 597, "un encadré de couleur. Pour le reste, écrivez comme dans un e-mail.", 8.5, color=MUTED)
+    field(pdf, "nl_v1", "Version du formulaire", 0, 0, 1, 1, value="NL2", readonly=True)
+    rubrique(pdf, 1, 572, 252)
+    rubrique(pdf, 2, 308, 252)
+    footer(pdf, 1)
+
+    for page, first in ((2, 3), (3, 6)):
+        header(pdf, "Les rubriques (laissez vides celles qui ne servent pas)")
+        for k in range(3):
+            if first + k <= SECTIONS:
+                rubrique(pdf, first + k, 704 - k * 218, 206)
+        footer(pdf, page)
     pdf.save()
 
 
