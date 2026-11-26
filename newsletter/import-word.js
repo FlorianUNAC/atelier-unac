@@ -1,4 +1,4 @@
-// Newsletter : import d'un texte Word (.docx), texte brut ou collé, puis mise en forme automatique.
+// Newsletter : import du formulaire PDF de contribution, d'un texte Word (.docx), texte brut ou collé, puis mise en forme automatique.
 // Structure reconnue : Titre 1 = titre de la newsletter, Titre 2 = section, Titre 3 / ligne en gras = encadré,
 // listes, tableaux, chiffres clés, « Attention / À noter » ; deux encadrés courts côte à côte = deux colonnes.
 "use strict";
@@ -7,7 +7,7 @@
   const escH = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const norm = s => String(s||"").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
   const sansEmoji = s => String(s||"").replace(/[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}\u{FE0F}\u{200D}\u{20E3}]/gu, "").replace(/ /g, " ").replace(/[ \t]+/g, " ").trim();
-  const chargerScript = src => new Promise((ok, ko) => { if(window.mammoth && /mammoth/.test(src)) return ok(); const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => ko(new Error("chargement impossible")); document.head.appendChild(s); });
+  const chargerScript = src => new Promise((ok, ko) => { if((window.mammoth && /mammoth/.test(src)) || (window.pdfjsLib && /pdf\.min/.test(src))) return ok(); const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => ko(new Error("chargement impossible")); document.head.appendChild(s); });
 
   // HTML (Word via mammoth) -> texte de bloc : **gras**, sans balises
   function texteDe(node){
@@ -182,25 +182,79 @@
     fl(); return h.join("");
   }
 
+  /* ---------- Formulaire PDF de contribution (formulaires/newsletter-contribution.pdf) ---------- */
+  const MOIS_FR = ["janvier","fevrier","mars","avril","mai","juin","juillet","aout","septembre","octobre","novembre","decembre"];
+  function moisDe(t){
+    t = norm(t).trim(); if(!t) return "";
+    let m = t.match(/^(20\d\d)[-\/.](\d{1,2})$/) || t.match(/^(\d{1,2})[-\/.](20\d\d)$/);
+    if(m){ const [y, mm] = m[1].length === 4 ? [m[1], m[2]] : [m[2], m[1]]; if(+mm >= 1 && +mm <= 12) return y + "-" + String(+mm).padStart(2, "0"); }
+    const i = MOIS_FR.findIndex(x => t.startsWith(x.slice(0, 4))), y = (t.match(/20\d\d/) || [])[0];
+    return i >= 0 && y ? y + "-" + String(i + 1).padStart(2, "0") : "";
+  }
+  function depuisFormulaire(fields){
+    if(!fields || !fields.nl_v1) return null;
+    const v = k => sansEmojiLignes(String(fields[k]?.[0]?.value ?? ""));
+    const res = {titre:null, sous:v("nl_sous"), titreA:v("nl_titreA"), titreB:v("nl_titreB"), mois:moisDe(v("nl_mois")), moisBrut:v("nl_mois"),
+      redacteur:v("nl_redacteur"), remarques:v("nl_remarques"), formulaire:true, sections:[]};
+    res.titre = [res.titreA, res.titreB].filter(Boolean).join(" ") || null;
+    const bref = [];
+    for(let i = 1; i <= 12; i++){
+      const q = v("nl_bref_q_" + i).replace(/\*\*/g, ""), r = v("nl_bref_r_" + i);
+      if(q || r) bref.push(q ? `**${q}** ${r}`.trim() : r);
+    }
+    const une = [];
+    if(bref.length) une.push({type:"enbref", titreA:"En", titreB:"bref", texte:bref.join("\n")});
+    if(v("nl_accroche")) une.push({type:"encadre", style:"contour", titre:"", texte:v("nl_accroche")});
+    if(une.length) res.sections.push({titre:"", libelle:"Première page", titreA:"", titreB:"", blocs:une});
+    for(let i = 1; i <= 20; i++){
+      const p = "nl_s" + i + "_";
+      if(!(p + "titreA" in fields)) break;
+      const tA = v(p + "titreA").replace(/\n+/g, " "), tB = v(p + "titreB").replace(/\n+/g, " ");
+      const texte = v(p + "texte"), eT = v(p + "enc_titre").replace(/\n+/g, " "), eX = v(p + "enc_texte"), att = v(p + "attention");
+      const blocs = [];
+      if(texte) blocs.push({type:"texte", texte});
+      if(eT || eX) blocs.push({type:"encadre", style: estAlerte(eT) ? "alerte" : estNote(eT) ? "fonce" : "clair", titre:eT, texte:eX});
+      if(att){ const m = att.replace(/\*\*/g, "").match(/^(attention|important|vigilance)\s*[:!]\s*([\s\S]+)$/i); blocs.push({type:"encadre", style:"alerte", titre:"Attention", texte: m ? m[2].trim().replace(/^./, c => c.toUpperCase()) : att}); }
+      if(!blocs.length && !tA && !tB) continue;
+      res.sections.push({titre:[tA, tB].filter(Boolean).join(" "), titreA:tA, titreB:tB, blocs});
+    }
+    const L = window.NL_API && NL_API.etat().modele === "lettre";
+    return L ? res : optimiser(res);
+  }
+  const sansEmojiLignes = s => s.replace(/\r\n?/g, "\n").split("\n").map(sansEmoji).join("\n").replace(/\n{3,}/g, "\n\n").trim();
+  async function lirePDF(f){
+    await chargerScript("../commun/vendor/pdf.min.js");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "../commun/vendor/pdf.worker.min.js";
+    const pdf = await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;
+    try{
+      const r = depuisFormulaire(await pdf.getFieldObjects());
+      if(!r) throw new Error("ce PDF n'est pas le formulaire de contribution à la newsletter (formulaires › Contribution à la newsletter)");
+      return r;
+    } finally { await pdf.destroy(); }
+  }
+
   /* ---------- Interface ---------- */
   let RES = null;
   const NOMS = {texte:"Texte", enbref:"En bref", encadre:"Encadré", colonnes:"Deux colonnes", etapes:"Étapes", chiffres:"Chiffres clés", tableau:"Tableau", roles:"Tableau clé / valeur"};
   function resume(r){
     const nb = r.sections.reduce((n, s) => n + s.blocs.length, 0);
     return `<p class="hint" style="color:#23764a;margin:12px 0 8px">✓ ${r.sections.length} section${r.sections.length>1?"s":""}, ${nb} bloc${nb>1?"s":""} mis en forme automatiquement${r.titre ? ` · titre : « ${escH(r.titre)} »` : ""}</p>
-      <div class="ires">${r.sections.map((s, i) => `<div><span>${escH(s.titre || `Section ${i+1}`)}</span><span>${s.blocs.map(b => `<i class="tagb">${NOMS[b.type]||b.type}${b.type === "encadre" && b.style === "alerte" ? " (attention)" : ""}</i>`).join(" ")}</span></div>`).join("")}</div>
-      ${r.titre ? `<label class="chk" style="margin-top:10px"><input type="checkbox" id="nwTitre"> Utiliser « ${escH(r.titre)} » comme titre de la newsletter</label>` : ""}`;
+      <div class="ires">${r.sections.map((s, i) => `<div><span>${escH(s.titre || s.libelle || `Section ${i+1}`)}</span><span>${s.blocs.map(b => `<i class="tagb">${NOMS[b.type]||b.type}${b.type === "encadre" && b.style === "alerte" ? " (attention)" : ""}</i>`).join(" ")}</span></div>`).join("")}</div>
+      ${r.formulaire && (r.redacteur || r.moisBrut) ? `<p class="hint" style="margin-top:10px">Formulaire${r.redacteur ? ` rempli par <b>${escH(r.redacteur)}</b>` : ""}${r.moisBrut ? ` · parution : ${escH(r.moisBrut)}${r.mois ? "" : " (mois non reconnu, à choisir dans l'en-tête)"}` : ""}</p>` : ""}
+      ${r.remarques ? `<div class="merr" style="margin-top:10px;white-space:pre-line"><b>Remarques pour la mise en page</b>\n${escH(r.remarques)}</div>` : ""}
+      ${r.titre ? `<label class="chk" style="margin-top:10px"><input type="checkbox" id="nwTitre" ${r.formulaire ? "checked" : ""}> Utiliser « ${escH(r.titre)} »${r.formulaire ? " et le sous-titre" + (r.mois ? " et le mois" : "") : ""} comme en-tête de la newsletter</label>` : ""}`;
   }
   function montrer(r){ RES = r; $("#nwRes").innerHTML = r.sections.length ? resume(r) : `<p class="mintro" style="color:#a3263b">Aucun contenu reconnu.</p>`; $("#nwOk").disabled = $("#nwAdd").disabled = !r.sections.length; }
   async function lireFichier(f){
     if(!f) return; $("#nwRes").innerHTML = `<p class="mintro">Lecture de « ${escH(f.name)} »…</p>`;
     try{
       let html;
+      if(/\.pdf$/i.test(f.name) || f.type === "application/pdf"){ $("#nwTxt").value = ""; montrer(await lirePDF(f)); return; }
       if(/\.docx$/i.test(f.name)){
         await chargerScript("../commun/vendor/mammoth.browser.min.js");
         html = (await mammoth.convertToHtml({arrayBuffer: await f.arrayBuffer()}, {styleMap:["p[style-name='Title'] => h1:fresh","p[style-name='Titre'] => h1:fresh","p[style-name='Subtitle'] => h3:fresh","p[style-name='Sous-titre'] => h3:fresh","highlight => mark"]})).value;
       } else if(/\.(txt|md)$/i.test(f.name) || /^text\//.test(f.type)) html = texteVersHTML(await f.text());
-      else throw new Error("format non pris en charge : utilisez un fichier Word (.docx) ou texte");
+      else throw new Error("format non pris en charge : utilisez le formulaire PDF de contribution, un fichier Word (.docx) ou texte");
       $("#nwTxt").value = ""; montrer(analyserHTML(html));
     }catch(e){ $("#nwRes").innerHTML = `<p class="mintro" style="color:#a3263b">Fichier illisible : ${escH(e.message)}</p>`; }
   }
@@ -208,7 +262,7 @@
     const r = RES; if(!r) return;
     const mk = window.NL_API;
     const L = mk.etat().modele === "lettre";
-    const sections = r.sections.map(s => { const [a, b] = L ? [s.titre || "", ""] : coupe(s.titre || ""); return {id:mk.uid(), titreA:a, titreB:b, picto:pictoPour(s.titre), fond:"auto", blocs:s.blocs.map(b => Object.assign(mk.nouveauBloc(b.type), b, {id:mk.uid()}))}; });
+    const sections = r.sections.map(s => { const [a, b] = s.titreA !== undefined ? (L ? [[s.titreA, s.titreB].filter(Boolean).join(" "), ""] : [s.titreA, s.titreB]) : L ? [s.titre || "", ""] : coupe(s.titre || ""); return {id:mk.uid(), titreA:a, titreB:b, picto:pictoPour(s.titre), fond:"auto", blocs:s.blocs.map(b => Object.assign(mk.nouveauBloc(b.type), b, {id:mk.uid()}))}; });
     const S = mk.etat();
     if(L && S.salut !== false && sections[0]){ // la formule manuscrite remplace « Chères et chers collègues, »
       const b0 = sections[0].blocs[0]; if(b0 && b0.type === "texte") b0.texte = String(b0.texte||"").replace(/^\s*(\*\*)?ch[eè]r(e|es)?s?\s+(et|&)\s+chers?\s+coll[eè]gues\s*,?(\*\*)?\s*\n?/i, "");
@@ -216,7 +270,7 @@
     if(ajout) S.sections.push(...sections);
     else S.sections = sections;
     if(L && $("#nwTitre") && $("#nwTitre").checked){ if(r.titre) S.sous = r.titre; }
-    else if($("#nwTitre") && $("#nwTitre").checked){ const [a, b] = coupe(r.titre); S.titreA = a; S.titreB = b; if(r.sous) S.sous = r.sous; }
+    else if($("#nwTitre") && $("#nwTitre").checked){ const [a, b] = r.formulaire ? [r.titreA, r.titreB] : coupe(r.titre); S.titreA = a; S.titreB = b; if(r.sous) S.sous = r.sous; if(r.mois) S.mois = r.mois; }
     $("#nwModal").classList.remove("on"); mk.changed(true);
     mk.toast(ajout ? "Texte ajouté à la suite : mise en page recalculée" : "Texte importé : mise en page optimisée automatiquement");
   }
@@ -235,10 +289,11 @@
     document.head.appendChild(css);
     const m = document.createElement("div"); m.className = "modal"; m.id = "nwModal";
     m.innerHTML = `<div class="mbox" role="dialog" aria-modal="true">
-      <div class="mhead"><h3>Importer le texte de la newsletter</h3><button class="mclose" data-x aria-label="Fermer">×</button></div>
+      <div class="mhead"><h3>Importer le contenu de la newsletter</h3><button class="mclose" data-x aria-label="Fermer">×</button></div>
       <div class="mbody">
-        <p class="mintro">Déposez le document Word de la newsletter. Les <b>titres</b> du document deviennent les sections, les <b>sous-titres</b> ou lignes en gras des encadrés, les <b>listes</b> des puces, étapes ou « En bref », les <b>tableaux</b> des tableaux, les chiffres en début de ligne des <b>chiffres clés</b>, « Attention » ou « À noter » des encadrés colorés. La mise en page (pages, densité, colonnes) est ensuite optimisée automatiquement. Rien ne quitte l'appareil.</p>
-        <label class="drop" id="nwDrop"><input type="file" id="nwFile" accept=".docx,.txt,.md" hidden><b>Choisir le fichier Word</b><span>ou le glisser ici · .docx, ou texte</span></label>
+        <p class="mintro"><b>Formulaire de contribution</b> : déposez le PDF rempli par un rédacteur (<a href="../formulaires/newsletter-contribution.pdf" download style="color:#9b2f60;font-weight:700">télécharger le formulaire vierge</a>). Il est repris tel quel : en-tête, « En bref », message de la section, rubriques, encadrés et mises en garde.</p>
+        <p class="mintro">Ou déposez le document Word de la newsletter. Les <b>titres</b> du document deviennent les sections, les <b>sous-titres</b> ou lignes en gras des encadrés, les <b>listes</b> des puces, étapes ou « En bref », les <b>tableaux</b> des tableaux, les chiffres en début de ligne des <b>chiffres clés</b>, « Attention » ou « À noter » des encadrés colorés. La mise en page (pages, densité, colonnes) est ensuite optimisée automatiquement. Rien ne quitte l'appareil.</p>
+        <label class="drop" id="nwDrop"><input type="file" id="nwFile" accept=".pdf,.docx,.txt,.md" hidden><b>Choisir le formulaire PDF ou le fichier Word</b><span>ou le glisser ici · .pdf, .docx ou texte</span></label>
         <label class="f" style="margin-top:14px">… ou coller le texte</label>
         <textarea id="nwTxt" placeholder="TITRE DE SECTION EN MAJUSCULES&#10;Paragraphe…&#10;Sous-titre d'encadré :&#10;- puce&#10;1) étape"></textarea>
         <div id="nwRes"></div>
@@ -256,6 +311,6 @@
     $("#nwAdd").addEventListener("click", () => appliquer(true));
     document.addEventListener("click", e => { if(e.target.closest("#nwOpen")){ RES = null; $("#nwRes").innerHTML = ""; $("#nwTxt").value = ""; $("#nwOk").disabled = $("#nwAdd").disabled = true; m.classList.add("on"); } });
   }
-  window.NL_IMPORT = {bouton: () => `<button class="importbtn" id="nwOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 18v-6M9 14l3-3 3 3"/></svg><span><b>Importer le texte depuis Word</b><small>Sections, encadrés, listes, tableaux et chiffres clés mis en forme automatiquement</small></span></button>`, analyserHTML, texteVersHTML};
+  window.NL_IMPORT = {bouton: () => `<button class="importbtn" id="nwOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 18v-6M9 14l3-3 3 3"/></svg><span><b>Importer un formulaire PDF ou un texte Word</b><small>Formulaire de contribution rempli, ou document Word : mise en forme automatique</small></span></button>`, analyserHTML, texteVersHTML};
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", monter); else monter();
 })();

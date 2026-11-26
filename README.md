@@ -22,3 +22,9 @@ Pour ajouter un outil : créer un dossier à la racine, s'appuyer sur `commun/`,
 - **Historique** : brouillons et CR publiés, mémorisés sur l'appareil. « Publier » fige un CR.
 - **Publication pour tous** : si un jeton GitHub (droit « Contents : read and write » sur ce dépôt) est enregistré sur l'appareil de l'administrateur (Historique → Publication pour tous les délégués), chaque CR publié est déposé dans `cr-hebergement/publies/` et apparaît dans l'historique de tous.
 - Visuel de fin facultatif : déposer une photo détourée en `commun/img/pnc-hebergement.png`.
+
+## Newsletter : formulaire de contribution
+
+- `formulaires/newsletter-contribution.pdf` : PDF remplissable pour un rédacteur (en-tête, « En bref », message de la section, 8 rubriques avec encadré et mise en garde, remarques non publiées).
+- Le PDF rempli se dépose dans l'outil Newsletter (bouton d'import) : champs `nl_*` lus dans le navigateur, mise en page automatique.
+- Régénérer : `UNAC_PDF_FONT_DIR=… python3 scripts/generate-formulaire-newsletter.py`.
